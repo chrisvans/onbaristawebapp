@@ -16,7 +16,8 @@ def login(request):
 		except (KeyError,User.DoesNotExist):
 			return render(request, 'login.html', {'error_message':"user name or password do not match our records.",})
 		else:
-			return render(request, 'home.html')
+			request.session['username'] = user.userName
+			return render(request, 'home.html', {'user_name':user.userName,})
 	else:
 		return render(request, 'login.html')
 
