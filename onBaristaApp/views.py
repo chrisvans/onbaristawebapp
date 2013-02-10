@@ -1,5 +1,5 @@
 # Create your views here.
-from django.http import HttpResponse
+from django.http import HttpResponse, Http404, HttpResponseRedirect
 from django.template import Context, loader
 from django.shortcuts import render, get_object_or_404
 from django.core.urlresolvers import reverse
@@ -40,13 +40,17 @@ def login(request):
 def home(request):
 	return render(request, 'home.html')
 
-def checkIn(request):
+def checkInPost(request):
 	location = companyLocation.objects.get(pk=request.POST['location'])
 	user = request.session['user']
 	currTime = timezone.now()
-	ci = checkIn(barista = user, location=location, inTime = currTime, outTime = currTime)
+	ci = checkIn()
+	ci.barista = user
+	ci.location= location
+	ci.inTime = currTime
+	ci.outTime = currTime
 	ci.save()
-	return render(request, 'home.html')
+	return HttpResponseRedirect(reverse('onBaristaApp:login'))
 
 def baristas(request):
 	user = request.session['user']

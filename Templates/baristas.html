@@ -6,7 +6,7 @@
 		{% for location in locations %}
 			<div class="hero-unit">
 				<span>{{ location }}</span><br>
-				<form class="form-signin" action="{% url 'onBaristaApp:checkIn' %}" method="post">
+				<form class="form-signin" action="{% url 'onBaristaApp:checkInPost' %}" method="post">
 					{% csrf_token %}
 					<input style="display:none" name = "location" value={{location.id}}></input>
 					<button class="btn btn-large btn-primary" type="submit">Check In!</button>
