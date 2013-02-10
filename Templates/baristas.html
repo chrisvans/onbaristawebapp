@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% load url from future %}
+
+{% block contents %}
+	{% if user.userType == 'Barista' %}
+		{% for location in locations %}
+			<div class="hero-unit">
+				<span>{{ location }}</span><br>
+				<form class="form-signin" action="{% url 'onBaristaApp:checkIn' %}" method="post">
+					{% csrf_token %}
+					<input style="display:none" name = "location" value={{location.id}}></input>
+					<button class="btn btn-large btn-primary" type="submit">Check In!</button>
+				</form>
+			</div>
+		{% endfor %}
+	{% else %}
+		<div class="hero-unit">
+			<form>
+				{% csrf_token %}
+				<button class="btn btn-large btn-primary" type="submit">Sign up to be a barrista!</button>
+			</form>
+		</div>
+	{% endif %}
+{% endblock %}

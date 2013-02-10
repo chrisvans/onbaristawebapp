@@ -1,4 +1,5 @@
 from django.db import models
+import datetime
 
 # Create your models here.
 
@@ -13,6 +14,7 @@ class Company(models.Model):
 		return companyLocation.objects.filter(companyID = self)
 
 class companyLocation(models.Model):
+	checkins = {}
 	companyID = models.ForeignKey(Company)
 	street = models.CharField(max_length=200)
 	city = models.CharField(max_length= 20)
@@ -35,6 +37,8 @@ class companyLocation(models.Model):
 
 	def __unicode__(self):
 		return self.address_string()
+	def get_checkins(self):
+		return checkIn.objects.filter(location = self)
 
 class User(models.Model):
 	userName = models.CharField(max_length=20)
@@ -64,5 +68,5 @@ class checkIn(models.Model):
 	inTime = models.DateField()
 	outTime = models.DateField()
 	def __unicode__(self):
-		checkinDesc = self.barista.showUser() + " at " + self.location.address_string()
+		checkinDesc = self.barista.showUser() + " at " + unicode(self.inTime)
 		return checkinDesc

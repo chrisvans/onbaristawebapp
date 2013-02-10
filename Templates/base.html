@@ -43,10 +43,10 @@
   				</button>
   				<a class="brand" href="#">On Barista</a>
   				<div class="nav-collapse collapse">
-  					<p class="navbar-text pull-right">Logged in as {{user.userName}}</p>
+  					<p class="navbar-text pull-right">Logged in as {{user.userName}}, <a href="{% url 'onBaristaApp:logout' %}">logout</a></p>
   					<ul class="nav">
-  						<li><a href="#">Home</a></li>
-  						<li><a href="#">Baristas</a></li>
+  						<li><a href="/onBaristaApp/">Home</a></li>
+  						<li><a href="{% url 'onBaristaApp:baristas' %}">Baristas</a></li>
   						<li><a href="#">Manage Favs</a></li>
   					</ul>
   				</div>
@@ -63,7 +63,7 @@
   				</div>
   			</div>
   			<div class="span9">
-  				{% block contents %}{% endblock %}
+  			  	{% block contents %}{% endblock %}
   			</div>
   		</div>
   	</div>
