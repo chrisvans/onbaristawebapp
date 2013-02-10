@@ -21,12 +21,19 @@ def login(request):
 			request.session['username'] = user.userName
 			request.session['user'] = user
 			locList=''
+			isFavBarCheckedIn = False
+			checkInObj = ''
 			if user.favCompany:
 				favCompany = user.favCompany
 				locList = favCompany.get_locations()
 				for location in locList:
 					location.checkins = location.get_checkins()
-			return render(request, 'home.html', {'user_name':user.userName, 'user':user, 'locations':locList})
+			if user.favBaristaObj:
+				favBarista =user.favBaristaObj
+				checkInObj = checkIn.objects.filter(barista = favBarista)
+				if checkInObj:
+					isFavBarCheckedIn = True
+			return render(request, 'home.html', {'user_name':user.userName, 'user':user, 'locations':locList,'checkIn':checkInObj, 'isCheckedIn': isFavBarCheckedIn})
 	elif 'username' in request.session:
 		print "username in session is not empty?"
 		user = request.session['user']
