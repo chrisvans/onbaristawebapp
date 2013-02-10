@@ -52,11 +52,19 @@ def checkInPost(request):
 	ci.save()
 	return HttpResponseRedirect(reverse('onBaristaApp:login'))
 
-def baristas(request):
+def mark_as_barista(request):
+	print "in mark as barista"
+	user = request.session['user']
+	user.userType = "Barista"
+	user.save()
+	return baristas(request, "thanks for being barista!")
+	#return HttpResponseRedirect(reverse('onBaristaApp:baristas', {'message':"thanks for being barista!",}))
+
+def baristas(request, message =''):
 	user = request.session['user']
 	favCompany = user.favCompany
 	locList = favCompany.get_locations()
-	return render(request, 'baristas.html', {'user':user, 'locations':locList})
+	return render(request, 'baristas.html', {'user':user, 'locations':locList, 'message':message})
 
 def logout(request):
 	print "logging out"

@@ -2,6 +2,7 @@
 {% load url from future %}
 
 {% block contents %}
+{% if message %}<p><strong>{{message}}</strong></p>{% endif %}
 	{% if user.userType == 'Barista' %}
 		{% for location in locations %}
 			<div class="hero-unit">
@@ -15,7 +16,7 @@
 		{% endfor %}
 	{% else %}
 		<div class="hero-unit">
-			<form>
+			<form class="form-signin" action="{% url 'onBaristaApp:mark_as_barista' %}" method="post">
 				{% csrf_token %}
 				<button class="btn btn-large btn-primary" type="submit">Sign up to be a barrista!</button>
 			</form>
