@@ -79,6 +79,11 @@ def favorites(request, message=''):
 def update_favs(request):
 	return favorites(request, "Your favorites have been updated")
 
+def baristaList(request):
+	print request.POST['searchString']
+	baristas = User.objects.filter(userType='Barista', firstName__startswith=request.POST['searchString'])
+	return render(request, 'baristaList.html', {'baristas':baristas})
+
 def logout(request):
 	if ('username' in request.session) or ('user' in request.session):
 		del request.session['username']

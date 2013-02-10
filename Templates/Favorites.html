@@ -3,11 +3,34 @@
 
 {% block contents %}
 	{% if message %}
+
 	<div class="alert">
 		<button type="button" class="close" data-dismiss="alert alert-success">&times;</button>
 		<strong>Hey!</strong> {{message}}
 	</div>
 	{% endif %}
+	<script>
+	$(function(){
+		$('#inputBarista').bind('keyup', function(){
+		searchString = $(this).val();
+		console.log(searchString);
+		obj = $(this);
+			if(searchString)
+			{ 	csrf = document.getElementsByName('csrfmiddlewaretoken')[0].value;
+				$.post("{% url 'onBaristaApp:baristaList' %}", {'searchString':searchString,'csrfmiddlewaretoken':csrf}, function(data){
+					obj.siblings('.autoComplete').html(data).fadeIn();
+				});
+			}
+			else
+			{	
+				$(this).siblings('.autoComplete').fadeOut();
+				$(this).removeClass('inputFromOjbect');
+				$(this).siblings('#HiddenID').val('');
+			}
+
+		});
+	});
+	</script>
 	<div class="hero-unit">
 		<form class="" action="{% url 'onBaristaApp:updateFavs' %}" method="post">
 		{% csrf_token %}
@@ -21,6 +44,7 @@
 				<label class='control-label'>Favorite Barista:</label>
 				<div class='controls'>
 					<input type="text" id="inputBarista" name='barista' placeholder="Barista" {% if user.favBaristaObj %}value = {{user.favBaristaObj}} {% endif %}>
+					<div class='autoComplete'></div>
 				</div>
 			</div>
 			

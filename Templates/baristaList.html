@@ -1,0 +1,7 @@
+{% extends "autoCompleteWrapper.html" %}
+{% load url from future %}
+{% block contents %}
+{% for barista in baristas%}
+	<pre>{{barista}}</pre>
+{% endfor %}
+{% endblock %}
