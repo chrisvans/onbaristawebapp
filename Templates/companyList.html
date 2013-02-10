@@ -1,9 +1,9 @@
 {% extends "autoCompleteWrapper.html" %}
 {% load url from future %}
 {% block contents %}
-{% if baristas %}
-	{% for barista in baristas%}
-	<pre class= "ACResult" id="{{barista.pk}}" fullName = "{{barista.firstName}} {{barista.lastName}}">{{barista}}</pre>
+{% if companies %}
+	{% for company in companies%}
+	<pre class= "ACResult" id="{{company.pk}}" fullName = "{{company.companyName}}">{{company}}</pre>
 	{% endfor %}
 {% else %}
 	<pre> No results found</pre>

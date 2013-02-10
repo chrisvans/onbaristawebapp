@@ -6,3 +6,7 @@
 	width:320px; 
 	display:none; 
 }
+
+.ACResult:hover{
+	background-color: black;
+}

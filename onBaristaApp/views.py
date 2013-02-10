@@ -3,7 +3,7 @@ from django.http import HttpResponse, Http404, HttpResponseRedirect
 from django.template import Context, loader
 from django.shortcuts import render, get_object_or_404
 from django.core.urlresolvers import reverse
-from onBaristaApp.models import User, checkIn, companyLocation
+from onBaristaApp.models import User, checkIn, companyLocation, Company
 from django.utils import timezone
 
 
@@ -77,6 +77,15 @@ def favorites(request, message=''):
 
 
 def update_favs(request):
+	user = request.session['user']
+	if request.POST['baristaID']:
+		barista = User.objects.get(pk=request.POST['baristaID'])
+		user.favBaristaObj = barista
+	if request.POST['companyID']:
+		company = Company.objects.get(pk=request.POST['companyID'])
+		user.favCompany = company
+	user.save()
+	request.session['user'] = user
 	return favorites(request, "Your favorites have been updated")
 
 def baristaList(request):
@@ -84,8 +93,13 @@ def baristaList(request):
 	baristas = User.objects.filter(userType='Barista', firstName__startswith=request.POST['searchString'])
 	return render(request, 'baristaList.html', {'baristas':baristas})
 
+def companyList(request):
+	companies = Company.objects.filter(companyName__startswith = request.POST['searchString'])
+	return render(request, 'companyList.html', {'companies':companies})
+
 def logout(request):
-	if ('username' in request.session) or ('user' in request.session):
+	if ('username' in request.session):
 		del request.session['username']
+	if ('user' in request.session):
 		del request.session['user']
 	return render(request, 'login.html')

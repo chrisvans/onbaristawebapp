@@ -9,5 +9,6 @@ urlpatterns = patterns('',
 			url(r'^baristasCheck/$', views.mark_as_barista, name='mark_as_barista'),
 			url(r'^Favorites/$', views.favorites, name='favorites'),
 			url(r'^updateFavs/$', views.update_favs, name='updateFavs'),
-			url(r'^baristaList/$', views.baristaList, name='baristaList')
+			url(r'^baristaList/$', views.baristaList, name='baristaList'),
+			url(r'^companyList/$', views.companyList, name='companyList')
 			)
