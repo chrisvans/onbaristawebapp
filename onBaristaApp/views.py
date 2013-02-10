@@ -17,7 +17,9 @@ def login(request):
 			return render(request, 'login.html', {'error_message':"user name or password do not match our records.",})
 		else:
 			request.session['username'] = user.userName
-			return render(request, 'home.html', {'user_name':user.userName,})
+			favCompany = user.favCompany
+			locList = favCompany.get_locations()
+			return render(request, 'home.html', {'user_name':user.userName, 'user':user, 'locations':locList})
 	else:
 		return render(request, 'login.html')
 

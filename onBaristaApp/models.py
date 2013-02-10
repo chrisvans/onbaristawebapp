@@ -9,6 +9,8 @@ class Company(models.Model):
 	companyContact = models.CharField(max_length=200)
 	def __unicode__(self):
 		return self.companyName
+	def get_locations(self):
+		return companyLocation.objects.filter(companyID = self)
 
 class companyLocation(models.Model):
 	companyID = models.ForeignKey(Company)
@@ -48,7 +50,7 @@ class User(models.Model):
 	lastName = models.CharField(max_length=30)
 	favCompany = models.ForeignKey(Company)
 	favBarista = models.IntegerField() #???? this might not work -- since it's possibly not "foreign"
-	
+
 	def __unicode__(self):
 		personDesc = self.userType + ": " + self.firstName + " " + self.lastName
 		return personDesc

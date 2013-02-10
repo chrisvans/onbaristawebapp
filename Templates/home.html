@@ -1,3 +1,8 @@
-Youg ot past the login page!
+{% extends "base.html" %}
 
-{{user_name}}
+{% block contents %}
+	{% for location in locations %}
+		<span>{{ location }}</span><br>
+	{% endfor %}
+	
+{% endblock %}
