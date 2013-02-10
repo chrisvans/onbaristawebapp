@@ -3,7 +3,7 @@
 {% block contents %}
 	{% for location in locations %}
 		<div class="hero-unit">
-			<span>{{ location }}</span><br>
+			<span><strong>{{ location }}</strong></span><br>
 			<ul class="nav nav-list">
 			{% if location.checkins %}
 				{% for checkin in location.checkins %}

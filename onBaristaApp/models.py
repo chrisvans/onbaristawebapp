@@ -52,8 +52,8 @@ class User(models.Model):
 								default='Consumer')
 	firstName = models.CharField(max_length=30)
 	lastName = models.CharField(max_length=30)
-	favCompany = models.ForeignKey(Company)
-	favBarista = models.IntegerField() #???? this might not work -- since it's possibly not "foreign"
+	favCompany = models.ForeignKey(Company, null=True, blank=True)
+	favBaristaObj = models.ForeignKey('self', null=True, blank=True)
 
 	def __unicode__(self):
 		personDesc = self.userType + ": " + self.firstName + " " + self.lastName
@@ -65,8 +65,8 @@ class User(models.Model):
 class checkIn(models.Model):
 	barista = models.ForeignKey(User)
 	location = models.ForeignKey(companyLocation)
-	inTime = models.DateField()
-	outTime = models.DateField()
+	inTime = models.DateTimeField()
+	outTime = models.DateTimeField()
 	def __unicode__(self):
 		checkinDesc = self.barista.showUser() + " at " + unicode(self.inTime)
 		return checkinDesc

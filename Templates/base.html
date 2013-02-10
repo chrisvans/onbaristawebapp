@@ -47,7 +47,7 @@
   					<ul class="nav">
   						<li><a href="/onBaristaApp/">Home</a></li>
   						<li><a href="{% url 'onBaristaApp:baristas' %}">Baristas</a></li>
-  						<li><a href="#">Manage Favs</a></li>
+  						<li><a href="{% url 'onBaristaApp:favorites' %}">Manage Favs</a></li>
   					</ul>
   				</div>
   			</div>
@@ -58,7 +58,11 @@
   			<div class="span3">
   				<div class="well sidebar-nav">
   					<ul class="nav nav-list">
+  						{% if user.favCompany %}
   						<li class="nav-header">{{user.favCompany.companyName}}</li>
+  						{% else %}
+  						<li class="nav-header">Click Manage Favs to add a company</li>
+  						{% endif %}
   					</ul>
   				</div>
   			</div>

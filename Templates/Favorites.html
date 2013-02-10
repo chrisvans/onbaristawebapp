@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% load url from future %}
+
+{% block contents %}
+	{% if message %}
+	<div class="alert">
+		<button type="button" class="close" data-dismiss="alert alert-success">&times;</button>
+		<strong>Hey!</strong> {{message}}
+	</div>
+	{% endif %}
+	<div class="hero-unit">
+		<form class="" action="{% url 'onBaristaApp:updateFavs' %}" method="post">
+		{% csrf_token %}
+			<div class='control-group'>
+				<label class='control-label'>Favorite Company:</label>
+				<div class='controls'>
+					<input type="text" id="inputCompany" name='company' placeholder="Company" {% if user.favCompany %}value={{user.favCompany}} {% endif %}>
+				</div>
+			</div>
+			<div class='control-group'>
+				<label class='control-label'>Favorite Barista:</label>
+				<div class='controls'>
+					<input type="text" id="inputBarista" name='barista' placeholder="Barista" {% if user.favBaristaObj %}value = {{user.favBaristaObj}} {% endif %}>
+				</div>
+			</div>
+			
+			<button class="btn" type="submit">Update Favorites!</button>
+		</form>
+	</div>
+{% endblock %}

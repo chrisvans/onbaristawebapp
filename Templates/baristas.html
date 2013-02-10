@@ -2,8 +2,14 @@
 {% load url from future %}
 
 {% block contents %}
-{% if message %}<p><strong>{{message}}</strong></p>{% endif %}
+{% if message %}
+<div class="alert">
+	<button type="button" class="close" data-dismiss="alert alert-success">&times;</button>
+	<strong>Hey!</strong> {{message}}
+</div>
+{% endif %}
 	{% if user.userType == 'Barista' %}
+		{% if locations %}
 		{% for location in locations %}
 			<div class="hero-unit">
 				<span>{{ location }}</span><br>
@@ -14,6 +20,11 @@
 				</form>
 			</div>
 		{% endfor %}
+		{% else %}
+			<div class="hero-unit">
+				<span> Please select a company on the Manage Favs page.</span>
+			</div>
+		{% endif %}
 	{% else %}
 		<div class="hero-unit">
 			<form class="form-signin" action="{% url 'onBaristaApp:mark_as_barista' %}" method="post">

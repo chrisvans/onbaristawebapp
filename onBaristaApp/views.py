@@ -20,18 +20,22 @@ def login(request):
 		else:
 			request.session['username'] = user.userName
 			request.session['user'] = user
-			favCompany = user.favCompany
-			locList = favCompany.get_locations()
-			for location in locList:
-				location.checkins = location.get_checkins()
+			locList=''
+			if user.favCompany:
+				favCompany = user.favCompany
+				locList = favCompany.get_locations()
+				for location in locList:
+					location.checkins = location.get_checkins()
 			return render(request, 'home.html', {'user_name':user.userName, 'user':user, 'locations':locList})
 	elif 'username' in request.session:
 		print "username in session is not empty?"
 		user = request.session['user']
-		favCompany = user.favCompany
-		locList = favCompany.get_locations()
-		for location in locList:
-			location.checkins = location.get_checkins()
+		locList=''
+		if user.favCompany:
+			favCompany = user.favCompany
+			locList = favCompany.get_locations()
+			for location in locList:
+				location.checkins = location.get_checkins()
 		return render(request, 'home.html', {'user_name':user.userName, 'user':user, 'locations':locList})
 	else:
 		print "in else"
@@ -62,11 +66,21 @@ def mark_as_barista(request):
 
 def baristas(request, message =''):
 	user = request.session['user']
-	favCompany = user.favCompany
-	locList = favCompany.get_locations()
+	locList= ''
+	if user.favCompany:
+		favCompany = user.favCompany
+		locList = favCompany.get_locations()
 	return render(request, 'baristas.html', {'user':user, 'locations':locList, 'message':message})
 
+def favorites(request, message=''):
+	return render(request, 'Favorites.html', {'user':request.session['user'], 'message':message})
+
+
+def update_favs(request):
+	return favorites(request, "Your favorites have been updated")
+
 def logout(request):
-	print "logging out"
-	del request.session['username']
+	if ('username' in request.session) or ('user' in request.session):
+		del request.session['username']
+		del request.session['user']
 	return render(request, 'login.html')
