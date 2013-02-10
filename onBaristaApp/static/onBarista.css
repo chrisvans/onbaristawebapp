@@ -1,0 +1,12 @@
+.autoComplete{
+
+	position: relative;
+	left:2px; 
+	top: -2px; 
+	width:320px; 
+	display:none; 
+}
+
+.ACResult:hover{
+	background-color: black;
+}
