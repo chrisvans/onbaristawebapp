@@ -3,9 +3,9 @@ from django.http import HttpResponse, Http404, HttpResponseRedirect
 from django.template import Context, loader
 from django.shortcuts import render, get_object_or_404
 from django.core.urlresolvers import reverse
-from onBaristaApp.models import User, UserManager, checkIn, companyLocation, Company
+from onBaristaApp.models import User, checkIn, companyLocation, Company
 from django.utils import timezone
-from django.contrib.auth import authenticate
+from django.contrib.auth import authenticate, login, logout
 # from onBaristaApp.models import UserProfile
 
 
@@ -18,22 +18,24 @@ def login_view(request):
 		if user is not None:
 			if user.is_active:
 				login(request, user)
+				request.session['user'] = user
 				locList=''
 				isFavBarCheckedIn = False
 				checkInObj = ''
-				if user.favCompany:
-					favCompany = user.favCompany
+				userdetails = user.get_profile()
+				if userdetails.favCompany:
+					favCompany = userdetails.favCompany
 					locList = favCompany.get_locations()
 					for location in locList:
 						location.checkins = location.get_checkins()
-				if user.favBaristaObj:
-					favBarista =user.favBaristaObj
+				if userdetails.favBaristaObj:
+					favBarista = userdetails.favBaristaObj
 					checkInObj = checkIn.objects.filter(barista = favBarista)
 					if checkInObj:
 						isFavBarCheckedIn = True
 				return render(request, 'home.html', {'user_name':user.username, 'user':user, 'locations':locList,'checkIn':checkInObj, 'isCheckedIn': isFavBarCheckedIn})
 			else:
-				return render(reqiest, 'login.html', {'error_message':"Your account has been disabled!",})
+				return render(request, 'login.html', {'error_message':"Your account has been disabled!",})
 		else:
 			return render(request, 'login.html', {'error_message':"Username or password do not match our records.",})
 		#try:
@@ -48,8 +50,9 @@ def login_view(request):
 		print "username in session is not empty?"
 		user = request.session['user']
 		locList=''
-		if user.favCompany:
-			favCompany = user.favCompany
+		userdetails = user.get_profile()
+		if userdetails.favCompany:
+			favCompany = userdetails.favCompany
 			locList = favCompany.get_locations()
 			for location in locList:
 				location.checkins = location.get_checkins()
@@ -76,16 +79,18 @@ def checkInPost(request):
 def mark_as_barista(request):
 	print "in mark as barista"
 	user = request.session['user']
-	user.userType = "Barista"
-	user.save()
+	userdetails = user.get_profile()
+	userdetails.userType = "Barista"
+	userdetails.save()
 	return baristas(request, "thanks for being barista!")
 	#return HttpResponseRedirect(reverse('onBaristaApp:baristas', {'message':"thanks for being barista!",}))
 
 def baristas(request, message =''):
 	user = request.session['user']
 	locList= ''
-	if user.favCompany:
-		favCompany = user.favCompany
+	userdetails = user.get_profile()
+	if userdetails.favCompany:
+		favCompany = userdetails.favCompany
 		locList = favCompany.get_locations()
 	return render(request, 'baristas.html', {'user':user, 'locations':locList, 'message':message})
 
@@ -95,13 +100,14 @@ def favorites(request, message=''):
 
 def update_favs(request):
 	user = request.session['user']
+	userdetails = user.get_profile()
 	if request.POST['baristaID']:
 		barista = User.objects.get(pk=request.POST['baristaID'])
-		user.favBaristaObj = barista
+		userdetails.favBaristaObj = barista
 	if request.POST['companyID']:
 		company = Company.objects.get(pk=request.POST['companyID'])
-		user.favCompany = company
-	user.save()
+		userdetails.favCompany = company
+	userdetails.save()
 	request.session['user'] = user
 	return favorites(request, "Your favorites have been updated")
 
@@ -118,8 +124,8 @@ def logout_view(request):
 	logout(request)
 	#if ('username' in request.session):
 	#	del request.session['username']
-	#if ('user' in request.session):
-	#	del request.session['user']
+	if ('user' in request.session):
+		del request.session['user']
 	return render(request, 'login.html')
 
 def register(request):
@@ -138,12 +144,12 @@ def register(request):
 
 		except (KeyError,User.DoesNotExist):
 			# Add in e-mail authentication!
-			newuser = User.objects.create_user(username, email, password)
-			newuser.first_name = first_name
-			newuser.last_name = last_name
-			newuser.save()
-			authenticate(username, password)
-			login(request, newuser)
+			user = User.objects.create_user(username, email, password)
+			user.first_name = first_name
+			user.last_name = last_name
+			user.save()
+			user = authenticate(username=username, password=password)
+			login(request, user)
 
 			return render(request, 'register.html', {'success_message':"You successfully registered!",})
 		else:

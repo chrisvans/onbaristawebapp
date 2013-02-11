@@ -1,5 +1,5 @@
 from django.db import models
-from django.contrib.auth.models import User, UserManager
+from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.contrib.auth import authenticate
 import datetime
@@ -76,25 +76,26 @@ class companyLocation(models.Model):
 # class models.UserManager
 # Comes with create_user(username, email=None, password=None) and make_random_password(length=10)
 
-#class UserProfile(models.Model):
+class UserProfile(models.Model):
+	user = models.OneToOneField(User)
 	# Use 'User'.get_profile().userType to get the userType, for example
-#	user_type_choices = (
-#		('Barista', 'Barista'),
-#		('Consumer', 'Consumer'),
-#		)
-#	userType = models.CharField(max_length=10, choices=user_type_choices, default='Consumer')
-#	favCompany = models.ForeignKey(Company, null=True, blank=True)
-#	favBaristaObj = models.ForeignKey('self', null=True, blank=True)
-#	def __unicode__(self):
-#		return self.userType + ": " + self.first_name + " " + self.last_name
-#	def showUser(self):
-#		return self.userType + ": " + self.first_name + " " + self.last_name
+	user_type_choices = (
+		('Barista', 'Barista'),
+		('Consumer', 'Consumer'),
+		)
+	userType = models.CharField(max_length=10, choices=user_type_choices, default='Consumer')
+	favCompany = models.ForeignKey(Company, null=True, blank=True)
+	favBaristaObj = models.ForeignKey('self', null=True, blank=True)
+	def __unicode__(self):
+		return self.userType + ": " + self.first_name + " " + self.last_name
+	def showUser(self):
+		return self.userType + ": " + self.first_name + " " + self.last_name
 
-#def create_user_profile(sender, instance, created, **kwargs):
-#    if created:
-#        UserProfile.objects.create(user=instance)
+def create_user_profile(sender, instance, created, **kwargs):
+    if created:
+        UserProfile.objects.create(user=instance)
 
-#post_save.connect(create_user_profile, sender=User)
+post_save.connect(create_user_profile, sender=User)
 
 
 class checkIn(models.Model):

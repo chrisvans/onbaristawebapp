@@ -103,7 +103,7 @@ ROOT_URLCONF = 'onbarista.urls'
 # Python dotted path to the WSGI application used by Django's runserver.
 WSGI_APPLICATION = 'onbarista.wsgi.application'
 
-BASE_DIR= '/Users/Gigglande/Desktop/barista app/onbaristawebapp'
+BASE_DIR= '/Users/Chris VanSchyndel/Desktop/onbaristawebapp'
 
 TEMPLATE_DIRS = (
     os.path.join(BASE_DIR, 'Templates'),
@@ -127,7 +127,7 @@ INSTALLED_APPS = (
 )
 
 # Adds in custom profile for Django's User class model
-AUTH_PROFILE_MODULE = 'onbaristaApp.UserProfile'
+AUTH_PROFILE_MODULE = 'onBaristaApp.UserProfile'
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to
