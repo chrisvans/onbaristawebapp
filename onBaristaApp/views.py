@@ -33,7 +33,7 @@ def login_view(request):
 						isFavBarCheckedIn = True
 				return render(request, 'home.html', {'user_name':user.username, 'user':user, 'locations':locList,'checkIn':checkInObj, 'isCheckedIn': isFavBarCheckedIn})
 			else:
-				return render(reqiest, 'login.html', {'error_message':"Your account has been disabled!",})
+				return render(request, 'login.html', {'error_message':"Your account has been disabled!",})
 		else:
 			return render(request, 'login.html', {'error_message':"Username or password do not match our records.",})
 		#try:
