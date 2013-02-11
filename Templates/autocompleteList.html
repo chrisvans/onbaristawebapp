@@ -1,0 +1,11 @@
+{% extends "autoCompleteWrapper.html" %}
+{% load url from future %}
+{% block contents %}
+{% if results %}
+	{% for result in results%}
+	<pre class= "ACResult" id="{{result.pk}}" resultName = "{{result}}">{{result}}</pre>
+	{% endfor %}
+{% else %}
+	<pre> No results found</pre>
+{% endif %}
+{% endblock %}

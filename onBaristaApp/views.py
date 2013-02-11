@@ -113,12 +113,17 @@ def update_favs(request):
 
 def baristaList(request):
 	print request.POST['searchString']
+<<<<<<< HEAD
 	baristas = User.objects.filter(userType='Barista', first_name__startswith=request.POST['searchString'])
 	return render(request, 'baristaList.html', {'baristas':baristas})
+=======
+	baristas = User.objects.filter(userType='Barista', firstName__startswith=request.POST['searchString'])
+	return render(request, 'autocompleteList.html', {'results':baristas})
+>>>>>>> 86145be5b51c13abc8010f0e15de3c89fa9daa2a
 
 def companyList(request):
 	companies = Company.objects.filter(companyName__startswith = request.POST['searchString'])
-	return render(request, 'companyList.html', {'companies':companies})
+	return render(request, 'autocompleteList.html', {'results':companies})
 
 def logout_view(request):
 	logout(request)
