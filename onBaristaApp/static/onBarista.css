@@ -1,12 +1,55 @@
 .autoComplete{
 
 	position: relative;
-	left:2px; 
-	top: -2px; 
-	width:320px; 
+	left:-2px; 
+	top: -10px;
+	width:250px; 
+	padding: 2px 2px 2px 2px;
 	display:none; 
 }
+pre.ACResult{
+	margin: 2px 2px 2px 2px;
+	padding: 5px 5px 5px 5px;
+}
 
+.ACResult{
+	-webkit-transition:background-color .1s linear;
+	-moz-transition:background-color .1s linear;
+	-o-transition:background-color .1s linear;
+}
 .ACResult:hover{
-	background-color: black;
+	background-color: #B3B3B3;
+	margin: 2px 2px 2px 2px;
+}
+
+.modalOB {
+  position: relative;
+  z-index: 1050;
+  /*margin-left: -280px;*/
+  background-color: #ffffff;
+  border: 1px solid #999;
+  border: 1px solid rgba(0, 0, 0, 0.3);
+  *border: 1px solid #999;
+  -webkit-border-radius: 6px;
+     -moz-border-radius: 6px;
+          border-radius: 6px;
+  outline: none;
+  -webkit-box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3);
+     -moz-box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3);
+          box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3);
+  -webkit-background-clip: padding-box;
+     -moz-background-clip: padding-box;
+          background-clip: padding-box;
+}
+
+.modalOB.fade {
+  top: -25%;
+  -webkit-transition: opacity 0.3s linear, top 0.3s ease-out;
+     -moz-transition: opacity 0.3s linear, top 0.3s ease-out;
+       -o-transition: opacity 0.3s linear, top 0.3s ease-out;
+          transition: opacity 0.3s linear, top 0.3s ease-out;
+}
+
+.modalOB.fade.in {
+  top: 10%;
 }
