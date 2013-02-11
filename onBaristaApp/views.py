@@ -98,11 +98,11 @@ def update_favs(request):
 def baristaList(request):
 	print request.POST['searchString']
 	baristas = User.objects.filter(userType='Barista', firstName__startswith=request.POST['searchString'])
-	return render(request, 'baristaList.html', {'baristas':baristas})
+	return render(request, 'autocompleteList.html', {'results':baristas})
 
 def companyList(request):
 	companies = Company.objects.filter(companyName__startswith = request.POST['searchString'])
-	return render(request, 'companyList.html', {'companies':companies})
+	return render(request, 'autocompleteList.html', {'results':companies})
 
 def logout(request):
 	if ('username' in request.session):
