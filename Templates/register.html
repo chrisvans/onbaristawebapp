@@ -3,7 +3,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>Sign in onBarista</title>
+    <title>Register to onBarista</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">
@@ -56,23 +56,38 @@
 
     <div class="container">
 
-      <form class="form-signin" action="{% url 'onBaristaApp:login_view' %}" method="post">
+      <form class="form-signin" action="{% url 'onBaristaApp:register' %}" method="post">
         {% csrf_token %}
-        <h2 class="form-signin-heading">Please sign in</h2>
-        <input type="text" name="username" class="input-block-level" placeholder="Username">
-        <input type="password" name="password" class="input-block-level" placeholder="Password">
+        <h2 class="form-signin-heading">Sign up!</h2>
+        <input type="text" name="username" class="input-block-level" placeholder="*Username">
+        <input type="password" name="password" class="input-block-level" placeholder="*Password">
+        <input type="text" name="email" class="input-block-level" placeholder="*Email Address">
+        <input type="text" name="first_name" class="input-block-level" placeholder="First Name">
+        <input type="text" name="last_name" class="input-block-level" placeholder="Last Name">
+        <p class="text-success"> Check if you are a barista.<p>
         <label class="checkbox">
-          <input type="checkbox" value="remember-me"> Remember me
+        <input type="checkbox" name="is_barista" value="1" onclick="showBox(this)"/>
+        <input type="text" name="barista_location" id="fb" placeholder="Store Location" style="display:none"/>
+        <script type="text/javascript"> 
+        function showBox(elem){
+        document.getElementById("fb").style.display=elem.checked?"block":"none";
+        }
+        </script>
         </label>
-        <button class="btn btn-large btn-primary" type="submit">Sign in</button>
+        <button class="btn btn-large btn-primary" type="submit">Register</button>
         {% if error_message %}
           <p>
           <div class="alert alert-error">
             <button type="button" class="close" data-dismiss="alert">&times;</button>
-            <strong>Hey!</strong> {{error_message}}</div>
+            <strong>Hey!</strong> {{ error_message }}</div>
+        {% endif %}
+        {% if success_message %}
+          <p>
+          <div class="alert alert-success">
+            <button type="button" class="close" data-dismiss="alert">&times;</button>
+            {{ success_message }}</div>
         {% endif %}
       </form>
-      <form class="form-signin" action="{% url 'onBaristaApp:register' %}"><input class="btn btn-large btn-primary" type="submit" value="Register"><p><p>Don't have a username?  Register!</form>
 
     </div> <!-- /container -->
 
