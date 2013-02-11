@@ -1,4 +1,7 @@
 from django.db import models
+from django.contrib.auth.models import User, UserManager
+from django.db.models.signals import post_save
+from django.contrib.auth import authenticate
 import datetime
 
 # Create your models here.
@@ -40,27 +43,59 @@ class companyLocation(models.Model):
 	def get_checkins(self):
 		return checkIn.objects.filter(location = self)
 
-class User(models.Model):
-	userName = models.CharField(max_length=20)
-	password = models.CharField(max_length=20)
-	user_type_choices = (
-		('Barista', 'Barista'),
-		('Consumer', 'Consumer'),
-	) 
-	userType = models.CharField(max_length=10,
-								choices=user_type_choices,
-								default='Consumer')
-	firstName = models.CharField(max_length=30)
-	lastName = models.CharField(max_length=30)
-	favCompany = models.ForeignKey(Company, null=True, blank=True)
-	favBaristaObj = models.ForeignKey('self', null=True, blank=True)
+## Anthony's previous User Model
+#class User(models.Model):
+#	userName = models.CharField(max_length=20)
+#	password = models.CharField(max_length=20)
+#	user_type_choices = (
+#		('Barista', 'Barista'),
+#		('Consumer', 'Consumer'),
+#	) 
+#	userType = models.CharField(max_length=10,
+#								choices=user_type_choices,
+#								default='Consumer')
+#	firstName = models.CharField(max_length=30)
+#	lastName = models.CharField(max_length=30)
+#	favCompany = models.ForeignKey(Company, null=True, blank=True)
+#	favBaristaObj = models.ForeignKey('self', null=True, blank=True)
+#
+#	def __unicode__(self):
+#		personDesc = self.userType + ": " + self.firstName + " " + self.lastName
+#		return personDesc
+#	def showUser(self):
+#		personDesc = self.userType + ": " + self.firstName + " " + self.lastName
+#		return personDesc
 
-	def __unicode__(self):
-		personDesc = self.userType + ": " + self.firstName + " " + self.lastName
-		return personDesc
-	def showUser(self):
-		personDesc = self.userType + ": " + self.firstName + " " + self.lastName
-		return personDesc
+# Django User model
+# class models.User
+# Comes with username, password, first_name, last_name, 
+# last_login, and date_joined - as well as check_password(raw_password) and set_password(raw_password)
+# Also has group permissions - Will want to use these for Barista-Consumer relationship
+
+# Django UserManager model
+# class models.UserManager
+# Comes with create_user(username, email=None, password=None) and make_random_password(length=10)
+
+#class UserProfile(models.Model):
+	# Use 'User'.get_profile().userType to get the userType, for example
+#	user_type_choices = (
+#		('Barista', 'Barista'),
+#		('Consumer', 'Consumer'),
+#		)
+#	userType = models.CharField(max_length=10, choices=user_type_choices, default='Consumer')
+#	favCompany = models.ForeignKey(Company, null=True, blank=True)
+#	favBaristaObj = models.ForeignKey('self', null=True, blank=True)
+#	def __unicode__(self):
+#		return self.userType + ": " + self.first_name + " " + self.last_name
+#	def showUser(self):
+#		return self.userType + ": " + self.first_name + " " + self.last_name
+
+#def create_user_profile(sender, instance, created, **kwargs):
+#    if created:
+#        UserProfile.objects.create(user=instance)
+
+#post_save.connect(create_user_profile, sender=User)
+
 
 class checkIn(models.Model):
 	barista = models.ForeignKey(User)
@@ -70,3 +105,4 @@ class checkIn(models.Model):
 	def __unicode__(self):
 		checkinDesc = self.barista.showUser() + " at " + unicode(self.inTime)
 		return checkinDesc
+

@@ -3,37 +3,47 @@ from django.http import HttpResponse, Http404, HttpResponseRedirect
 from django.template import Context, loader
 from django.shortcuts import render, get_object_or_404
 from django.core.urlresolvers import reverse
-from onBaristaApp.models import User, checkIn, companyLocation, Company
+from onBaristaApp.models import User, UserManager, checkIn, companyLocation, Company
 from django.utils import timezone
+from django.contrib.auth import authenticate
+# from onBaristaApp.models import UserProfile
 
 
-def login(request):
+def login_view(request):
 	if request.method == 'POST':
 
-		username = request.POST['username']
-		password = request.POST['password']
-		try:
-			user = User.objects.get(userName = username, password = password)
-
-		except (KeyError,User.DoesNotExist):
-			return render(request, 'login.html', {'error_message':"user name or password do not match our records.",})
+		#username = request.POST['username']
+		#password = request.POST['password']
+		user = authenticate(username=request.POST['username'], password=request.POST['password'])
+		if user is not None:
+			if user.is_active:
+				login(request, user)
+				locList=''
+				isFavBarCheckedIn = False
+				checkInObj = ''
+				if user.favCompany:
+					favCompany = user.favCompany
+					locList = favCompany.get_locations()
+					for location in locList:
+						location.checkins = location.get_checkins()
+				if user.favBaristaObj:
+					favBarista =user.favBaristaObj
+					checkInObj = checkIn.objects.filter(barista = favBarista)
+					if checkInObj:
+						isFavBarCheckedIn = True
+				return render(request, 'home.html', {'user_name':user.username, 'user':user, 'locations':locList,'checkIn':checkInObj, 'isCheckedIn': isFavBarCheckedIn})
+			else:
+				return render(reqiest, 'login.html', {'error_message':"Your account has been disabled!",})
 		else:
-			request.session['username'] = user.userName
-			request.session['user'] = user
-			locList=''
-			isFavBarCheckedIn = False
-			checkInObj = ''
-			if user.favCompany:
-				favCompany = user.favCompany
-				locList = favCompany.get_locations()
-				for location in locList:
-					location.checkins = location.get_checkins()
-			if user.favBaristaObj:
-				favBarista =user.favBaristaObj
-				checkInObj = checkIn.objects.filter(barista = favBarista)
-				if checkInObj:
-					isFavBarCheckedIn = True
-			return render(request, 'home.html', {'user_name':user.userName, 'user':user, 'locations':locList,'checkIn':checkInObj, 'isCheckedIn': isFavBarCheckedIn})
+			return render(request, 'login.html', {'error_message':"Username or password do not match our records.",})
+		#try:
+		#	user = User.objects.get(username = username, password = password)
+
+		#except (KeyError,User.DoesNotExist):
+		#else:	
+			#request.session['username'] = user.username
+			#request.session['user'] = user
+			
 	elif 'username' in request.session:
 		print "username in session is not empty?"
 		user = request.session['user']
@@ -43,7 +53,7 @@ def login(request):
 			locList = favCompany.get_locations()
 			for location in locList:
 				location.checkins = location.get_checkins()
-		return render(request, 'home.html', {'user_name':user.userName, 'user':user, 'locations':locList})
+		return render(request, 'home.html', {'user_name':user.username, 'user':user, 'locations':locList})
 	else:
 		print "in else"
 		return render(request, 'login.html')
@@ -61,7 +71,7 @@ def checkInPost(request):
 	ci.inTime = currTime
 	ci.outTime = currTime
 	ci.save()
-	return HttpResponseRedirect(reverse('onBaristaApp:login'))
+	return HttpResponseRedirect(reverse('onBaristaApp:login_view'))
 
 def mark_as_barista(request):
 	print "in mark as barista"
@@ -97,16 +107,46 @@ def update_favs(request):
 
 def baristaList(request):
 	print request.POST['searchString']
-	baristas = User.objects.filter(userType='Barista', firstName__startswith=request.POST['searchString'])
+	baristas = User.objects.filter(userType='Barista', first_name__startswith=request.POST['searchString'])
 	return render(request, 'baristaList.html', {'baristas':baristas})
 
 def companyList(request):
 	companies = Company.objects.filter(companyName__startswith = request.POST['searchString'])
 	return render(request, 'companyList.html', {'companies':companies})
 
-def logout(request):
-	if ('username' in request.session):
-		del request.session['username']
-	if ('user' in request.session):
-		del request.session['user']
+def logout_view(request):
+	logout(request)
+	#if ('username' in request.session):
+	#	del request.session['username']
+	#if ('user' in request.session):
+	#	del request.session['user']
 	return render(request, 'login.html')
+
+def register(request):
+	if request.method == 'POST':
+		username = request.POST['username']
+		password = request.POST['password']
+		email = request.POST['email']
+		first_name = request.POST['first_name']
+		last_name = request.POST['last_name']
+		barista_location = request.POST['barista_location']
+		# UserProfile pass incomplete, excess information unused at this point.
+		if username == '' or password == '' or email == '':
+			return render(request, 'register.html', {'error_message':"A required field has been left empty!",})
+		try:
+			user = User.objects.get(username = username)
+
+		except (KeyError,User.DoesNotExist):
+			# Add in e-mail authentication!
+			newuser = User.objects.create_user(username, email, password)
+			newuser.first_name = first_name
+			newuser.last_name = last_name
+			newuser.save()
+			authenticate(username, password)
+			login(request, newuser)
+
+			return render(request, 'register.html', {'success_message':"You successfully registered!",})
+		else:
+			return render(request, 'register.html', {'error_message':"Username already exists!",})
+	else:
+		return render(request, 'register.html')
