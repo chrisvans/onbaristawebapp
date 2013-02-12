@@ -64,16 +64,6 @@
         <input type="text" name="email" class="input-block-level" placeholder="*Email Address">
         <input type="text" name="first_name" class="input-block-level" placeholder="First Name">
         <input type="text" name="last_name" class="input-block-level" placeholder="Last Name">
-        <p class="text-success"> Check if you are a barista.<p>
-        <label class="checkbox">
-        <input type="checkbox" name="is_barista" value="1" onclick="showBox(this)"/>
-        <input type="text" name="barista_location" id="fb" placeholder="Store Location" style="display:none"/>
-        <script type="text/javascript"> 
-        function showBox(elem){
-        document.getElementById("fb").style.display=elem.checked?"block":"none";
-        }
-        </script>
-        </label>
         <button class="btn btn-large btn-primary" type="submit">Register</button>
         {% if error_message %}
           <p>

@@ -78,10 +78,14 @@
 
     <div class='navbar navbar-inverse navbar-fixed-bottom'>
       <div class="navbar-inner" style="color: #999">
-        {% if isCheckedIn %}
-        {{user.favBaristaObj}} is checked in at {{checkIn}}
+        {% if user.favBaristaObj %}
+         {% if isCheckedIn %}
+         {{user.favBaristaObj}} is checked in at {{checkIn}}
+         {% else %}
+         {{user.favBaristaObj}} is not checked in.
+         {% endif %}
         {% else %}
-        {{user.favBaristaObj}} is not checked in.
+        You have not selected a favorite barista!  <a href="{% url 'onBaristaApp:favorites' %}">Manage Favorites</a>
         {% endif %}
       </div>
     </div>

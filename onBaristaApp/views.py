@@ -10,18 +10,24 @@ from django.contrib.auth import authenticate, login, logout
 
 
 def login_view(request):
+	# If you're at the login page and have submitted information, then..
 	if request.method == 'POST':
-
-		#username = request.POST['username']
-		#password = request.POST['password']
+		# Django's user authentication via user submission into form
 		user = authenticate(username=request.POST['username'], password=request.POST['password'])
+		# authenticate() returns None if the passed arguments are incorrect,
+		# otherwise it returns the proper user object associated with them.
 		if user is not None:
 			if user.is_active:
+				# Login passing in the user object gained from authenticate()
 				login(request, user)
+				# Pass the user into the session dictionary so we can keep track of the logged in user.
+				# When the session dictionary is indexed with keyword 'user', returns this user object.
 				request.session['user'] = user
+				# Initialize variables, only populate them if the if conditions allow it.
 				locList=''
 				isFavBarCheckedIn = False
 				checkInObj = ''
+				# Populate database table with UserProfile class attributes.  Store object as userdetails.
 				userdetails = user.get_profile()
 				if userdetails.favCompany:
 					favCompany = userdetails.favCompany
@@ -33,21 +39,18 @@ def login_view(request):
 					checkInObj = checkIn.objects.filter(barista = favBarista)
 					if checkInObj:
 						isFavBarCheckedIn = True
+				# After successful login, return to home, populate dictionary.
 				return render(request, 'home.html', {'user_name':user.username, 'user':userdetails, 'locations':locList,'checkIn':checkInObj, 'isCheckedIn': isFavBarCheckedIn})
 			else:
+				# If user.is_active returns False.  Boolean that can be set manually.
 				return render(request, 'login.html', {'error_message':"Your account has been disabled!",})
 		else:
+			# If authentication() returns None (fails).
 			return render(request, 'login.html', {'error_message':"Username or password do not match our records.",})
-		#try:
-		#	user = User.objects.get(username = username, password = password)
-
-		#except (KeyError,User.DoesNotExist):
-		#else:	
-			#request.session['username'] = user.username
-			#request.session['user'] = user
 			
 	elif 'user' in request.session:
-		print "username in session is not empty?"
+		# If the session dictionary has a 'user' keyword, the only means by which this happens is a successful login.
+		# Update appropriate fields and sends user to the homepage instead of login.
 		user = request.session['user']
 		locList=''
 		userdetails = user.get_profile()
@@ -58,7 +61,7 @@ def login_view(request):
 				location.checkins = location.get_checkins()
 		return render(request, 'home.html', {'user_name':user.username, 'user':userdetails, 'locations':locList})
 	else:
-		print "in else"
+		# If no information has been submitted, and there is no active 'user' in session (login).
 		return render(request, 'login.html')
 
 def home(request):
@@ -76,13 +79,28 @@ def checkInPost(request):
 	ci.save()
 	return HttpResponseRedirect(reverse('onBaristaApp:login_view'))
 
+#def checkOutPost(request):
+#	location = companyLocation.objects.get(pk=request.POST['location'])
+#	user = request.session['user']
+#	currTime = timezone.now()
+#	co = checkOut()
+#	co.barista = user
+#	co.location = location
+#	co.outTime = currTime
+#	co.save()
+#	location.checkout(user)
+#	return HttpResponseRedirect(reverse('onBaristaApp:login_view'))
+
 def mark_as_barista(request):
-	print "in mark as barista"
 	user = request.session['user']
 	userdetails = user.get_profile()
-	userdetails.userType = "Barista"
-	userdetails.save()
-	return baristas(request, "thanks for being barista!")
+	if userdetails.userType == "Barista":
+		return baristas(request, "You're already a barista!")
+	else:
+		userdetails.userType = "Barista"
+		userdetails.save()
+		user.save()
+		return baristas(request, "Now registered as a barista!")
 	#return HttpResponseRedirect(reverse('onBaristaApp:baristas', {'message':"thanks for being barista!",}))
 
 def baristas(request, message =''):
@@ -114,7 +132,8 @@ def update_favs(request):
 	return favorites(request, "Your favorites have been updated")
 
 def baristaList(request):
-	baristas = User.objects.filter(userType='Barista', firstName__startswith=request.POST['searchString'])
+	userdetails = user.get_profile()
+	baristas = userdetails.objects.filter(userType='Barista', firstName__startswith=request.POST['searchString'])
 	return render(request, 'autocompleteList.html', {'results':baristas})
 
 def companyList(request):
@@ -136,8 +155,6 @@ def register(request):
 		email = request.POST['email']
 		first_name = request.POST['first_name']
 		last_name = request.POST['last_name']
-		barista_location = request.POST['barista_location']
-		# UserProfile pass incomplete, excess information unused at this point.
 		if username == '' or password == '' or email == '':
 			return render(request, 'register.html', {'error_message':"A required field has been left empty!",})
 		try:
@@ -152,7 +169,7 @@ def register(request):
 			user = authenticate(username=username, password=password)
 			login(request, user)
 
-			return render(request, 'register.html', {'success_message':"You successfully registered!",})
+			return render(request, 'login.html', {'success_message':"You successfully registered!  Now log in!",})
 		else:
 			return render(request, 'register.html', {'error_message':"Username already exists!",})
 	else:

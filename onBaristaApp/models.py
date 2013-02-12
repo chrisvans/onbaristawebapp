@@ -23,7 +23,7 @@ class companyLocation(models.Model):
 	city = models.CharField(max_length= 20)
 
 	state_choices = (
-			('Ma', 'Massachusetts'),
+			('MA', 'Massachusetts'),
 			('CT', 'Connecticut'),
 			('NH', 'New Hampshire'),
 			('VT', 'Vermont'),
@@ -42,6 +42,9 @@ class companyLocation(models.Model):
 		return self.address_string()
 	def get_checkins(self):
 		return checkIn.objects.filter(location = self)
+	#def checkout(self, barista):
+	#	print self.checkins
+	#	del self.checkins[barista]
 
 ## Anthony's previous User Model
 #class User(models.Model):
@@ -86,10 +89,10 @@ class UserProfile(models.Model):
 	userType = models.CharField(max_length=10, choices=user_type_choices, default='Consumer')
 	favCompany = models.ForeignKey(Company, null=True, blank=True)
 	favBaristaObj = models.ForeignKey('self', null=True, blank=True)
-	def __unicode__(self):
-		return self.userType + ": " + self.first_name + " " + self.last_name
-	def showUser(self):
-		return self.userType + ": " + self.first_name + " " + self.last_name
+	#def __unicode__(self):
+	#	return user.userType + ": " + user.first_name + " " + user.last_name
+	#def showUser(self):
+	#	return user.userType + ": " + user.first_name + " " + user.last_name
 
 def create_user_profile(sender, instance, created, **kwargs):
     if created:
@@ -104,6 +107,25 @@ class checkIn(models.Model):
 	inTime = models.DateTimeField()
 	outTime = models.DateTimeField()
 	def __unicode__(self):
-		checkinDesc = self.barista.showUser() + " at " + unicode(self.inTime)
+		#baristadetails = self.barista.get_profile()
+		#showUser = baristadetails.userType + ": " + self.barista.first_name + " " + self.barista.last_name
+		checkinDesc = showUser(self.barista) + " at " + unicode(self.inTime)
 		return checkinDesc
+
+#class checkOut(models.Model):
+#	barista = models.ForeignKey(User)
+#	location = models.ForeignKey(companyLocation)
+	#inTime = models.DateTimeField()
+#	outTime = models.DateTimeField()
+#	def __unicode__(self):
+#		checkoutDesc = showUser(self.barista) + " at " + unicode(self.outTime)
+#		return checkoutDesc
+
+# If we can find a way to make UserProfile reference the same corresponding 
+# User class, this could be a method within UserProfile.
+def showUser(Userobject):
+	user = Userobject
+	userdetails = Userobject.get_profile()
+	return userdetails.userType + ": " + user.first_name + " " + user.last_name
+
 
