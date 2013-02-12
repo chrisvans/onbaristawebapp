@@ -33,7 +33,7 @@ def login_view(request):
 					checkInObj = checkIn.objects.filter(barista = favBarista)
 					if checkInObj:
 						isFavBarCheckedIn = True
-				return render(request, 'home.html', {'user_name':user.username, 'user':user, 'locations':locList,'checkIn':checkInObj, 'isCheckedIn': isFavBarCheckedIn})
+				return render(request, 'home.html', {'user_name':user.username, 'user':userdetails, 'locations':locList,'checkIn':checkInObj, 'isCheckedIn': isFavBarCheckedIn})
 			else:
 				return render(request, 'login.html', {'error_message':"Your account has been disabled!",})
 		else:
@@ -46,7 +46,7 @@ def login_view(request):
 			#request.session['username'] = user.username
 			#request.session['user'] = user
 			
-	elif 'username' in request.session:
+	elif 'user' in request.session:
 		print "username in session is not empty?"
 		user = request.session['user']
 		locList=''
@@ -56,7 +56,7 @@ def login_view(request):
 			locList = favCompany.get_locations()
 			for location in locList:
 				location.checkins = location.get_checkins()
-		return render(request, 'home.html', {'user_name':user.username, 'user':user, 'locations':locList})
+		return render(request, 'home.html', {'user_name':user.username, 'user':userdetails, 'locations':locList})
 	else:
 		print "in else"
 		return render(request, 'login.html')
@@ -92,10 +92,12 @@ def baristas(request, message =''):
 	if userdetails.favCompany:
 		favCompany = userdetails.favCompany
 		locList = favCompany.get_locations()
-	return render(request, 'baristas.html', {'user':user, 'locations':locList, 'message':message})
+	return render(request, 'baristas.html', {'user':userdetails, 'locations':locList, 'message':message})
 
 def favorites(request, message=''):
-	return render(request, 'Favorites.html', {'user':request.session['user'], 'message':message})
+	user = request.session['user']
+	userdetails = user.get_profile()
+	return render(request, 'Favorites.html', {'user':userdetails, 'message':message})
 
 
 def update_favs(request):
@@ -112,14 +114,8 @@ def update_favs(request):
 	return favorites(request, "Your favorites have been updated")
 
 def baristaList(request):
-	print request.POST['searchString']
-<<<<<<< HEAD
-	baristas = User.objects.filter(userType='Barista', first_name__startswith=request.POST['searchString'])
-	return render(request, 'baristaList.html', {'baristas':baristas})
-=======
 	baristas = User.objects.filter(userType='Barista', firstName__startswith=request.POST['searchString'])
 	return render(request, 'autocompleteList.html', {'results':baristas})
->>>>>>> 86145be5b51c13abc8010f0e15de3c89fa9daa2a
 
 def companyList(request):
 	companies = Company.objects.filter(companyName__startswith = request.POST['searchString'])
