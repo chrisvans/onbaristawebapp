@@ -68,6 +68,7 @@ def home(request):
 	return render(request, 'home.html')
 
 def checkInPost(request):
+	print request.POST['location']
 	location = companyLocation.objects.get(pk=request.POST['location'])
 	user = request.session['user']
 	currTime = timezone.now()
