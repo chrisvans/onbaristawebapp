@@ -2,7 +2,7 @@
 {% load url from future %}
 {% block contents %}
 {% if baristas %}
-	{% for barista in baristas%}
+	{% for barista in baristas %}
 	<pre class= "ACResult" id="{{barista.pk}}" fullName = "{{barista.first_name}} {{barista.last_name}}">{{barista}}</pre>
 	{% endfor %}
 {% else %}

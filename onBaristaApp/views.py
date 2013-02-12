@@ -75,7 +75,7 @@ def checkInPost(request):
 	ci.barista = user
 	ci.location= location
 	ci.inTime = currTime
-	ci.outTime = currTime
+	#ci.outTime = currTime
 	ci.save()
 	return HttpResponseRedirect(reverse('onBaristaApp:login_view'))
 

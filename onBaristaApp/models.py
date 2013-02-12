@@ -105,7 +105,7 @@ class checkIn(models.Model):
 	barista = models.ForeignKey(User)
 	location = models.ForeignKey(companyLocation)
 	inTime = models.DateTimeField()
-	outTime = models.DateTimeField()
+	outTime = models.DateTimeField(null=True)
 	def __unicode__(self):
 		#baristadetails = self.barista.get_profile()
 		#showUser = baristadetails.userType + ": " + self.barista.first_name + " " + self.barista.last_name
