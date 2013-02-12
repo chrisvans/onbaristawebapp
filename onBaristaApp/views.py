@@ -6,7 +6,7 @@ from django.core.urlresolvers import reverse
 from onBaristaApp.models import User, checkIn, companyLocation, Company
 from django.utils import timezone
 from django.contrib.auth import authenticate, login, logout
-# from onBaristaApp.models import UserProfile
+from onBaristaApp.models import UserProfile
 
 
 def login_view(request):
@@ -132,9 +132,10 @@ def update_favs(request):
 	return favorites(request, "Your favorites have been updated")
 
 def baristaList(request):
-	userdetails = user.get_profile()
-	baristas = userdetails.objects.filter(userType='Barista', firstName__startswith=request.POST['searchString'])
-	return render(request, 'autocompleteList.html', {'results':baristas})
+	#userdetails = user.get_profile()
+	#baristas = userdetails.objects.filter(userType='Barista', firstName__startswith=request.POST['searchString'])
+	userdetailsList = UserProfile.objects.filter(userType='Barista')
+	return render(request, 'autocompleteList.html', {'results':userdetailsList})
 
 def companyList(request):
 	companies = Company.objects.filter(companyName__startswith = request.POST['searchString'])

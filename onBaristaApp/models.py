@@ -89,8 +89,8 @@ class UserProfile(models.Model):
 	userType = models.CharField(max_length=10, choices=user_type_choices, default='Consumer')
 	favCompany = models.ForeignKey(Company, null=True, blank=True)
 	favBaristaObj = models.ForeignKey('self', null=True, blank=True)
-	#def __unicode__(self):
-	#	return user.userType + ": " + user.first_name + " " + user.last_name
+	def __unicode__(self):
+		return self.userType + ": " + self.user.first_name + " " + self.user.last_name
 	#def showUser(self):
 	#	return user.userType + ": " + user.first_name + " " + user.last_name
 
