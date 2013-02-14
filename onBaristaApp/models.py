@@ -19,8 +19,8 @@ class Company(models.Model):
 class companyLocation(models.Model):
 	checkins = {}
 	companyID = models.ForeignKey(Company)
-	street = models.CharField(max_length=200)
-	city = models.CharField(max_length= 20)
+	street = models.CharField(max_length=200, blank=True)
+	city = models.CharField(max_length= 20, blank=True)
 
 	state_choices = (
 			('MA', 'Massachusetts'),
@@ -31,8 +31,8 @@ class companyLocation(models.Model):
 		)
 	state = models.CharField(max_length=2,
 							choices = state_choices,
-							default='Ma')
-	zipCode= models.CharField(max_length= 5)
+							default='MA', blank=True)
+	zipCode= models.CharField(max_length= 5, blank=True)
 
 	def address_string(self):
 		address = self.street + ", " + self.city + ", " + self.state + " " + self.zipCode
