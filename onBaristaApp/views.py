@@ -123,7 +123,7 @@ def update_favs(request):
 	user = request.session['user']
 	userdetails = user.get_profile()
 	if request.POST['baristaID']:
-		barista = User.objects.get(pk=request.POST['baristaID'])
+		barista = UserProfile.objects.get(pk=request.POST['baristaID'])
 		userdetails.favBaristaObj = barista
 	if request.POST['companyID']:
 		company = Company.objects.get(pk=request.POST['companyID'])
@@ -133,9 +133,7 @@ def update_favs(request):
 	return favorites(request, "Your favorites have been updated")
 
 def baristaList(request):
-	#userdetails = user.get_profile()
-	#baristas = userdetails.objects.filter(userType='Barista', firstName__startswith=request.POST['searchString'])
-	userdetailsList = UserProfile.objects.filter(userType='Barista')
+	userdetailsList = UserProfile.objects.filter(userType='Barista', user__first_name__startswith = request.POST['searchString'])
 	return render(request, 'autocompleteList.html', {'results':userdetailsList})
 
 def companyList(request):
