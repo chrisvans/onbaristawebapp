@@ -101,6 +101,7 @@ def mark_as_barista(request):
 		userdetails.userType = "Barista"
 		userdetails.save()
 		user.save()
+		request.session['user'] = user
 		return baristas(request, "Now registered as a barista!")
 	#return HttpResponseRedirect(reverse('onBaristaApp:baristas', {'message':"thanks for being barista!",}))
 
