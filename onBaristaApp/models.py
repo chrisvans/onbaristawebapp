@@ -81,7 +81,9 @@ class companyLocation(models.Model):
 
 class UserProfile(models.Model):
 	user = models.OneToOneField(User)
+	#full_name =user.get_full_name()
 	# Use 'User'.get_profile().userType to get the userType, for example
+	full_name=models.CharField(max_length=50, default='', null=True, blank=True)
 	user_type_choices = (
 		('Barista', 'Barista'),
 		('Consumer', 'Consumer'),
@@ -95,8 +97,23 @@ class UserProfile(models.Model):
 	#	return user.userType + ": " + user.first_name + " " + user.last_name
 
 def create_user_profile(sender, instance, created, **kwargs):
-    if created:
-        UserProfile.objects.create(user=instance)
+
+	print "instance: " + str(instance)
+	print " kwargs: " + str(kwargs)
+	print "create up 1: " + instance.get_full_name()
+	name = instance.get_full_name()
+	if name:
+		profile = instance.get_profile()
+		profile.full_name = name
+		profile.save()
+	if created:
+		#UserProfile.objects.create(user=instance)
+		up = UserProfile()
+		up.full_name = instance.first_name + " " + instance.last_name
+		up.user = instance
+		up.save()
+		print "in create user profile: "  + up.full_name
+
 
 post_save.connect(create_user_profile, sender=User)
 

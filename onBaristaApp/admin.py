@@ -1,5 +1,5 @@
 from django.contrib import admin
-from onBaristaApp.models import Company, companyLocation, User, checkIn
+from onBaristaApp.models import Company, companyLocation, User, checkIn, UserProfile
 from django.contrib.auth import authenticate
 
 class locationInLine(admin.TabularInline):
@@ -13,3 +13,4 @@ class companyAdmin(admin.ModelAdmin):
 
 admin.site.register(Company, companyAdmin)
 admin.site.register((companyLocation, checkIn))
+admin.site.register(UserProfile)

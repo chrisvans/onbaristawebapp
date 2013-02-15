@@ -6,6 +6,7 @@ TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
     # ('Your Name', 'your_email@example.com'),
+    ('anthony', 'anthony.leonardi@gmail.com'),
 )
 
 MANAGERS = ADMINS
@@ -103,7 +104,8 @@ ROOT_URLCONF = 'onbarista.urls'
 # Python dotted path to the WSGI application used by Django's runserver.
 WSGI_APPLICATION = 'onbarista.wsgi.application'
 
-BASE_DIR= '/Users/Gigglande/Desktop/onbaristawebapp'
+#BASE_DIR= '/Users/Gigglande/Desktop/onbaristawebapp'
+BASE_DIR= '/Users/LBMBPro/desktop/devrampup/onbaristawebapp'
 
 TEMPLATE_DIRS = (
     os.path.join(BASE_DIR, 'Templates'),
