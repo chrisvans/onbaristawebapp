@@ -36,11 +36,11 @@ def login_view(request):
 					locList = favCompany.get_locations()
 					for location in locList:
 						location.checkins = location.get_checkins()
-				if userdetails.favBaristaObj:
-					favBarista = userdetails.favBaristaObj
-					checkInObj = checkIn.objects.filter(barista = favBarista)
-					if checkInObj:
-						isFavBarCheckedIn = True
+				#if userdetails.favBaristaObj:
+				#	favBarista = userdetails.favBaristaObj
+				#	checkInObj = checkIn.objects.filter(barista = favBarista)
+				#	if checkInObj:
+				#		isFavBarCheckedIn = True
 				# After successful login, return to home, populate dictionary.
 				#return render(request, 'home.html', {'user_name':user.username, 'user':userdetails, 'locations':locList,'checkIn':checkInObj, 'isCheckedIn': isFavBarCheckedIn})
 				return companyHome(request, favCompany.pk)
@@ -59,10 +59,6 @@ def login_view(request):
 		userdetails = user.get_profile()
 		if userdetails.favCompany:
 			favCompany = userdetails.favCompany
-			#locList = favCompany.get_locations()
-			#for location in locList:
-			#	location.checkins = location.get_checkins()
-		#return render(request, 'home.html', {'user_name':user.username, 'user':userdetails, 'locations':locList})
 			return companyHome(request, favCompany.pk)
 		return companyHome(request, 0)
 	else:
@@ -78,12 +74,24 @@ def companyHome(request, companyID=0):
 	company= ''
 	locations = ''
 	companies = Company.objects.all()
+	isFavBarCheckedIn = False
 	if companyID and companyID != '0':
 		company = Company.objects.get(pk=companyID)
 		locations = company.get_locations()
 		for location in locations:
 				location.checkins = location.get_checkins()
-	return render(request, 'home.html', {'user_name':user.username, 'user':userdetails, 'companies':companies, 'locations':locations, 'selectedID': str(companyID)})
+	if userdetails.favBaristaObj:
+		favBarista = userdetails.favBaristaObj
+		checkInObj = checkIn.objects.filter(barista = favBarista)
+		if checkInObj:
+			isFavBarCheckedIn = True
+	return render(request, 'home.html', {'user_name':user.username,
+										 'user':userdetails, 
+										 'companies':companies, 
+										 'locations':locations, 
+										 'selectedID': str(companyID), 
+										 'isCheckedIn':isFavBarCheckedIn,
+										 'checkIn':checkInObj})
 
 def checkInPost(request):
 	print request.POST['location']
