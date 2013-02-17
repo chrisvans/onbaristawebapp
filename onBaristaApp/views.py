@@ -85,6 +85,9 @@ def companyHome(request, companyID=0):
 		checkInObj = checkIn.objects.filter(barista = favBarista)
 		if checkInObj:
 			isFavBarCheckedIn = True
+	else:
+		# New Users will need a checkInObj defined, so no error gets thrown.
+		checkInObj = ''
 	return render(request, 'home.html', {'user_name':user.username,
 										 'user':userdetails, 
 										 'companies':companies, 

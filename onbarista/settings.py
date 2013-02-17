@@ -104,8 +104,9 @@ ROOT_URLCONF = 'onbarista.urls'
 # Python dotted path to the WSGI application used by Django's runserver.
 WSGI_APPLICATION = 'onbarista.wsgi.application'
 
+BASE_DIR= '/Users/Chris VanSchyndel/Desktop/onbaristawebapp'
 #BASE_DIR= '/Users/Gigglande/Desktop/onbaristawebapp'
-BASE_DIR= '/Users/LBMBPro/desktop/devrampup/onbaristawebapp'
+#BASE_DIR= '/Users/LBMBPro/desktop/devrampup/onbaristawebapp'
 
 TEMPLATE_DIRS = (
     os.path.join(BASE_DIR, 'Templates'),
