@@ -1,20 +1,25 @@
 {% extends "base.html" %}
 
 {% block contents %}
-	{% for location in locations %}
+	{% if locations%}
+		{% for location in locations %}
+			<div class="hero-unit">
+				<span><strong>{{ location }}</strong></span><br>
+				<ul class="nav nav-list">
+				{% if location.checkins %}
+					{% for checkin in location.checkins %}
+						<li>{{checkin}}</li>
+					{% endfor %}
+				{% else %}
+					<li>There are no Baristas checked in at this location</li>
+				{% endif %}
+				</ul>
+			</div>
+		{% endfor %}
+	{% else %}
 		<div class="hero-unit">
-			<span><strong>{{ location }}</strong></span><br>
-			<ul class="nav nav-list">
-			{% if location.checkins %}
-				{% for checkin in location.checkins %}
-					<li>{{checkin}}</li>
-				{% endfor %}
-			{% else %}
-				<li>There are no Baristas checked in at this location</li>
-			{% endif %}
-
-			</ul>
+			<p>No locations found.</p>
 		</div>
-	{% endfor %}
+	{% endif %}
 
 {% endblock %}

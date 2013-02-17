@@ -27,6 +27,8 @@ def login_view(request):
 				locList=''
 				isFavBarCheckedIn = False
 				checkInObj = ''
+				favCompany= Company()
+				favCompany.pk = '0'
 				# Populate database table with UserProfile class attributes.  Store object as userdetails.
 				userdetails = user.get_profile()
 				if userdetails.favCompany:
@@ -40,7 +42,8 @@ def login_view(request):
 					if checkInObj:
 						isFavBarCheckedIn = True
 				# After successful login, return to home, populate dictionary.
-				return render(request, 'home.html', {'user_name':user.username, 'user':userdetails, 'locations':locList,'checkIn':checkInObj, 'isCheckedIn': isFavBarCheckedIn})
+				#return render(request, 'home.html', {'user_name':user.username, 'user':userdetails, 'locations':locList,'checkIn':checkInObj, 'isCheckedIn': isFavBarCheckedIn})
+				return companyHome(request, favCompany.pk)
 			else:
 				# If user.is_active returns False.  Boolean that can be set manually.
 				return render(request, 'login.html', {'error_message':"Your account has been disabled!",})
@@ -59,13 +62,26 @@ def login_view(request):
 			locList = favCompany.get_locations()
 			for location in locList:
 				location.checkins = location.get_checkins()
-		return render(request, 'home.html', {'user_name':user.username, 'user':userdetails, 'locations':locList})
+		#return render(request, 'home.html', {'user_name':user.username, 'user':userdetails, 'locations':locList})
+			return companyHome(request, favCompany.pk)
+		return companyHome(request, 0)
 	else:
 		# If no information has been submitted, and there is no active 'user' in session (login).
 		return render(request, 'login.html')
 
 def home(request):
 	return render(request, 'home.html')
+
+def companyHome(request, companyID=0):
+	user = request.session['user']
+	userdetails = user.get_profile()
+	company= ''
+	locations = ''
+	companies = Company.objects.all()
+	if companyID and companyID != '0':
+		company = Company.objects.get(pk=companyID)
+		locations = company.get_locations()
+	return render(request, 'home.html', {'user_name':user.username, 'user':userdetails, 'companies':companies, 'locations':locations})
 
 def checkInPost(request):
 	print request.POST['location']
