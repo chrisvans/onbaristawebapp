@@ -29,6 +29,14 @@
     <link href="/static/bootstrap/css/bootstrap.css" rel="stylesheet">
     <link href="/static/onBarista.css" rel="stylesheet">
     <link href="/static/bootstrap/css/bootstrap-responsive.css" rel="stylesheet">
+    <script>
+    /*$(function(){
+      $('li').live('click', function(){
+        $(this).addClass('active');
+      });
+
+    });*/
+    </script>
 
     <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
     <!--[if lt IE 9]>
@@ -48,7 +56,11 @@
   				<div class="nav-collapse collapse">
   					<p class="navbar-text pull-right">Logged in as {{user.user.username}}, <a href="{% url 'onBaristaApp:logout' %}">logout</a></p>
   					<ul class="nav">
-  						<li><a href="/onBaristaApp/">Home</a></li>
+              {% if user.favCompany %}
+  						<li><a href="{% url 'onBaristaApp:companyHome' user.favCompany.pk %}">Home</a></li>
+              {% else %}
+              <li><a href="{% url 'onBaristaApp:companyHome' '0' %}">Home</a></li>
+              {% endif %}
   						<li><a href="{% url 'onBaristaApp:baristas' %}">Baristas</a></li>
   						<li><a href="{% url 'onBaristaApp:favorites' %}">Manage Favs</a></li>
   					</ul>
@@ -62,10 +74,24 @@
   				<div class="well sidebar-nav">
   					<ul class="nav nav-list">
   						{% if user.favCompany %}
-  						<li class="nav-header">{{user.favCompany.companyName}}</li>
+  						  <li class="nav-header">Favorite Companies:</li>
+                {% if selectedID|stringformat:"s" == user.favCompany.pk|stringformat:"s" %}
+                  <li id ="{{user.favCompany.pk}}" class="active"><a href="{% url 'onBaristaApp:companyHome' user.favCompany.pk %}">{{user.favCompany.companyName}}</a></li>
+                {% else %}
+                  <li id ="{{user.favCompany.pk}}"><a href="{% url 'onBaristaApp:companyHome' user.favCompany.pk %}">{{user.favCompany.companyName}}</a></li>
+                {% endif %}
   						{% else %}
-  						<li class="nav-header">Click Manage Favs to add a company</li>
+              <li class="nav-header">Favorite Companies:</li>
+  						<li><a href="{% url 'onBaristaApp:favorites' %}">Click to add a fav company</a></li>
   						{% endif %}
+              <li class="nav-header">All Companies:</li>
+              {% for company in companies %}
+                {% if selectedID|stringformat:"s" == company.pk|stringformat:"s" %}
+                  <li id="{{company.pk}}" class='active'><a href="{% url 'onBaristaApp:companyHome' company.pk %}">{{company.companyName}}</a></li>
+                {% else %}
+                  <li id="{{company.pk}}"><a href="{% url 'onBaristaApp:companyHome' company.pk %}">{{company.companyName}}</a></li>
+                {% endif %}
+              {% endfor %}
   					</ul>
   				</div>
   			</div>

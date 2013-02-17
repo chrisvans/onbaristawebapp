@@ -14,4 +14,5 @@ urlpatterns = patterns('',
 			url(r'^baristaList/$', views.baristaList, name='baristaList'),
 			url(r'^companyList/$', views.companyList, name='companyList'),
 			url(r'^register/$', views.register, name = 'register'),
+			url(r'^home/(?P<companyID>\d+)/$', views.companyHome, name='companyHome')
 			)
