@@ -81,7 +81,7 @@ def companyHome(request, companyID=0):
 	if companyID and companyID != '0':
 		company = Company.objects.get(pk=companyID)
 		locations = company.get_locations()
-	return render(request, 'home.html', {'user_name':user.username, 'user':userdetails, 'companies':companies, 'locations':locations})
+	return render(request, 'home.html', {'user_name':user.username, 'user':userdetails, 'companies':companies, 'locations':locations, 'selectedID': str(companyID)})
 
 def checkInPost(request):
 	print request.POST['location']
