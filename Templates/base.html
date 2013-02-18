@@ -56,13 +56,15 @@
   				<div class="nav-collapse collapse">
   					<p class="navbar-text pull-right">Logged in as {{user.user.username}}, <a href="{% url 'onBaristaApp:logout' %}">logout</a></p>
   					<ul class="nav">
-              {% if user.favCompany %}
-  						<li><a href="{% url 'onBaristaApp:companyHome' user.favCompany.pk %}">Home</a></li>
-              {% else %}
-              <li><a href="{% url 'onBaristaApp:companyHome' '0' %}">Home</a></li>
-              {% endif %}
-  						<li><a href="{% url 'onBaristaApp:baristas' %}">Baristas</a></li>
-  						<li><a href="{% url 'onBaristaApp:favorites' %}">Manage Favs</a></li>
+              <li class="{{navFlag.Home}}">
+                {% if user.favCompany %}
+  						    <a href="{% url 'onBaristaApp:companyHome' user.favCompany.pk %}">Home</a>
+                {% else %}
+                  <a href="{% url 'onBaristaApp:companyHome' '0' %}">Home</a>
+                {% endif %}
+              </li>
+  						<li class="{{navFlag.Baristas}}"><a href="{% url 'onBaristaApp:baristas' %}">Baristas</a></li>
+  						<li class="{{navFlag.ManageFavs}}"><a href="{% url 'onBaristaApp:favorites' %}">Manage Favs</a></li>
   					</ul>
   				</div>
   			</div>
