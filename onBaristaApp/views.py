@@ -94,7 +94,8 @@ def companyHome(request, companyID=0):
 										 'locations':locations, 
 										 'selectedID': str(companyID), 
 										 'isCheckedIn':isFavBarCheckedIn,
-										 'checkIn':checkInObj})
+										 'checkIn':checkInObj,
+										 'navFlag':{'Home':'active', 'Baristas':'', 'ManageFavs':''}})
 
 def checkInPost(request):
 	print request.POST['location']
@@ -141,12 +142,17 @@ def baristas(request, message =''):
 	if userdetails.favCompany:
 		favCompany = userdetails.favCompany
 		locList = favCompany.get_locations()
-	return render(request, 'baristas.html', {'user':userdetails, 'locations':locList, 'message':message})
+	return render(request, 'baristas.html', {'user':userdetails, 
+											 'locations':locList,
+											 'message':message,
+											 'navFlag':{'Home':'', 'Baristas':'active', 'ManageFavs':''}})
 
 def favorites(request, message=''):
 	user = request.session['user']
 	userdetails = user.get_profile()
-	return render(request, 'Favorites.html', {'user':userdetails, 'message':message})
+	return render(request, 'Favorites.html', {'user':userdetails,
+											  'message':message,
+											  'navFlag':{'Home':'', 'Baristas':'', 'ManageFavs':'active'}})
 
 
 def update_favs(request):
