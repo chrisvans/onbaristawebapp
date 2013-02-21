@@ -19,6 +19,8 @@ class Company(models.Model):
 
 class companyLocation(models.Model):
 	checkins = {}
+	#checkins = models.ManyToManyField(checkIn)
+	#checkouts = models.ManyToManyFeild(checkIn)
 	companyID = models.ForeignKey(Company)
 	street = models.CharField(max_length=200, blank=True)
 	city = models.CharField(max_length= 20, blank=True)
@@ -98,7 +100,6 @@ class UserProfile(models.Model):
 	#	return user.userType + ": " + user.first_name + " " + user.last_name
 
 def create_user_profile(sender, instance, created, **kwargs):
-
 	# print "instance: " + str(instance)
 	# print " kwargs: " + str(kwargs)
 	# print "create up 1: " + instance.get_full_name()
@@ -122,29 +123,37 @@ post_save.connect(create_user_profile, sender=User)
 class checkIn(models.Model):
 	barista = models.ForeignKey(User)
 	location = models.ForeignKey(companyLocation)
-	inTime = models.DateTimeField()
+	inTime = models.DateTimeField(null=True)
 	outTime = models.DateTimeField(null=True)
+	checkedin = models.BooleanField(default=True)
 	def __unicode__(self):
 		#baristadetails = self.barista.get_profile()
 		#showUser = baristadetails.userType + ": " + self.barista.first_name + " " + self.barista.last_name
-		checkinDesc = showUser(self.barista) + " at " + unicode(self.inTime)
+		uniInTime = str(self.inTime)
+		uniInTime = uniInTime[0:16]
+		uniOutTime = str(self.outTime)
+		uniOutTime = uniOutTime[0:16]
+		if self.checkedin:
+			checkinDesc = showUser(self.barista) + " checked in at " + unicode(uniInTime)
+		else:
+			checkinDesc = showUser(self.barista) + " checked out at " + unicode(uniOutTime)
 		return checkinDesc
-
-#class checkOut(models.Model):
-#	barista = models.ForeignKey(User)
-#	location = models.ForeignKey(companyLocation)
-	#inTime = models.DateTimeField()
-#	outTime = models.DateTimeField()
-#	def __unicode__(self):
-#		checkoutDesc = showUser(self.barista) + " at " + unicode(self.outTime)
-#		return checkoutDesc
 
 # If we can find a way to make UserProfile reference the same corresponding 
 # User class, this could be a method within UserProfile.
 def showUser(Userobject):
 	user = Userobject
 	userdetails = Userobject.get_profile()
-	return userdetails.userType + ": " + user.first_name + " " + user.last_name
+	return user.first_name + " " + user.last_name
+
+# Possible use of dictionary in the database.
+#class Dicty(models.Model):
+#	name = models.CharField(max_length=25)
+
+#class KeyVal(models.Model):
+#	container = models.ForeignKey(Dicty, db_index=True)
+#	key = models.CharField(max_length=240, db_index=True)
+#	value = models.CharField(max_length=240, db_index=True)
 
 
 

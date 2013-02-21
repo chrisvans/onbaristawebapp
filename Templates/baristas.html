@@ -16,7 +16,12 @@
 				<form class="form-signin" action="{% url 'onBaristaApp:checkInPost' %}" method="post">
 					{% csrf_token %}
 					<input style="display:none" name = "location" value={{location.id}}></input>
-					<button class="btn btn-large btn-primary" type="submit">Check In!</button>
+					<button class="btn btn-large btn-primary" type="submit">Check In</button>
+				</form>
+				<form class="form-signin" action="{% url 'onBaristaApp:checkOutPost' %}" method="post">
+					{% csrf_token %}
+					<input style="display:none" name = "location" value={{location.id}}></input>
+					<button class="btn btn-large btn-primary" type="submit">Check Out</button>
 				</form>
 			</div>
 		{% endfor %}

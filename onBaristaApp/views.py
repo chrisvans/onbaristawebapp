@@ -41,11 +41,11 @@ def login_view(request):
 					locList = favCompany.get_locations()
 					for location in locList:
 						location.checkins = location.get_checkins()
-				#if userdetails.favBaristaObj:
-				#	favBarista = userdetails.favBaristaObj
-				#	checkInObj = checkIn.objects.filter(barista = favBarista)
-				#	if checkInObj:
-				#		isFavBarCheckedIn = True
+				if userdetails.favBaristaObj:
+					favBarista = userdetails.favBaristaObj
+					checkInObj = checkIn.objects.filter(barista = favBarista)
+					if checkInObj:
+						isFavBarCheckedIn = True
 				# After successful login, return to home, populate dictionary.
 				#return render(request, 'home.html', {'user_name':user.username, 'user':userdetails, 'locations':locList,'checkIn':checkInObj, 'isCheckedIn': isFavBarCheckedIn})
 				return companyHome(request, favCompany.pk)
@@ -112,25 +112,37 @@ def checkInPost(request):
 		return render(request, 'login.html')
 	user = request.session['user']
 	location = companyLocation.objects.get(pk=request.POST['location'])
+	# Is it just me or do the available timezone methods seem a bit lacking?
 	currTime = timezone.now()
-	ci = checkIn()
-	ci.barista = user
-	ci.location= location
-	ci.inTime = currTime
-	#ci.outTime = currTime
-	ci.save()
+	print checkIn.objects.filter(barista = user)
+	try:
+		d = checkIn.objects.get(barista = user)
+		if not d.checkedin:
+			d.delete()
+	except (KeyError,checkIn.DoesNotExist):
+		ci = checkIn()
+		ci.barista = user
+		ci.location = location
+		ci.inTime = currTime
+		ci.save()
 	return HttpResponseRedirect(reverse('onBaristaApp:login_view'))
 
-#def checkOutPost(request):
-#	location = companyLocation.objects.get(pk=request.POST['location'])
+def checkOutPost(request):
+	location = companyLocation.objects.get(pk=request.POST['location'])
+	user = request.session['user']
+	currTime = timezone.now()
+	d = checkIn.objects.get(barista = user)
+	co = checkIn.objects.get(barista = user)
+	if d.checkedin:
+		d.delete()
+	co.outTime = currTime
+	co.checkedin = False
+	co.save()
+	return HttpResponseRedirect(reverse('onBaristaApp:login_view'))
+
+#def testbutton(request):
 #	user = request.session['user']
-#	currTime = timezone.now()
-#	co = checkOut()
-#	co.barista = user
-#	co.location = location
-#	co.outTime = currTime
-#	co.save()
-#	location.checkout(user)
+#	print checkIn.objects.filter(barista = user)
 #	return HttpResponseRedirect(reverse('onBaristaApp:login_view'))
 
 def mark_as_barista(request):
