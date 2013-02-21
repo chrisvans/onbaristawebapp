@@ -73,11 +73,13 @@ def login_view(request):
 def home(request):
 	if login_handler(request):
 		return render(request, 'login.html')
+	user = request.session['user']
 	return render(request, 'home.html')
 
 def companyHome(request, companyID=0):
 	if login_handler(request):
 		return render(request, 'login.html')
+	user = request.session['user']
 	userdetails = user.get_profile()
 	company= ''
 	locations = ''
@@ -108,6 +110,7 @@ def companyHome(request, companyID=0):
 def checkInPost(request):
 	if login_handler(request):
 		return render(request, 'login.html')
+	user = request.session['user']
 	location = companyLocation.objects.get(pk=request.POST['location'])
 	currTime = timezone.now()
 	ci = checkIn()
@@ -133,6 +136,7 @@ def checkInPost(request):
 def mark_as_barista(request):
 	if login_handler(request):
 		return render(request, 'login.html')
+	user = request.session['user']
 	userdetails = user.get_profile()
 	if userdetails.userType == "Barista":
 		return baristas(request, "You're already a barista!")
@@ -147,6 +151,7 @@ def mark_as_barista(request):
 def baristas(request, message =''):
 	if login_handler(request):
 		return render(request, 'login.html')
+	user = request.session['user']
 	locList= ''
 	userdetails = user.get_profile()
 	if userdetails.favCompany:
@@ -160,6 +165,7 @@ def baristas(request, message =''):
 def favorites(request, message=''):
 	if login_handler(request):
 		return render(request, 'login.html')
+	user = request.session['user']
 	userdetails = user.get_profile()
 	return render(request, 'Favorites.html', {'user':userdetails,
 											  'message':message,
@@ -169,6 +175,7 @@ def favorites(request, message=''):
 def update_favs(request):
 	if login_handler(request):
 		return render(request, 'login.html')
+	user = request.session['user']
 	userdetails = user.get_profile()
 	if request.POST['baristaID']:
 		barista = UserProfile.objects.get(pk=request.POST['baristaID'])
@@ -183,12 +190,14 @@ def update_favs(request):
 def baristaList(request):
 	if login_handler(request):
 		return render(request, 'login.html')
+	user = request.session['user']
 	userdetailsList = UserProfile.objects.filter(userType='Barista', full_name__startswith = request.POST['searchString'])
 	return render(request, 'autocompleteList.html', {'results':userdetailsList})
 
 def companyList(request):
 	if login_handler(request):
 		return render(request, 'login.html')
+	user = request.session['user']
 	companies = Company.objects.filter(companyName__startswith = request.POST['searchString'])
 	return render(request, 'autocompleteList.html', {'results':companies})
 
