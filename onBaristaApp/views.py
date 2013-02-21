@@ -114,16 +114,25 @@ def checkInPost(request):
 	location = companyLocation.objects.get(pk=request.POST['location'])
 	# Is it just me or do the available timezone methods seem a bit lacking?
 	currTime = timezone.now()
+	# A user may not be checked in or checked out.  This only applies if they are.
 	try:
 		d = checkIn.objects.get(barista = user)
+		# If the checkIn object's checkin flag is false, then the user is checked out.
+		# Delete the checked out entry.
 		if not d.checkedin:
 			d.delete()
 	except (KeyError,checkIn.DoesNotExist):
 		1+1
+	# Initialize checkIn object, set it's attributes appropriately to reflect
+	# user object, location checked in at, and current time.
 	ci = checkIn()
 	ci.barista = user
 	ci.location = location
 	ci.inTime = currTime
+	# Set user's usercheckedin flag to True, and then refresh the current session user.
+	user.usercheckedin = True
+	user.save()
+	request.session['user'] = user
 	ci.save()
 	return HttpResponseRedirect(reverse('onBaristaApp:login_view'))
 
@@ -131,19 +140,18 @@ def checkOutPost(request):
 	location = companyLocation.objects.get(pk=request.POST['location'])
 	user = request.session['user']
 	currTime = timezone.now()
+	# Same as checkInPost but inverted when necessary.
 	d = checkIn.objects.get(barista = user)
 	co = checkIn.objects.get(barista = user)
 	if d.checkedin:
 		d.delete()
 	co.outTime = currTime
 	co.checkedin = False
+	user.usercheckedin = False
+	user.save()
+	request.session['user'] = user
 	co.save()
 	return HttpResponseRedirect(reverse('onBaristaApp:login_view'))
-
-#def testbutton(request):
-#	user = request.session['user']
-#	print checkIn.objects.filter(barista = user)
-#	return HttpResponseRedirect(reverse('onBaristaApp:login_view'))
 
 def mark_as_barista(request):
 	if login_handler(request):
@@ -151,14 +159,14 @@ def mark_as_barista(request):
 	user = request.session['user']
 	userdetails = user.get_profile()
 	if userdetails.userType == "Barista":
-		return baristas(request, "You're already a barista!")
+		print 'Warning from mark_as_barista, user accessed barista signup button or refreshed page on submit when user was already a barista.'
+		return baristas(request)
 	else:
 		userdetails.userType = "Barista"
 		userdetails.save()
 		user.save()
 		request.session['user'] = user
 		return baristas(request, "Now registered as a barista!")
-	#return HttpResponseRedirect(reverse('onBaristaApp:baristas', {'message':"thanks for being barista!",}))
 
 def baristas(request, message =''):
 	if login_handler(request):
@@ -169,9 +177,13 @@ def baristas(request, message =''):
 	if userdetails.favCompany:
 		favCompany = userdetails.favCompany
 		locList = favCompany.get_locations()
+	# Added in usercheck dictionary pass so it could be used to verify if a user
+	# was checked in at any location.
+	usercheck = user.usercheckedin
 	return render(request, 'baristas.html', {'user':userdetails, 
 											 'locations':locList,
 											 'message':message,
+											 'usercheck':usercheck,
 											 'navFlag':{'Home':'', 'Baristas':'active', 'ManageFavs':''}})
 
 def favorites(request, message=''):
@@ -215,8 +227,6 @@ def companyList(request):
 
 def logout_view(request):
 	logout(request)
-	#if ('username' in request.session):
-	#	del request.session['username']
 	if ('user' in request.session):
 		del request.session['user']
 	return render(request, 'login.html')

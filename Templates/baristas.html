@@ -13,16 +13,19 @@
 		{% for location in locations %}
 			<div class="hero-unit">
 				<span>{{ location }}</span><br>
+				{% if user.user not in location.get_checkin_in and not usercheck %}
 				<form class="form-signin" action="{% url 'onBaristaApp:checkInPost' %}" method="post">
 					{% csrf_token %}
 					<input style="display:none" name = "location" value={{location.id}}></input>
 					<button class="btn btn-large btn-primary" type="submit">Check In</button>
 				</form>
+				{% elif user.user in location.get_checkin_in %}
 				<form class="form-signin" action="{% url 'onBaristaApp:checkOutPost' %}" method="post">
 					{% csrf_token %}
 					<input style="display:none" name = "location" value={{location.id}}></input>
 					<button class="btn btn-large btn-primary" type="submit">Check Out</button>
 				</form>
+				{% endif %}
 			</div>
 		{% endfor %}
 		{% else %}

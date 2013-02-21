@@ -45,6 +45,22 @@ class companyLocation(models.Model):
 		return self.address_string()
 	def get_checkins(self):
 		return checkIn.objects.filter(location = self)
+	def get_checkin_out(self):
+		bagel = checkIn.objects.filter(location = self)
+		barista_list = []
+		for bagels in bagel:
+			if bagels.checkedin == False:
+				barista = bagels.barista
+				barista_list.append(barista)
+		return barista_list
+	def get_checkin_in(self):
+		bagel = checkIn.objects.filter(location = self)
+		barista_list = []
+		for bagels in bagel:
+			if bagels.checkedin == True:
+				barista = bagels.barista
+				barista_list.append(barista)
+		return barista_list
 	#def checkout(self, barista):
 	#	print self.checkins
 	#	del self.checkins[barista]
@@ -94,10 +110,11 @@ class UserProfile(models.Model):
 	userType = models.CharField(max_length=10, choices=user_type_choices, default='Consumer')
 	favCompany = models.ForeignKey(Company, null=True, blank=True)
 	favBaristaObj = models.ForeignKey('self', null=True, blank=True)
+	usercheckedin = models.BooleanField(default=False)
 	def __unicode__(self):
 		return self.userType + ": " + self.user.first_name + " " + self.user.last_name
-	#def showUser(self):
-	#	return user.userType + ": " + user.first_name + " " + user.last_name
+	def showUser(self):
+		return self.userType + ": " + self.user.first_name + " " + self.user.last_name
 
 def create_user_profile(sender, instance, created, **kwargs):
 	# print "instance: " + str(instance)
