@@ -3,11 +3,16 @@ from django.http import HttpResponse, Http404, HttpResponseRedirect
 from django.template import Context, loader
 from django.shortcuts import render, get_object_or_404
 from django.core.urlresolvers import reverse
-from onBaristaApp.models import User, checkIn, companyLocation, Company
+from onBaristaApp.models import User, checkIn, companyLocation, Company, UserProfile, showUser
 from django.utils import timezone
 from django.contrib.auth import authenticate, login, logout
-from onBaristaApp.models import UserProfile
 
+def login_handler(request):
+	try:
+		user = request.session['user']
+		return False
+	except KeyError:
+		return True
 
 def login_view(request):
 	# If you're at the login page and have submitted information, then..
@@ -66,10 +71,13 @@ def login_view(request):
 		return render(request, 'login.html')
 
 def home(request):
+	if login_handler(request):
+		return render(request, 'login.html')
 	return render(request, 'home.html')
 
 def companyHome(request, companyID=0):
-	user = request.session['user']
+	if login_handler(request):
+		return render(request, 'login.html')
 	userdetails = user.get_profile()
 	company= ''
 	locations = ''
@@ -98,9 +106,9 @@ def companyHome(request, companyID=0):
 										 'navFlag':{'Home':'active', 'Baristas':'', 'ManageFavs':''}})
 
 def checkInPost(request):
-	print request.POST['location']
+	if login_handler(request):
+		return render(request, 'login.html')
 	location = companyLocation.objects.get(pk=request.POST['location'])
-	user = request.session['user']
 	currTime = timezone.now()
 	ci = checkIn()
 	ci.barista = user
@@ -123,7 +131,8 @@ def checkInPost(request):
 #	return HttpResponseRedirect(reverse('onBaristaApp:login_view'))
 
 def mark_as_barista(request):
-	user = request.session['user']
+	if login_handler(request):
+		return render(request, 'login.html')
 	userdetails = user.get_profile()
 	if userdetails.userType == "Barista":
 		return baristas(request, "You're already a barista!")
@@ -136,7 +145,8 @@ def mark_as_barista(request):
 	#return HttpResponseRedirect(reverse('onBaristaApp:baristas', {'message':"thanks for being barista!",}))
 
 def baristas(request, message =''):
-	user = request.session['user']
+	if login_handler(request):
+		return render(request, 'login.html')
 	locList= ''
 	userdetails = user.get_profile()
 	if userdetails.favCompany:
@@ -148,7 +158,8 @@ def baristas(request, message =''):
 											 'navFlag':{'Home':'', 'Baristas':'active', 'ManageFavs':''}})
 
 def favorites(request, message=''):
-	user = request.session['user']
+	if login_handler(request):
+		return render(request, 'login.html')
 	userdetails = user.get_profile()
 	return render(request, 'Favorites.html', {'user':userdetails,
 											  'message':message,
@@ -156,10 +167,9 @@ def favorites(request, message=''):
 
 
 def update_favs(request):
-	user = request.session['user']
-
+	if login_handler(request):
+		return render(request, 'login.html')
 	userdetails = user.get_profile()
-	print userdetails.full_name
 	if request.POST['baristaID']:
 		barista = UserProfile.objects.get(pk=request.POST['baristaID'])
 		userdetails.favBaristaObj = barista
@@ -171,13 +181,14 @@ def update_favs(request):
 	return favorites(request, "Your favorites have been updated")
 
 def baristaList(request):
-	#baristaList = UserProfile.objects.filter(userType='Barista')
-	#for barista in baristaList:
-			#barista.full_name = barista.user.get_full_name()
+	if login_handler(request):
+		return render(request, 'login.html')
 	userdetailsList = UserProfile.objects.filter(userType='Barista', full_name__startswith = request.POST['searchString'])
 	return render(request, 'autocompleteList.html', {'results':userdetailsList})
 
 def companyList(request):
+	if login_handler(request):
+		return render(request, 'login.html')
 	companies = Company.objects.filter(companyName__startswith = request.POST['searchString'])
 	return render(request, 'autocompleteList.html', {'results':companies})
 

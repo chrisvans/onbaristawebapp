@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.contrib.auth import authenticate
+from django.http import HttpResponse
 import datetime
 
 # Create your models here.
@@ -98,9 +99,9 @@ class UserProfile(models.Model):
 
 def create_user_profile(sender, instance, created, **kwargs):
 
-	print "instance: " + str(instance)
-	print " kwargs: " + str(kwargs)
-	print "create up 1: " + instance.get_full_name()
+	# print "instance: " + str(instance)
+	# print " kwargs: " + str(kwargs)
+	# print "create up 1: " + instance.get_full_name()
 	name = instance.get_full_name()
 	if name:
 		profile = instance.get_profile()
@@ -112,7 +113,7 @@ def create_user_profile(sender, instance, created, **kwargs):
 		up.full_name = instance.first_name + " " + instance.last_name
 		up.user = instance
 		up.save()
-		print "in create user profile: "  + up.full_name
+		#print "in create user profile: "  + up.full_name
 
 
 post_save.connect(create_user_profile, sender=User)
@@ -144,5 +145,7 @@ def showUser(Userobject):
 	user = Userobject
 	userdetails = Userobject.get_profile()
 	return userdetails.userType + ": " + user.first_name + " " + user.last_name
+
+
 
 
