@@ -114,17 +114,17 @@ def checkInPost(request):
 	location = companyLocation.objects.get(pk=request.POST['location'])
 	# Is it just me or do the available timezone methods seem a bit lacking?
 	currTime = timezone.now()
-	print checkIn.objects.filter(barista = user)
 	try:
 		d = checkIn.objects.get(barista = user)
 		if not d.checkedin:
 			d.delete()
 	except (KeyError,checkIn.DoesNotExist):
-		ci = checkIn()
-		ci.barista = user
-		ci.location = location
-		ci.inTime = currTime
-		ci.save()
+		1+1
+	ci = checkIn()
+	ci.barista = user
+	ci.location = location
+	ci.inTime = currTime
+	ci.save()
 	return HttpResponseRedirect(reverse('onBaristaApp:login_view'))
 
 def checkOutPost(request):
