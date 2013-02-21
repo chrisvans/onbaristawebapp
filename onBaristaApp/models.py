@@ -46,6 +46,7 @@ class companyLocation(models.Model):
 	def get_checkins(self):
 		return checkIn.objects.filter(location = self)
 	def get_checkin_out(self):
+		# Method returns all checked out baristas at this location
 		bagel = checkIn.objects.filter(location = self)
 		barista_list = []
 		for bagels in bagel:
@@ -54,6 +55,7 @@ class companyLocation(models.Model):
 				barista_list.append(barista)
 		return barista_list
 	def get_checkin_in(self):
+		# Method returns all checked in baristas at this location
 		bagel = checkIn.objects.filter(location = self)
 		barista_list = []
 		for bagels in bagel:
@@ -61,32 +63,6 @@ class companyLocation(models.Model):
 				barista = bagels.barista
 				barista_list.append(barista)
 		return barista_list
-	#def checkout(self, barista):
-	#	print self.checkins
-	#	del self.checkins[barista]
-
-## Anthony's previous User Model
-#class User(models.Model):
-#	userName = models.CharField(max_length=20)
-#	password = models.CharField(max_length=20)
-#	user_type_choices = (
-#		('Barista', 'Barista'),
-#		('Consumer', 'Consumer'),
-#	) 
-#	userType = models.CharField(max_length=10,
-#								choices=user_type_choices,
-#								default='Consumer')
-#	firstName = models.CharField(max_length=30)
-#	lastName = models.CharField(max_length=30)
-#	favCompany = models.ForeignKey(Company, null=True, blank=True)
-#	favBaristaObj = models.ForeignKey('self', null=True, blank=True)
-#
-#	def __unicode__(self):
-#		personDesc = self.userType + ": " + self.firstName + " " + self.lastName
-#		return personDesc
-#	def showUser(self):
-#		personDesc = self.userType + ": " + self.firstName + " " + self.lastName
-#		return personDesc
 
 # Django User model
 # class models.User
