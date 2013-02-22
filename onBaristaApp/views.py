@@ -130,9 +130,11 @@ def checkInPost(request):
 	ci.location = location
 	ci.inTime = currTime
 	# Set user's usercheckedin flag to True, and then refresh the current session user.
-	user.usercheckedin = True
+	userdetails = user.get_profile()
+	userdetails.usercheckedin = True
 	user.save()
-	request.session['user'] = user
+	userdetails.save()
+	request.session['user'] = User.objects.get(username = user.username)
 	ci.save()
 	return HttpResponseRedirect(reverse('onBaristaApp:baristas'))
 
@@ -147,9 +149,11 @@ def checkOutPost(request):
 		d.delete()
 	co.outTime = currTime
 	co.checkedin = False
-	user.usercheckedin = False
+	userdetails = user.get_profile()
+	userdetails.usercheckedin = False
 	user.save()
-	request.session['user'] = user
+	userdetails.save()
+	request.session['user'] = User.objects.get(username = user.username)
 	co.save()
 	return HttpResponseRedirect(reverse('onBaristaApp:baristas'))
 
@@ -165,7 +169,7 @@ def mark_as_barista(request):
 		userdetails.userType = "Barista"
 		userdetails.save()
 		user.save()
-		request.session['user'] = user
+		request.session['user'] = User.objects.get(username = user.username)
 		return baristas(request, "Now registered as a barista!")
 
 def baristas(request, message =''):
