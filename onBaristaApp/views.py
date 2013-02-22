@@ -134,7 +134,7 @@ def checkInPost(request):
 	user.save()
 	request.session['user'] = user
 	ci.save()
-	return HttpResponseRedirect(reverse('onBaristaApp:login_view'))
+	return HttpResponseRedirect(reverse('onBaristaApp:baristas'))
 
 def checkOutPost(request):
 	location = companyLocation.objects.get(pk=request.POST['location'])
@@ -151,7 +151,7 @@ def checkOutPost(request):
 	user.save()
 	request.session['user'] = user
 	co.save()
-	return HttpResponseRedirect(reverse('onBaristaApp:login_view'))
+	return HttpResponseRedirect(reverse('onBaristaApp:baristas'))
 
 def mark_as_barista(request):
 	if login_handler(request):
@@ -179,7 +179,7 @@ def baristas(request, message =''):
 		locList = favCompany.get_locations()
 	# Added in usercheck dictionary pass so it could be used to verify if a user
 	# was checked in at any location.
-	usercheck = user.usercheckedin
+	usercheck = userdetails.usercheckedin
 	return render(request, 'baristas.html', {'user':userdetails, 
 											 'locations':locList,
 											 'message':message,

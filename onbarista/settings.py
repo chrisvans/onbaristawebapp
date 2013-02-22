@@ -105,8 +105,8 @@ ROOT_URLCONF = 'onbarista.urls'
 WSGI_APPLICATION = 'onbarista.wsgi.application'
 
 #BASE_DIR= '/Users/Chris VanSchyndel/Desktop/onbaristawebapp'
-BASE_DIR= '/Users/Gigglande/Desktop/onbaristawebapp'
-#BASE_DIR= '/Users/LBMBPro/desktop/devrampup/onbaristawebapp'
+#BASE_DIR= '/Users/Gigglande/Desktop/onbaristawebapp'
+BASE_DIR= '/Users/LBMBPro/desktop/devrampup/onbaristawebapp'
 
 TEMPLATE_DIRS = (
     os.path.join(BASE_DIR, 'Templates'),
