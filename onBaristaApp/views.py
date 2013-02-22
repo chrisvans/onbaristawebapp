@@ -92,8 +92,10 @@ def companyHome(request, companyID=0):
 				location.checkins = location.get_checkins()
 	if userdetails.favBaristaObj:
 		favBarista = userdetails.favBaristaObj
-		checkInObj = checkIn.objects.filter(barista = favBarista)
-		if checkInObj:
+		fb = favBarista.user
+		print favBarista
+		checkInObj = checkIn.objects.get(barista = fb)
+		if checkInObj and checkInObj.checkedin:
 			isFavBarCheckedIn = True
 	else:
 		# New Users will need a checkInObj defined, so no error gets thrown. ~
@@ -219,7 +221,8 @@ def baristaList(request):
 	if login_handler(request):
 		return render(request, 'login.html')
 	user = request.session['user']
-	userdetailsList = UserProfile.objects.filter(userType='Barista', full_name__startswith = request.POST['searchString'])
+	ud = user.get_profile()
+	userdetailsList = UserProfile.objects.filter(userType='Barista', full_name__startswith = request.POST['searchString']).exclude(pk = ud.pk)
 	return render(request, 'autocompleteList.html', {'results':userdetailsList})
 
 def companyList(request):
