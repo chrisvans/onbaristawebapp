@@ -38,7 +38,7 @@ class companyLocation(models.Model):
 	zipCode= models.CharField(max_length= 5, blank=True)
 
 	def address_string(self):
-		address = self.street + ", " + self.city + ", " + self.state + " " + self.zipCode
+		address = self.companyID.companyName + ": " + self.street + ", " + self.city + ", " + self.state + " " + self.zipCode
 		return address
 
 	def __unicode__(self):
