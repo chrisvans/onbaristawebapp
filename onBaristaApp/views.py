@@ -141,6 +141,8 @@ def checkInPost(request):
 	return HttpResponseRedirect(reverse('onBaristaApp:baristas'))
 
 def checkOutPost(request):
+	if login_handler(request):
+		return render(request, 'login.html')
 	location = companyLocation.objects.get(pk=request.POST['location'])
 	user = request.session['user']
 	currTime = timezone.now()

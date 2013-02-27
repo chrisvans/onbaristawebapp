@@ -88,10 +88,12 @@
   						{% endif %}
               <li class="nav-header">All Companies:</li>
               {% for company in companies %}
+                {% if user.favCompany != company %}
                 {% if selectedID|stringformat:"s" == company.pk|stringformat:"s" %}
                   <li id="{{company.pk}}" class='active'><a href="{% url 'onBaristaApp:companyHome' company.pk %}">{{company.companyName}}</a></li>
                 {% else %}
                   <li id="{{company.pk}}"><a href="{% url 'onBaristaApp:companyHome' company.pk %}">{{company.companyName}}</a></li>
+                {% endif %}
                 {% endif %}
               {% endfor %}
   					</ul>

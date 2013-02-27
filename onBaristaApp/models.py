@@ -11,7 +11,7 @@ import datetime
 
 class Company(models.Model):
 	companyName = models.CharField(max_length=200)
-	companyContact = models.CharField(max_length=200)
+	companyContact = models.CharField(max_length=200, blank=True)
 	def __unicode__(self):
 		return self.companyName
 	def get_locations(self):
