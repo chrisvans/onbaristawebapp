@@ -3,7 +3,7 @@ from django.http import HttpResponse, Http404, HttpResponseRedirect
 from django.template import Context, loader
 from django.shortcuts import render, get_object_or_404
 from django.core.urlresolvers import reverse
-from onBaristaApp.models import User, checkIn, companyLocation, Company, UserProfile, showUser
+from onBaristaApp.models import User, checkIn, companyLocation, Company, UserProfile
 from django.utils import timezone
 from django.contrib.auth import authenticate, login, logout
 
@@ -13,6 +13,9 @@ def login_handler(request):
 		return False
 	except KeyError:
 		return True
+
+def view_manager(request):
+	pass
 
 def login_view(request):
 	# If you're at the login page and have submitted information, then..
@@ -30,8 +33,6 @@ def login_view(request):
 				request.session['user'] = user
 				# Initialize variables, only populate them if the if conditions allow it.
 				locList=''
-				isFavBarCheckedIn = False
-				checkInObj = ''
 				favCompany= Company()
 				favCompany.pk = '0'
 				# Populate database table with UserProfile class attributes.  Store object as userdetails.
@@ -41,13 +42,7 @@ def login_view(request):
 					locList = favCompany.get_locations()
 					for location in locList:
 						location.checkins = location.get_checkins()
-				if userdetails.favBaristaObj:
-					favBarista = userdetails.favBaristaObj
-					checkInObj = checkIn.objects.filter(barista = favBarista)
-					if checkInObj:
-						isFavBarCheckedIn = True
 				# After successful login, return to home, populate dictionary.
-				#return render(request, 'home.html', {'user_name':user.username, 'user':userdetails, 'locations':locList,'checkIn':checkInObj, 'isCheckedIn': isFavBarCheckedIn})
 				return companyHome(request, favCompany.pk)
 			else:
 				# If user.is_active returns False.  Boolean that can be set manually.
@@ -84,29 +79,21 @@ def companyHome(request, companyID=0):
 	company= ''
 	locations = ''
 	companies = Company.objects.all()
-	isFavBarCheckedIn = False
 	if companyID and companyID != '0':
 		company = Company.objects.get(pk=companyID)
 		locations = company.get_locations()
 		for location in locations:
-				location.checkins = location.get_checkins()
-	if userdetails.favBaristaObj:
-		favBarista = userdetails.favBaristaObj
-		fb = favBarista.user
-		print favBarista
-		checkInObj = checkIn.objects.get(barista = fb)
-		if checkInObj and checkInObj.checkedin:
-			isFavBarCheckedIn = True
-	else:
-		# New Users will need a checkInObj defined, so no error gets thrown. ~
-		checkInObj = ''
+			location.checkins = location.get_checkins()
+	# Issues: navFlag, companies, locations, selectedID
 	return render(request, 'home.html', {'user_name':user.username,
 										 'user':userdetails, 
 										 'companies':companies, 
 										 'locations':locations, 
 										 'selectedID': str(companyID), 
-										 'isCheckedIn':isFavBarCheckedIn,
-										 'checkIn':checkInObj,
+										 #'isCheckedIn':isFavBarCheckedIn,
+										 #'checkIn':checkInObj,
+										 'isCheckedIn':userdetails.isFavBarCheckedIn(),
+										 'checkIn':userdetails.get_favBarCheckIn(),
 										 'navFlag':{'Home':'active', 'Baristas':'', 'ManageFavs':''}})
 
 def checkInPost(request):

@@ -19,8 +19,6 @@ class Company(models.Model):
 
 class companyLocation(models.Model):
 	checkins = {}
-	#checkins = models.ManyToManyField(checkIn)
-	#checkouts = models.ManyToManyFeild(checkIn)
 	companyID = models.ForeignKey(Company)
 	street = models.CharField(max_length=200, blank=True)
 	city = models.CharField(max_length= 20, blank=True)
@@ -91,6 +89,19 @@ class UserProfile(models.Model):
 		return self.userType + ": " + self.user.first_name + " " + self.user.last_name
 	def showUser(self):
 		return self.userType + ": " + self.user.first_name + " " + self.user.last_name
+	def isFavBarCheckedIn(self):
+		# Returns true if this user's favorite barista is checked in.
+		if self.favBaristaObj:
+			checkInObj = checkIn.objects.get(barista = self.favBaristaObj.user)
+			if checkInObj and checkInObj.checkedin:
+				return True
+		return False
+	def get_favBarCheckIn(self):
+		# Returns the favorite barista's user object if it exists, otherwise returns an empty string.
+		if self.favBaristaObj:
+			return checkIn.objects.get(barista = self.favBaristaObj)
+		else:
+			return ''
 
 def create_user_profile(sender, instance, created, **kwargs):
 	# print "instance: " + str(instance)
@@ -119,6 +130,10 @@ class checkIn(models.Model):
 	inTime = models.DateTimeField(null=True)
 	outTime = models.DateTimeField(null=True)
 	checkedin = models.BooleanField(default=True)
+	def showBarista(self):
+		user = self.barista
+		userdetails = self.barista.get_profile()
+		return user.first_name + " " + user.last_name
 	def __unicode__(self):
 		#baristadetails = self.barista.get_profile()
 		#showUser = baristadetails.userType + ": " + self.barista.first_name + " " + self.barista.last_name
@@ -126,18 +141,12 @@ class checkIn(models.Model):
 		uniInTime = uniInTime[0:16]
 		uniOutTime = str(self.outTime)
 		uniOutTime = uniOutTime[0:16]
+		baristadetails = self.barista.get_profile()
 		if self.checkedin:
-			checkinDesc = showUser(self.barista) + " checked in at " + unicode(uniInTime)
+			checkinDesc = self.showBarista() + " checked in at " + unicode(uniInTime)
 		else:
-			checkinDesc = showUser(self.barista) + " checked out at " + unicode(uniOutTime)
+			checkinDesc = self.showBarista() + " checked out at " + unicode(uniOutTime)
 		return checkinDesc
-
-# If we can find a way to make UserProfile reference the same corresponding 
-# User class, this could be a method within UserProfile.
-def showUser(Userobject):
-	user = Userobject
-	userdetails = Userobject.get_profile()
-	return user.first_name + " " + user.last_name
 
 # Possible use of dictionary in the database.
 #class Dicty(models.Model):
