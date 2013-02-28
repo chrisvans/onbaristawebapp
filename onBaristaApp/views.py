@@ -86,6 +86,7 @@ def companyHome(request, companyID=0):
 			location.checkins = location.get_checkins()
 	# Issues: navFlag, companies, locations, selectedID
 	navigation = True
+	fromHome = True
 	return render(request, 'home.html', {'user_name':user.username,
 										 'user':userdetails, 
 										 'companies':companies, 
@@ -94,6 +95,7 @@ def companyHome(request, companyID=0):
 										 'navigation': navigation,
 										 'isCheckedIn':userdetails.isFavBarCheckedIn(),
 										 'checkIn':userdetails.get_favBarCheckIn(),
+										 'fromHome':fromHome,
 										 'navFlag':{'Home':'active', 'Baristas':'', 'ManageFavs':''}})
 
 def checkInPost(request):
@@ -163,7 +165,7 @@ def mark_as_barista(request):
 		request.session['user'] = User.objects.get(username = user.username)
 		return baristas(request, "Now registered as a barista!")
 
-def baristas(request, message =''):
+def baristas(request, message ='', companyID=0):
 	if login_handler(request):
 		return render(request, 'login.html')
 	user = request.session['user']
@@ -176,12 +178,14 @@ def baristas(request, message =''):
 	# was checked in at any location.
 	companies = Company.objects.all()
 	navigation = True
+	fromBaristas = True
 	return render(request, 'baristas.html', {'user':userdetails, 
 											 'locations':locations,
 											 'message':message,
 											 'usercheck':userdetails.usercheckedin,
 											 'companies':companies,
 											 'navigation':navigation,
+											 'fromBaristas':fromBaristas,
 											 'navFlag':{'Home':'', 'Baristas':'active', 'ManageFavs':''}})
 
 def favorites(request, message=''):
