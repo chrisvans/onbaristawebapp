@@ -188,13 +188,14 @@ def baristas(request, message ='', companyID=0):
 											 'fromBaristas':fromBaristas,
 											 'navFlag':{'Home':'', 'Baristas':'active', 'ManageFavs':''}})
 
-def favorites(request, message=''):
+def favorites(request, message='', navigation=False):
 	if login_handler(request):
 		return render(request, 'login.html')
 	user = request.session['user']
 	userdetails = user.get_profile()
 	return render(request, 'Favorites.html', {'user':userdetails,
 											  'message':message,
+											  'navigation':navigation,
 											  'navFlag':{'Home':'', 'Baristas':'', 'ManageFavs':'active'}})
 
 
