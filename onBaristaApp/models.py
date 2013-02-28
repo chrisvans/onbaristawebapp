@@ -99,9 +99,11 @@ class UserProfile(models.Model):
 	def get_favBarCheckIn(self):
 		# Returns the favorite barista's user object if it exists, otherwise returns an empty string.
 		if self.favBaristaObj:
-			return checkIn.objects.get(barista = self.favBaristaObj)
-		else:
-			return ''
+			try:
+				checkIn.objects.get(barista = self.favBaristaObj)
+				return checkIn.objects.get(barista = self.favBaristaObj)
+			except (KeyError,checkIn.DoesNotExist):
+				return ''
 
 def create_user_profile(sender, instance, created, **kwargs):
 	# print "instance: " + str(instance)
