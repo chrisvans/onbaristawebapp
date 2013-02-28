@@ -85,13 +85,13 @@ def companyHome(request, companyID=0):
 		for location in locations:
 			location.checkins = location.get_checkins()
 	# Issues: navFlag, companies, locations, selectedID
+	navigation = True
 	return render(request, 'home.html', {'user_name':user.username,
 										 'user':userdetails, 
 										 'companies':companies, 
 										 'locations':locations, 
 										 'selectedID': str(companyID), 
-										 #'isCheckedIn':isFavBarCheckedIn,
-										 #'checkIn':checkInObj,
+										 'navigation': navigation,
 										 'isCheckedIn':userdetails.isFavBarCheckedIn(),
 										 'checkIn':userdetails.get_favBarCheckIn(),
 										 'navFlag':{'Home':'active', 'Baristas':'', 'ManageFavs':''}})
@@ -167,18 +167,21 @@ def baristas(request, message =''):
 	if login_handler(request):
 		return render(request, 'login.html')
 	user = request.session['user']
-	locList= ''
+	locations= ''
 	userdetails = user.get_profile()
 	if userdetails.favCompany:
 		favCompany = userdetails.favCompany
-		locList = favCompany.get_locations()
+		locations = favCompany.get_locations()
 	# Added in usercheck dictionary pass so it could be used to verify if a user
 	# was checked in at any location.
-	usercheck = userdetails.usercheckedin
+	companies = Company.objects.all()
+	navigation = True
 	return render(request, 'baristas.html', {'user':userdetails, 
-											 'locations':locList,
+											 'locations':locations,
 											 'message':message,
-											 'usercheck':usercheck,
+											 'usercheck':userdetails.usercheckedin,
+											 'companies':companies,
+											 'navigation':navigation,
 											 'navFlag':{'Home':'', 'Baristas':'active', 'ManageFavs':''}})
 
 def favorites(request, message=''):
@@ -204,7 +207,8 @@ def update_favs(request):
 		userdetails.favCompany = company
 	userdetails.save()
 	request.session['user'] = user
-	return favorites(request, "Your favorites have been updated")
+	navigation = False
+	return favorites(request, "Your favorites have been updated", {'navigation':navigation})
 
 def baristaList(request):
 	if login_handler(request):

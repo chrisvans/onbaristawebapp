@@ -73,6 +73,7 @@
   	<div class="container-fluid">
   		<div class="row-fluid">
   			<div class="span3">
+          {% if navigation %}
   				<div class="well sidebar-nav">
   					<ul class="nav nav-list">
   						{% if user.favCompany %}
@@ -83,7 +84,7 @@
                   <li id ="{{user.favCompany.pk}}"><a href="{% url 'onBaristaApp:companyHome' user.favCompany.pk %}">{{user.favCompany.companyName}}</a></li>
                 {% endif %}
   						{% else %}
-              <li class="nav-header">Favorite Companies:</li>
+              <li class="nav-header">Favorite Company:</li>
   						<li><a href="{% url 'onBaristaApp:favorites' %}">Click to add a fav company</a></li>
   						{% endif %}
               <li class="nav-header">All Companies:</li>
@@ -98,12 +99,14 @@
               {% endfor %}
   					</ul>
   				</div>
+          {% endif %}
   			</div>
   			<div class="span9">
   			  	{% block contents %}{% endblock %}
   			</div>
   		</div>
   	</div>
+
 
 
     <div class='navbar navbar-inverse navbar-fixed-bottom'>
