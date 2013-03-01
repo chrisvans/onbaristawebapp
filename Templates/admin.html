@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% load url from future %}
+
+{% block contents %}
+{% if message %}
+<div class="alert">
+	<button type="button" class="close" data-dismiss="alert alert-success">&times;</button>
+	<strong>Hey!</strong> {{message}}
+</div>
+{% endif %}
+<h2> Do Admin things!</h2>
+<ul>
+	<li>Create a company!</li>
+	<li>Add locations to a company!</li>
+	<li>update companies!</li>
+	<li>the options are limitless!</li>
+</ul>
+
+
+{% endblock %}
