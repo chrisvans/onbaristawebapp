@@ -63,7 +63,7 @@
                   <a href="{% url 'onBaristaApp:companyHome' '0' %}">Home</a>
                 {% endif %}
               </li>
-  						<li class="{{navFlag.Baristas}}"><a href="{% url 'onBaristaApp:baristas' %}">Baristas</a></li>
+  						<li class="{{navFlag.Baristas}}"><a href="{% url 'onBaristaApp:baristas' '0' %}">Baristas</a></li>
   						<li class="{{navFlag.ManageFavs}}"><a href="{% url 'onBaristaApp:favorites' %}">Manage Favs</a></li>
   					</ul>
   				</div>
@@ -107,9 +107,9 @@
               {% if user.favCompany %}
                 <li class="nav-header">Favorite Company:</li>
                 {% if selectedID|stringformat:"s" == user.favCompany.pk|stringformat:"s" %}
-                  <li id ="{{user.favCompany.pk}}" class="active"><a href="{% url 'onBaristaApp:baristas' %}">{{user.favCompany.companyName}}</a></li>
+                  <li id ="{{user.favCompany.pk}}" class="active"><a href="{% url 'onBaristaApp:baristas' user.favCompany.pk %}">{{user.favCompany.companyName}}</a></li>
                 {% else %}
-                  <li id ="{{user.favCompany.pk}}"><a href="{% url 'onBaristaApp:baristas' %}">{{user.favCompany.companyName}}</a></li>
+                  <li id ="{{user.favCompany.pk}}"><a href="{% url 'onBaristaApp:baristas' user.favCompany.pk %}">{{user.favCompany.companyName}}</a></li>
                 {% endif %}
               {% else %}
               <li class="nav-header">Favorite Company:</li>
@@ -119,9 +119,9 @@
               {% for company in companies %}
                 {% if user.favCompany != company %}
                 {% if selectedID|stringformat:"s" == company.pk|stringformat:"s" %}
-                  <li id="{{company.pk}}" class='active'><a href="{% url 'onBaristaApp:baristas' %}">{{company.companyName}}</a></li>
+                  <li id="{{company.pk}}" class='active'><a href="{% url 'onBaristaApp:baristas' company.pk %}">{{company.companyName}}</a></li>
                 {% else %}
-                  <li id="{{company.pk}}"><a href="{% url 'onBaristaApp:baristas' %}">{{company.companyName}}</a></li>
+                  <li id="{{company.pk}}"><a href="{% url 'onBaristaApp:baristas' company.pk %}">{{company.companyName}}</a></li>
                 {% endif %}
                 {% endif %}
               {% endfor %}

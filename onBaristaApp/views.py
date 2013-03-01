@@ -108,10 +108,10 @@ def checkInPost(request):
 	# A user may not be checked in or checked out.  This only applies if they are.
 	try:
 		d = checkIn.objects.get(barista = user)
-		# If the checkIn object's checkin flag is false, then the user is checked out.
+		# If there is already a checkin object, delete it to reduce errors.
+		# Also takes care of a checked out object.
 		# Delete the checked out entry.
-		if not d.checkedin:
-			d.delete()
+		d.delete()
 	except (KeyError,checkIn.DoesNotExist):
 		1+1
 	# Initialize checkIn object, set it's attributes appropriately to reflect
@@ -127,7 +127,7 @@ def checkInPost(request):
 	userdetails.save()
 	request.session['user'] = User.objects.get(username = user.username)
 	ci.save()
-	return HttpResponseRedirect(reverse('onBaristaApp:baristas'))
+	return HttpResponseRedirect(reverse('onBaristaApp:baristas', kwargs={'companyID':location.companyID.pk}))
 
 def checkOutPost(request):
 	if login_handler(request):
@@ -148,7 +148,7 @@ def checkOutPost(request):
 	userdetails.save()
 	request.session['user'] = User.objects.get(username = user.username)
 	co.save()
-	return HttpResponseRedirect(reverse('onBaristaApp:baristas'))
+	return HttpResponseRedirect(reverse('onBaristaApp:baristas', kwargs={'companyID':location.companyID.pk}))
 
 def mark_as_barista(request):
 	if login_handler(request):
@@ -157,15 +157,15 @@ def mark_as_barista(request):
 	userdetails = user.get_profile()
 	if userdetails.userType == "Barista":
 		print 'Warning from mark_as_barista, user accessed barista signup button or refreshed page on submit when user was already a barista.'
-		return baristas(request)
+		return companyBaristas(request)
 	else:
 		userdetails.userType = "Barista"
 		userdetails.save()
 		user.save()
 		request.session['user'] = User.objects.get(username = user.username)
-		return baristas(request, "Now registered as a barista!")
+		return companyBaristas(request, "Now registered as a barista!")
 
-def baristas(request, message ='', companyID=0):
+def baristas(request, message =''):
 	if login_handler(request):
 		return render(request, 'login.html')
 	user = request.session['user']
@@ -187,6 +187,33 @@ def baristas(request, message ='', companyID=0):
 											 'navigation':navigation,
 											 'fromBaristas':fromBaristas,
 											 'navFlag':{'Home':'', 'Baristas':'active', 'ManageFavs':''}})
+
+def companyBaristas(request, message='', companyID=0):
+	if login_handler(request):
+		return render(request, 'login.html')
+	user = request.session['user']
+	userdetails = user.get_profile()
+	locations= ''
+	if userdetails.favCompany:
+		favCompany = userdetails.favCompany
+		locations = favCompany.get_locations()
+	if companyID and companyID != '0':
+		company = Company.objects.get(pk=companyID)
+		locations = company.get_locations()
+		for location in locations:
+			location.checkins = location.get_checkins()
+	companies = Company.objects.all()
+	navigation = True
+	fromBaristas = True
+	return render(request, 'baristas.html', {'companyID':companyID,
+											   'user':userdetails, 
+											   'locations':locations,
+											   'message':message,
+											   'usercheck':userdetails.usercheckedin,
+											   'companies':companies,
+											   'navigation':navigation,
+											   'fromBaristas':fromBaristas,
+											   'navFlag':{'Home':'', 'Baristas':'active', 'ManageFavs':''}})
 
 def favorites(request, message='', navigation=False):
 	if login_handler(request):
@@ -213,7 +240,7 @@ def update_favs(request):
 	userdetails.save()
 	request.session['user'] = user
 	navigation = False
-	return favorites(request, "Your favorites have been updated", {'navigation':navigation})
+	return favorites(request, "Your favorites have been updated", navigation)
 
 def baristaList(request):
 	if login_handler(request):
