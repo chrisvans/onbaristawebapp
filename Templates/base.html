@@ -79,7 +79,7 @@ $('body').on('touchstart.dropdown', '.dropdown-menu', function (e) { e.stopPropa
               </li>
   						<li class="{{navFlag.Baristas}}"><a href="{% url 'onBaristaApp:baristas' '0' %}">Baristas</a></li>
   						<li class="{{navFlag.ManageFavs}}"><a href="{% url 'onBaristaApp:favorites' %}">Manage Favs</a></li>
-              <li class="{{navFlag.Profile}}"><a href="#">Update Profile</a></li>
+              <li class="{{navFlag.ManageProfile}}"><a href="{% url 'onBaristaApp:view_profile' %}">Manage Profile</a></li>
   					</ul>
   				</div>
   			</div>

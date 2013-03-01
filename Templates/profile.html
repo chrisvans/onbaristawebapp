@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% load url from future %}
+
+{% block contents %}
+{% if message %}
+<div class="alert">
+	<button type="button" class="close" data-dismiss="alert alert-success">&times;</button>
+	<strong>Hey!</strong> {{message}}
+</div>
+{% endif %}
+
+
+
+
+
+{% endblock %}

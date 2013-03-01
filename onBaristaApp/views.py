@@ -23,7 +23,7 @@ def view_manager(request, view_name):
 		raise PermissionDenied()
 	else:
 		userdetails = user.get_profile()
-		d = {'navFlag':{'Home':'', 'Baristas':'', 'ManageFavs':''},
+		d = {'navFlag':{'Home':'', 'Baristas':'', 'ManageFavs':'', 'ManageProfile':''},
 		 'user_name':user.username,
 		 'user':userdetails,
 		 'isCheckedIn':userdetails.isFavBarCheckedIn(),
@@ -230,6 +230,10 @@ def companyList(request):
 		return render(request, 'login.html')
 	companies = Company.objects.filter(companyName__startswith = request.POST['searchString'])
 	return render(request, 'autocompleteList.html', {'results':companies})
+
+def view_profile(request):
+	params, user, userdetails = view_manager(request, 'ManageProfile')
+	return render(request, 'profile.html', params)
 
 def logout_view(request):
 	logout(request)

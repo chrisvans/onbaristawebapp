@@ -17,4 +17,5 @@ urlpatterns = patterns('',
 			url(r'^register/$', views.register, name = 'register'),
 			url(r'^home/(?P<companyID>\d+)/$', views.companyHome, name='companyHome'),
 			url(r'^home/$', views.login_view, name = 'login_view'),
+			url(r'^Profile/$', views.view_profile, name='view_profile')
 			)
