@@ -37,7 +37,8 @@
       });
 
     });*/
-    $('body').on('touchstart.dropdown', '.dropdown-menu', function (e) { e.stopPropagation(); });
+    $('.dropdown-menu a').live('click',function(e) {
+      e.stopPropagation();});
     </script>
 
     <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
@@ -65,14 +66,17 @@
                 {% endif %}
               </li>
   						<li class="{{navFlag.Baristas}}"><a href="{% url 'onBaristaApp:baristas' '0' %}">Baristas</a></li>
-  						<li class="{{navFlag.ManageFavs}}"><a href="{% url 'onBaristaApp:favorites' %}">Manage Favs</a></li>
+  						<!--<li class="{{navFlag.ManageFavs}}"><a href="{% url 'onBaristaApp:favorites' %}">Manage Favs</a></li>
               <li class="{{navFlag.ManageProfile}}"><a href="{% url 'onBaristaApp:view_profile' %}">Manage Profile</a></li>
-              <li><a href="{% url 'onBaristaApp:logout' %}">logout</a></li>
+              <li><a href="{% url 'onBaristaApp:logout' %}">logout</a></li>-->
             </ul>
             <!-- This is the User Name/nav drop down. for updating profile/favorites/loging out -->
             <!--<p class="navbar-text pull-right" style='float:right'>-->
-              <ul class="nav nav-pills" style='float:right'>
-                <li class="dropdown">
+            <div style='float:right'>
+              <ul class="nav nav-pills" style='display:inline'>
+                <li><img src='/static/Media/{{user.mug}}' style='width:25px; display:inline' class="img-rounded"></li>
+                <li class="dropdown" style="display:inline">
+
                   <a class="dropdown-toggle" data-toggle="dropdown" href="#" style='color:#08C'>
                     {{user.user.username}}<b class="caret"></b>
                   </a> 
@@ -84,6 +88,7 @@
                   </ul>
                 </li>
               </ul>
+            </div>
             <!--</p>-->
   				</div>
   			</div>
