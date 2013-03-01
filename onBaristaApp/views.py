@@ -6,6 +6,7 @@ from django.core.urlresolvers import reverse
 from onBaristaApp.models import User, checkIn, companyLocation, Company, UserProfile
 from django.utils import timezone
 from django.contrib.auth import authenticate, login, logout
+from django.core.exceptions import PermissionDenied
 
 
 
@@ -18,18 +19,18 @@ def login_handler(request):
 
 def view_manager(request, view_name):
 	user = login_handler(request)
-	userdetails = user.get_profile()
 	if user is None:
-		return render(request, 'login.html')
-
-	d = {'navFlag':{'Home':'', 'Baristas':'', 'ManageFavs':''},
+		raise PermissionDenied()
+	else:
+		userdetails = user.get_profile()
+		d = {'navFlag':{'Home':'', 'Baristas':'', 'ManageFavs':''},
 		 'user_name':user.username,
 		 'user':userdetails,
 		 'isCheckedIn':userdetails.isFavBarCheckedIn(),
 		 'checkIn':userdetails.get_favBarCheckIn(),
 		 'usercheck':userdetails.usercheckedin, 
 		 }
-	d['navFlag'][view_name] = 'active'
+		d['navFlag'][view_name] = 'active'
 	return d, user, userdetails
 
 def login_view(request):
@@ -198,21 +199,16 @@ def companyBaristas(request, message='', companyID=0):
 	return render(request, 'baristas.html', params)
 
 def favorites(request, message='', navigation=False):
-	user = login_handler(request)
-	if user is None:
-		return render(request, 'login.html')
-	userdetails = user.get_profile()
-	return render(request, 'Favorites.html', {'user':userdetails,
-											  'message':message,
-											  'navigation':navigation,
-											  'isCheckedIn':userdetails.isFavBarCheckedIn(),
-											  'checkIn':userdetails.get_favBarCheckIn(),
-											  'navFlag':{'Home':'', 'Baristas':'', 'ManageFavs':'active'}})
+	params, user, userdetails = view_manager(request, 'ManageFavs')
+	params['message'] = message
+	params['navigation'] = navigation
+
+	return render(request, 'Favorites.html', params)
 
 
 def update_favs(request):
 	params, user, userdetails = view_manager(request, 'Baristas')
-	
+
 	userdetails.update_favs(request.POST['companyID'], request.POST['baristaID'])
 
 	request.session['user'] = user
