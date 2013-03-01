@@ -37,7 +37,7 @@
       });
 
     });*/
-$('body').on('touchstart.dropdown', '.dropdown-menu', function (e) { e.stopPropagation(); });
+    $('body').on('touchstart.dropdown', '.dropdown-menu', function (e) { e.stopPropagation(); });
     </script>
 
     <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
@@ -55,20 +55,7 @@ $('body').on('touchstart.dropdown', '.dropdown-menu', function (e) { e.stopPropa
   					<span class="icon-bar"></span>
   				</button>
   				<a class="brand" href="#">On Barista</a>
-  				<!--<div class="nav-collapse collapse">-->
-          <div>
-  					<p class="navbar-text pull-right">
-              <ul class="nav nav-pills">
-                <li class="dropdown">
-                  <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-                    {{user.user.username}}<b class="caret"></b>
-                  </a> 
-                  <ul class='dropdown-menu' data-toggle='dropdown'>
-                    <li><a href="{% url 'onBaristaApp:logout' %}">logout</a></li>
-                  </ul>
-                </li>
-              </ul>
-            </p>
+  				<div class="nav-collapse collapse">
   					<ul class="nav">
               <li class="{{navFlag.Home}}">
                 {% if user.favCompany %}
@@ -80,7 +67,24 @@ $('body').on('touchstart.dropdown', '.dropdown-menu', function (e) { e.stopPropa
   						<li class="{{navFlag.Baristas}}"><a href="{% url 'onBaristaApp:baristas' '0' %}">Baristas</a></li>
   						<li class="{{navFlag.ManageFavs}}"><a href="{% url 'onBaristaApp:favorites' %}">Manage Favs</a></li>
               <li class="{{navFlag.ManageProfile}}"><a href="{% url 'onBaristaApp:view_profile' %}">Manage Profile</a></li>
-  					</ul>
+              <li><a href="{% url 'onBaristaApp:logout' %}">logout</a></li>
+            </ul>
+            <!-- This is the User Name/nav drop down. for updating profile/favorites/loging out -->
+            <!--<p class="navbar-text pull-right" style='float:right'>-->
+              <ul class="nav nav-pills" style='float:right'>
+                <li class="dropdown">
+                  <a class="dropdown-toggle" data-toggle="dropdown" href="#" style='color:#08C'>
+                    {{user.user.username}}<b class="caret"></b>
+                  </a> 
+                  <ul class='dropdown-menu' data-toggle='dropdown'>
+                    <li><a href="{% url 'onBaristaApp:favorites' %}">Manage Favs</a></li>
+                    <li><a href="{% url 'onBaristaApp:view_profile' %}">Manage Profile</a></li>
+                    <li class="divider"></li>
+                    <li><a href="{% url 'onBaristaApp:logout' %}">logout</a></li>
+                  </ul>
+                </li>
+              </ul>
+            <!--</p>-->
   				</div>
   			</div>
   		</div>

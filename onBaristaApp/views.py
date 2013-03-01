@@ -247,7 +247,9 @@ def view_profile(request):
 	else:
 		form = MugForm()
 	params['form'] = form
-
+	userdetails = user.get_profile()
+	params['user'] = userdetails
+	print userdetails.mug
 	return render(request, 'profile.html', params)
 
 def logout_view(request):
