@@ -212,19 +212,11 @@ def favorites(request, message='', navigation=False):
 
 def update_favs(request):
 	params, user, userdetails = view_manager(request, 'Baristas')
+	
+	userdetails.update_favs(request.POST['companyID'], request.POST['baristaID'])
 
-	if request.POST['baristaID']:
-		barista = UserProfile.objects.get(pk=request.POST['baristaID'])
-		userdetails.favBaristaObj = barista
-	if request.POST['companyID']:
-		company = Company.objects.get(pk=request.POST['companyID'])
-		userdetails.favCompany = company
-	userdetails.save()
 	request.session['user'] = user
 	params['navigation'] = False
-
-	#local_params = {'navigation': navigation}
-	#params = dict(d.items() + local_params.items())
 
 	return favorites(request, "Your favorites have been updated", params)
 

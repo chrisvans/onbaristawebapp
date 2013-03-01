@@ -104,6 +104,14 @@ class UserProfile(models.Model):
 				return checkIn.objects.get(barista = self.favBaristaObj.user)
 			except (KeyError,checkIn.DoesNotExist):
 				return 'error'
+	def update_favs(self, companyID, baristaID):
+		if baristaID:
+			baristaObj = UserProfile.objects.get(pk=baristaID)
+			self.favBaristaObj = baristaObj
+		if companyID:
+			companyObj = Company.objects.get(pk=companyID)
+			self.favCompany = companyObj
+		self.save()
 
 def create_user_profile(sender, instance, created, **kwargs):
 	# print "instance: " + str(instance)
