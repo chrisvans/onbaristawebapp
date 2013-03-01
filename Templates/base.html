@@ -6,6 +6,7 @@
     <title>onBarista</title>
     <script src="/static/bootstrap/js/jquery.js"></script>
     <script src="/static/bootstrap/js/bootstrap.js"></script>
+    <!--<script src="/static/bootstrap/js/bootstrap-dropdown.js"></script>-->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">
@@ -36,6 +37,7 @@
       });
 
     });*/
+    $('body').on('touchstart.dropdown', '.dropdown-menu', function (e) { e.stopPropagation(); });
     </script>
 
     <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
@@ -54,7 +56,6 @@
   				</button>
   				<a class="brand" href="#">On Barista</a>
   				<div class="nav-collapse collapse">
-  					<p class="navbar-text pull-right">Logged in as {{user.user.username}}, <a href="{% url 'onBaristaApp:logout' %}">logout</a></p>
   					<ul class="nav">
               <li class="{{navFlag.Home}}">
                 {% if user.favCompany %}
@@ -65,7 +66,25 @@
               </li>
   						<li class="{{navFlag.Baristas}}"><a href="{% url 'onBaristaApp:baristas' '0' %}">Baristas</a></li>
   						<li class="{{navFlag.ManageFavs}}"><a href="{% url 'onBaristaApp:favorites' %}">Manage Favs</a></li>
-  					</ul>
+              <li class="{{navFlag.ManageProfile}}"><a href="{% url 'onBaristaApp:view_profile' %}">Manage Profile</a></li>
+              <li><a href="{% url 'onBaristaApp:logout' %}">logout</a></li>
+            </ul>
+            <!-- This is the User Name/nav drop down. for updating profile/favorites/loging out -->
+            <!--<p class="navbar-text pull-right" style='float:right'>-->
+              <ul class="nav nav-pills" style='float:right'>
+                <li class="dropdown">
+                  <a class="dropdown-toggle" data-toggle="dropdown" href="#" style='color:#08C'>
+                    {{user.user.username}}<b class="caret"></b>
+                  </a> 
+                  <ul class='dropdown-menu' data-toggle='dropdown'>
+                    <li><a href="{% url 'onBaristaApp:favorites' %}">Manage Favs</a></li>
+                    <li><a href="{% url 'onBaristaApp:view_profile' %}">Manage Profile</a></li>
+                    <li class="divider"></li>
+                    <li><a href="{% url 'onBaristaApp:logout' %}">logout</a></li>
+                  </ul>
+                </li>
+              </ul>
+            <!--</p>-->
   				</div>
   			</div>
   		</div>

@@ -74,6 +74,7 @@ class companyLocation(models.Model):
 
 class UserProfile(models.Model):
 	user = models.OneToOneField(User)
+	mug = models.FileField(upload_to='Mugs')
 	#full_name =user.get_full_name()
 	# Use 'User'.get_profile().userType to get the userType, for example
 	full_name=models.CharField(max_length=50, default='', null=True, blank=True)
@@ -104,6 +105,14 @@ class UserProfile(models.Model):
 				return checkIn.objects.get(barista = self.favBaristaObj.user)
 			except (KeyError,checkIn.DoesNotExist):
 				return 'error'
+	def update_favs(self, companyID, baristaID):
+		if baristaID:
+			baristaObj = UserProfile.objects.get(pk=baristaID)
+			self.favBaristaObj = baristaObj
+		if companyID:
+			companyObj = Company.objects.get(pk=companyID)
+			self.favCompany = companyObj
+		self.save()
 
 def create_user_profile(sender, instance, created, **kwargs):
 	# print "instance: " + str(instance)

@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% load url from future %}
+
+{% block contents %}
+{% if message %}
+<div class="alert">
+	<button type="button" class="close" data-dismiss="alert alert-success">&times;</button>
+	<strong>Hey!</strong> {{message}}
+</div>
+{% endif %}
+<div style=''>
+<img src='/static/Media/{{user.mug}}' style='width:50px' class="img-polaroid">
+
+        <form style='' action="{% url 'onBaristaApp:view_profile' %}" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <p>{{ form.non_field_errors }}</p>
+            <p>{{ form.mug.help_text }}</p>
+            <p>
+                {{ form.mug.errors }}
+                {{ form.mug }}
+            </p>
+            <p><input type="submit" value="Upload" /></p>
+        </form>
+</div>
+<div style= 'float:right'>
+	<form class='form-horizontal'>
+		<div class="control-group">
+			<label class='control-label' for='inputEmail'>
+		</div>
+	</form>
+	{{userObj.first_name}} {{userObj.last_name}}, {{userObj.email}}
+{{userObj.pk}}
+{{user.mug}}
+
+</div>
+
+
+
+{% endblock %}

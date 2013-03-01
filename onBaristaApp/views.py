@@ -4,8 +4,13 @@ from django.template import Context, loader
 from django.shortcuts import render, get_object_or_404
 from django.core.urlresolvers import reverse
 from onBaristaApp.models import User, checkIn, companyLocation, Company, UserProfile
+from onBaristaApp.forms import MugForm
+
 from django.utils import timezone
 from django.contrib.auth import authenticate, login, logout
+from django.core.exceptions import PermissionDenied
+
+
 
 def login_handler(request):
 	try:
@@ -14,8 +19,22 @@ def login_handler(request):
 	except KeyError:
 		return None
 
-def view_manager(request):
-	pass
+def view_manager(request, view_name):
+	user = login_handler(request)
+	if user is None:
+		raise PermissionDenied()
+	else:
+		userdetails = user.get_profile()
+		d = {'navFlag':{'Home':'', 'Baristas':'', 'ManageFavs':'', 'ManageProfile':''},
+		 'user_name':user.username,
+		 'user':userdetails,
+		 'userObj': user,
+		 'isCheckedIn':userdetails.isFavBarCheckedIn(),
+		 'checkIn':userdetails.get_favBarCheckIn(),
+		 'usercheck':userdetails.usercheckedin, 
+		 }
+		d['navFlag'][view_name] = 'active'
+	return d, user, userdetails
 
 def login_view(request):
 	# If you're at the login page and have submitted information, then..
@@ -65,17 +84,9 @@ def login_view(request):
 		# If no information has been submitted, and there is no active 'user' in session (login).
 		return render(request, 'login.html')
 
-def home(request):
-	user = login_handler(request)
-	if user is None:
-		return render(request, 'login.html')
-	return render(request, 'home.html')
-
 def companyHome(request, companyID=0):
-	user = login_handler(request)
-	if user is None:
-		return render(request, 'login.html')
-	userdetails = user.get_profile()
+	d, user, userdetails = view_manager(request, 'Home')
+
 	company= ''
 	locations = ''
 	companies = Company.objects.all()
@@ -87,16 +98,15 @@ def companyHome(request, companyID=0):
 	# Issues: navFlag, companies, locations, selectedID
 	navigation = True
 	fromHome = True
-	return render(request, 'home.html', {'user_name':user.username,
-										 'user':userdetails, 
-										 'companies':companies, 
-										 'locations':locations, 
-										 'selectedID': str(companyID), 
-										 'navigation': navigation,
-										 'isCheckedIn':userdetails.isFavBarCheckedIn(),
-										 'checkIn':userdetails.get_favBarCheckIn(),
-										 'fromHome':fromHome,
-										 'navFlag':{'Home':'active', 'Baristas':'', 'ManageFavs':''}})
+
+	local_d = {'companies':companies, 
+				'locations':locations, 
+				'selectedID': str(companyID), 
+				'navigation': navigation,
+				'fromHome':fromHome,}
+	params = dict(d.items() + local_d.items())
+
+	return render(request, 'home.html', params)
 
 def checkInPost(request):
 	user = login_handler(request)
@@ -166,10 +176,8 @@ def mark_as_barista(request):
 		return companyBaristas(request, "Now registered as a barista!")
 
 def companyBaristas(request, message='', companyID=0):
-	user = login_handler(request)
-	if user is None:
-		return render(request, 'login.html')
-	userdetails = user.get_profile()
+	d, user, userdetails = view_manager(request, 'Baristas')
+
 	locations= ''
 	if userdetails.favCompany:
 		favCompany = userdetails.favCompany
@@ -182,46 +190,34 @@ def companyBaristas(request, message='', companyID=0):
 	companies = Company.objects.all()
 	navigation = True
 	fromBaristas = True
-	return render(request, 'baristas.html', {'companyID':companyID,
-											   'user':userdetails, 
-											   'locations':locations,
-											   'message':message,
-											   'usercheck':userdetails.usercheckedin,
-											   'companies':companies,
-											   'navigation':navigation,
-											   'isCheckedIn':userdetails.isFavBarCheckedIn(),
-											   'checkIn':userdetails.get_favBarCheckIn(),
-											   'fromBaristas':fromBaristas,
-											   'navFlag':{'Home':'', 'Baristas':'active', 'ManageFavs':''}})
+
+	local_d = {'companyID':companyID,
+			   'locations':locations,
+			   'message':message,
+			   'companies':companies,
+			   'navigation':navigation,
+			   'fromBaristas':fromBaristas,}
+	params = dict(d.items() + local_d.items())
+
+	return render(request, 'baristas.html', params)
 
 def favorites(request, message='', navigation=False):
-	user = login_handler(request)
-	if user is None:
-		return render(request, 'login.html')
-	userdetails = user.get_profile()
-	return render(request, 'Favorites.html', {'user':userdetails,
-											  'message':message,
-											  'navigation':navigation,
-											  'isCheckedIn':userdetails.isFavBarCheckedIn(),
-											  'checkIn':userdetails.get_favBarCheckIn(),
-											  'navFlag':{'Home':'', 'Baristas':'', 'ManageFavs':'active'}})
+	params, user, userdetails = view_manager(request, 'ManageFavs')
+	params['message'] = message
+	params['navigation'] = navigation
+
+	return render(request, 'Favorites.html', params)
 
 
 def update_favs(request):
-	user = login_handler(request)
-	if user is None:
-		return render(request, 'login.html')
-	userdetails = user.get_profile()
-	if request.POST['baristaID']:
-		barista = UserProfile.objects.get(pk=request.POST['baristaID'])
-		userdetails.favBaristaObj = barista
-	if request.POST['companyID']:
-		company = Company.objects.get(pk=request.POST['companyID'])
-		userdetails.favCompany = company
-	userdetails.save()
+	params, user, userdetails = view_manager(request, 'Baristas')
+
+	userdetails.update_favs(request.POST['companyID'], request.POST['baristaID'])
+
 	request.session['user'] = user
-	navigation = False
-	return favorites(request, "Your favorites have been updated", navigation)
+	params['navigation'] = False
+
+	return favorites(request, "Your favorites have been updated", params)
 
 def baristaList(request):
 	user = login_handler(request)
@@ -237,6 +233,24 @@ def companyList(request):
 		return render(request, 'login.html')
 	companies = Company.objects.filter(companyName__startswith = request.POST['searchString'])
 	return render(request, 'autocompleteList.html', {'results':companies})
+
+def view_profile(request):
+	params, user, userdetails = view_manager(request, 'ManageProfile')
+	if request.method == 'POST':
+		form = MugForm(request.POST, request.FILES)
+		if form.is_valid():
+			print "form is valid"
+			userdetails.mug = request.FILES['mug']
+			userdetails.save()
+			print "just saved user details"
+			return HttpResponseRedirect(reverse('onBaristaApp:view_profile'))
+	else:
+		form = MugForm()
+	params['form'] = form
+	userdetails = user.get_profile()
+	params['user'] = userdetails
+	print userdetails.mug
+	return render(request, 'profile.html', params)
 
 def logout_view(request):
 	logout(request)
