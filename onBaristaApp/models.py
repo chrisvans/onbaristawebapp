@@ -74,6 +74,7 @@ class companyLocation(models.Model):
 
 class UserProfile(models.Model):
 	user = models.OneToOneField(User)
+	mug = models.FileField(upload_to='Mugs')
 	#full_name =user.get_full_name()
 	# Use 'User'.get_profile().userType to get the userType, for example
 	full_name=models.CharField(max_length=50, default='', null=True, blank=True)

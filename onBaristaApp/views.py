@@ -26,6 +26,7 @@ def view_manager(request, view_name):
 		d = {'navFlag':{'Home':'', 'Baristas':'', 'ManageFavs':'', 'ManageProfile':''},
 		 'user_name':user.username,
 		 'user':userdetails,
+		 'userObj': user,
 		 'isCheckedIn':userdetails.isFavBarCheckedIn(),
 		 'checkIn':userdetails.get_favBarCheckIn(),
 		 'usercheck':userdetails.usercheckedin, 
