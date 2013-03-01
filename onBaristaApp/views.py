@@ -10,9 +10,9 @@ from django.contrib.auth import authenticate, login, logout
 def login_handler(request):
 	try:
 		user = request.session['user']
-		return False
+		return user
 	except KeyError:
-		return True
+		return None
 
 def view_manager(request):
 	pass
@@ -66,15 +66,15 @@ def login_view(request):
 		return render(request, 'login.html')
 
 def home(request):
-	if login_handler(request):
+	user = login_handler(request)
+	if user is None:
 		return render(request, 'login.html')
-	user = request.session['user']
 	return render(request, 'home.html')
 
 def companyHome(request, companyID=0):
-	if login_handler(request):
+	user = login_handler(request)
+	if user is None:
 		return render(request, 'login.html')
-	user = request.session['user']
 	userdetails = user.get_profile()
 	company= ''
 	locations = ''
@@ -99,9 +99,9 @@ def companyHome(request, companyID=0):
 										 'navFlag':{'Home':'active', 'Baristas':'', 'ManageFavs':''}})
 
 def checkInPost(request):
-	if login_handler(request):
+	user = login_handler(request)
+	if user is None:
 		return render(request, 'login.html')
-	user = request.session['user']
 	location = companyLocation.objects.get(pk=request.POST['location'])
 	# Is it just me or do the available timezone methods seem a bit lacking?
 	currTime = timezone.now()
@@ -130,10 +130,10 @@ def checkInPost(request):
 	return HttpResponseRedirect(reverse('onBaristaApp:baristas', kwargs={'companyID':location.companyID.pk}))
 
 def checkOutPost(request):
-	if login_handler(request):
+	user = login_handler(request)
+	if user is None:
 		return render(request, 'login.html')
 	location = companyLocation.objects.get(pk=request.POST['location'])
-	user = request.session['user']
 	currTime = timezone.now()
 	# Same as checkInPost but inverted when necessary.
 	d = checkIn.objects.get(barista = user)
@@ -151,9 +151,9 @@ def checkOutPost(request):
 	return HttpResponseRedirect(reverse('onBaristaApp:baristas', kwargs={'companyID':location.companyID.pk}))
 
 def mark_as_barista(request):
-	if login_handler(request):
+	user = login_handler(request)
+	if user is None:
 		return render(request, 'login.html')
-	user = request.session['user']
 	userdetails = user.get_profile()
 	if userdetails.userType == "Barista":
 		print 'Warning from mark_as_barista, user accessed barista signup button or refreshed page on submit when user was already a barista.'
@@ -165,35 +165,10 @@ def mark_as_barista(request):
 		request.session['user'] = User.objects.get(username = user.username)
 		return companyBaristas(request, "Now registered as a barista!")
 
-def baristas(request, message =''):
-	if login_handler(request):
-		return render(request, 'login.html')
-	user = request.session['user']
-	locations= ''
-	userdetails = user.get_profile()
-	if userdetails.favCompany:
-		favCompany = userdetails.favCompany
-		locations = favCompany.get_locations()
-	# Added in usercheck dictionary pass so it could be used to verify if a user
-	# was checked in at any location.
-	companies = Company.objects.all()
-	navigation = True
-	fromBaristas = True
-	return render(request, 'baristas.html', {'user':userdetails, 
-											 'locations':locations,
-											 'message':message,
-											 'usercheck':userdetails.usercheckedin,
-											 'companies':companies,
-											 'navigation':navigation,
-											 'isCheckedIn':userdetails.isFavBarCheckedIn(),
-											 'checkIn':userdetails.get_favBarCheckIn(),
-											 'fromBaristas':fromBaristas,
-											 'navFlag':{'Home':'', 'Baristas':'active', 'ManageFavs':''}})
-
 def companyBaristas(request, message='', companyID=0):
-	if login_handler(request):
+	user = login_handler(request)
+	if user is None:
 		return render(request, 'login.html')
-	user = request.session['user']
 	userdetails = user.get_profile()
 	locations= ''
 	if userdetails.favCompany:
@@ -220,9 +195,9 @@ def companyBaristas(request, message='', companyID=0):
 											   'navFlag':{'Home':'', 'Baristas':'active', 'ManageFavs':''}})
 
 def favorites(request, message='', navigation=False):
-	if login_handler(request):
+	user = login_handler(request)
+	if user is None:
 		return render(request, 'login.html')
-	user = request.session['user']
 	userdetails = user.get_profile()
 	return render(request, 'Favorites.html', {'user':userdetails,
 											  'message':message,
@@ -233,9 +208,9 @@ def favorites(request, message='', navigation=False):
 
 
 def update_favs(request):
-	if login_handler(request):
+	user = login_handler(request)
+	if user is None:
 		return render(request, 'login.html')
-	user = request.session['user']
 	userdetails = user.get_profile()
 	if request.POST['baristaID']:
 		barista = UserProfile.objects.get(pk=request.POST['baristaID'])
@@ -249,17 +224,17 @@ def update_favs(request):
 	return favorites(request, "Your favorites have been updated", navigation)
 
 def baristaList(request):
-	if login_handler(request):
+	user = login_handler(request)
+	if user is None:
 		return render(request, 'login.html')
-	user = request.session['user']
 	ud = user.get_profile()
 	userdetailsList = UserProfile.objects.filter(userType='Barista', full_name__startswith = request.POST['searchString']).exclude(pk = ud.pk)
 	return render(request, 'autocompleteList.html', {'results':userdetailsList})
 
 def companyList(request):
-	if login_handler(request):
+	user = login_handler(request)
+	if user is None:
 		return render(request, 'login.html')
-	user = request.session['user']
 	companies = Company.objects.filter(companyName__startswith = request.POST['searchString'])
 	return render(request, 'autocompleteList.html', {'results':companies})
 
