@@ -6,6 +6,7 @@
     <title>onBarista</title>
     <script src="/static/bootstrap/js/jquery.js"></script>
     <script src="/static/bootstrap/js/bootstrap.js"></script>
+    <!--<script src="/static/bootstrap/js/bootstrap-dropdown.js"></script>-->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">
@@ -36,6 +37,7 @@
       });
 
     });*/
+$('body').on('touchstart.dropdown', '.dropdown-menu', function (e) { e.stopPropagation(); });
     </script>
 
     <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
@@ -53,8 +55,20 @@
   					<span class="icon-bar"></span>
   				</button>
   				<a class="brand" href="#">On Barista</a>
-  				<div class="nav-collapse collapse">
-  					<p class="navbar-text pull-right">Logged in as {{user.user.username}}, <a href="{% url 'onBaristaApp:logout' %}">logout</a></p>
+  				<!--<div class="nav-collapse collapse">-->
+          <div>
+  					<p class="navbar-text pull-right">
+              <ul class="nav nav-pills">
+                <li class="dropdown">
+                  <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                    {{user.user.username}}<b class="caret"></b>
+                  </a> 
+                  <ul class='dropdown-menu' data-toggle='dropdown'>
+                    <li><a href="{% url 'onBaristaApp:logout' %}">logout</a></li>
+                  </ul>
+                </li>
+              </ul>
+            </p>
   					<ul class="nav">
               <li class="{{navFlag.Home}}">
                 {% if user.favCompany %}
@@ -65,6 +79,7 @@
               </li>
   						<li class="{{navFlag.Baristas}}"><a href="{% url 'onBaristaApp:baristas' '0' %}">Baristas</a></li>
   						<li class="{{navFlag.ManageFavs}}"><a href="{% url 'onBaristaApp:favorites' %}">Manage Favs</a></li>
+              <li class="{{navFlag.Profile}}"><a href="#">Update Profile</a></li>
   					</ul>
   				</div>
   			</div>
