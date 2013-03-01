@@ -185,6 +185,8 @@ def baristas(request, message =''):
 											 'usercheck':userdetails.usercheckedin,
 											 'companies':companies,
 											 'navigation':navigation,
+											 'isCheckedIn':userdetails.isFavBarCheckedIn(),
+											 'checkIn':userdetails.get_favBarCheckIn(),
 											 'fromBaristas':fromBaristas,
 											 'navFlag':{'Home':'', 'Baristas':'active', 'ManageFavs':''}})
 
@@ -212,6 +214,8 @@ def companyBaristas(request, message='', companyID=0):
 											   'usercheck':userdetails.usercheckedin,
 											   'companies':companies,
 											   'navigation':navigation,
+											   'isCheckedIn':userdetails.isFavBarCheckedIn(),
+											   'checkIn':userdetails.get_favBarCheckIn(),
 											   'fromBaristas':fromBaristas,
 											   'navFlag':{'Home':'', 'Baristas':'active', 'ManageFavs':''}})
 
@@ -223,6 +227,8 @@ def favorites(request, message='', navigation=False):
 	return render(request, 'Favorites.html', {'user':userdetails,
 											  'message':message,
 											  'navigation':navigation,
+											  'isCheckedIn':userdetails.isFavBarCheckedIn(),
+											  'checkIn':userdetails.get_favBarCheckIn(),
 											  'navFlag':{'Home':'', 'Baristas':'', 'ManageFavs':'active'}})
 
 

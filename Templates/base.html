@@ -142,7 +142,7 @@
       <div class="navbar-inner" style="color: #999">
         {% if user.favBaristaObj %}
          {% if isCheckedIn %}
-         {{user.favBaristaObj}} is checked in at {{checkIn.location}}
+         {{user.favBaristaObj}} is checked in at {{checkIn.location.companyID}}
          {% else %}
          {{user.favBaristaObj}} is not checked in.
          {% endif %}
