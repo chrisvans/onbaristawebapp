@@ -13,6 +13,18 @@
 {{userObj.pk}}
 {{user.mug}}
 
+        <form action="{% url 'onBaristaApp:view_profile' %}" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <p>{{ form.non_field_errors }}</p>
+            <p>{{ form.mug.label_tag }} {{ form.mug.help_text }}</p>
+            <p>
+                {{ form.mug.errors }}
+                {{ form.mug }}
+            </p>
+            <p><input type="submit" value="Upload" /></p>
+        </form>
+
+
 
 
 
