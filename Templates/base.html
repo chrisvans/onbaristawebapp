@@ -66,6 +66,9 @@
                 {% endif %}
               </li>
   						<li class="{{navFlag.Baristas}}"><a href="{% url 'onBaristaApp:baristas' '0' %}">Baristas</a></li>
+              {% if user.isCompanyAdmin %}
+              <li class="{{navFlag.Admin}}"><a href="{% url 'onBaristaApp:admin_panel' %}">Admin Panel</a></li>
+              {% endif %}
   						<!--<li class="{{navFlag.ManageFavs}}"><a href="{% url 'onBaristaApp:favorites' %}">Manage Favs</a></li>
               <li class="{{navFlag.ManageProfile}}"><a href="{% url 'onBaristaApp:view_profile' %}">Manage Profile</a></li>
               <li><a href="{% url 'onBaristaApp:logout' %}">logout</a></li>-->

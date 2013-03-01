@@ -25,7 +25,13 @@ def view_manager(request, view_name):
 		raise PermissionDenied()
 	else:
 		userdetails = user.get_profile()
-		d = {'navFlag':{'Home':'', 'Baristas':'', 'ManageFavs':'', 'ManageProfile':''},
+
+		# Make sure that the user has the rights to use the admin page
+		if userdetails.isCompanyAdmin == False and view_name == 'Admin':
+			raise PermissionDenied()
+
+		#Create the default parameters that most views use
+		d = {'navFlag':{'Home':'', 'Baristas':'', 'ManageFavs':'', 'ManageProfile':'', 'Admin':''},
 		 'user_name':user.username,
 		 'user':userdetails,
 		 'userObj': user,
@@ -33,6 +39,9 @@ def view_manager(request, view_name):
 		 'checkIn':userdetails.get_favBarCheckIn(),
 		 'usercheck':userdetails.usercheckedin, 
 		 }
+
+		 #Set the 'active' class to the correct view -- currently we're doing this for items that aren't in the nav anymore.
+		 #can't hurt though I guess
 		d['navFlag'][view_name] = 'active'
 	return d, user, userdetails
 
@@ -251,6 +260,10 @@ def view_profile(request):
 	params['user'] = userdetails
 	print userdetails.mug
 	return render(request, 'profile.html', params)
+
+def admin_panel(request):
+	params, user, userdetails = view_manager(request, 'Admin')
+	return render(request, 'admin.html', params)
 
 def logout_view(request):
 	logout(request)
