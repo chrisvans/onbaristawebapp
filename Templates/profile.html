@@ -8,7 +8,7 @@
 	<strong>Hey!</strong> {{message}}
 </div>
 {% endif %}
-<img src='/static/Media/Mugs/U{{userObj.pk}}.jpg' style='width:50px'>
+<img src='/static/Media/{{user.mug}}' style='width:50px'>
 {{userObj.first_name}} {{userObj.last_name}}, {{userObj.email}}
 {{userObj.pk}}
 {{user.mug}}
