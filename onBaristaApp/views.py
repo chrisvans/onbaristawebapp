@@ -8,6 +8,7 @@ from onBaristaApp.forms import MugForm
 
 from django.utils import timezone
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 
 
@@ -258,6 +259,7 @@ def view_profile(request):
 	params['form'] = form
 	userdetails = user.get_profile()
 	params['user'] = userdetails
+	request.session['user'] = user
 	print userdetails.mug
 	return render(request, 'profile.html', params)
 

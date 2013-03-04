@@ -139,8 +139,10 @@ post_save.connect(create_user_profile, sender=User)
 class checkIn(models.Model):
 	barista = models.ForeignKey(User)
 	location = models.ForeignKey(companyLocation)
-	inTime = models.DateTimeField(null=True)
-	outTime = models.DateTimeField(null=True)
+	inTime = models.DateTimeField(null=True, auto_now_add=True)
+	outTime = models.DateTimeField(null=True, auto_now_add=True)
+	#inTime = models.DateTimeField(null=True)
+	#outTime = models.DateTimeField(null=True)
 	checkedin = models.BooleanField(default=True)
 	def showBarista(self):
 		user = self.barista

@@ -26,7 +26,7 @@ DATABASES = {
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
 # although not all choices may be available on all operating systems.
 # In a Windows environment this must be set to your system time zone.
-TIME_ZONE = 'America/Chicago'
+TIME_ZONE = 'America/New York'
 
 # Language code for this installation. All choices can be found here:
 # http://www.i18nguy.com/unicode/language-identifiers.html
@@ -47,7 +47,9 @@ USE_TZ = True
 
 # Absolute filesystem path to the directory that will hold user-uploaded files.
 # Example: "/home/media/media.lawrence.com/media/"
-MEDIA_ROOT = '/Users/LBMBPro/desktop/devrampup/onbaristawebapp/onBaristaApp/static/Media'
+#MEDIA_ROOT = '/Users/LBMBPro/desktop/devrampup/onbaristawebapp/onBaristaApp/static/Media'
+MEDIA_ROOT = '/Users/Chris Van Schyndel/desktop/obaristawebapp/onBaristaApp/static/Media'
+#MEDIA_ROOT = '/Users/Gigglande/desktop/obaristawebapp/onBaristaApp/static/Media'
 
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash.
@@ -63,6 +65,9 @@ STATIC_ROOT = ''
 # URL prefix for static files.
 # Example: "http://media.lawrence.com/static/"
 STATIC_URL = '/static/'
+
+# URL for redirecting users that aren't logged in.
+LOGIN_URL = '/login/'
 
 # Additional locations of static files
 STATICFILES_DIRS = (
@@ -106,7 +111,8 @@ WSGI_APPLICATION = 'onbarista.wsgi.application'
 
 #BASE_DIR= '/Users/Chris VanSchyndel/Desktop/onbaristawebapp'
 #BASE_DIR= '/Users/Gigglande/Desktop/onbaristawebapp'
-BASE_DIR= '/Users/LBMBPro/desktop/devrampup/onbaristawebapp'
+#BASE_DIR= '/Users/LBMBPro/desktop/devrampup/onbaristawebapp'
+BASE_DIR= os.path.dirname(os.path.abspath('__file__'))
 
 TEMPLATE_DIRS = (
     os.path.join(BASE_DIR, 'Templates'),
