@@ -150,6 +150,8 @@ class checkIn(models.Model):
 		return user.first_name + " " + user.last_name
 	def get_barista_mug(self):
 		baristadetails = self.barista.get_profile()
+		if baristadetails.mug == 'U1.jpg':
+			return None
 		return baristadetails.mug
 	def __unicode__(self):
 		#baristadetails = self.barista.get_profile()
