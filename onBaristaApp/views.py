@@ -248,11 +248,13 @@ def view_profile(request):
 	params, user, userdetails = view_manager(request, 'ManageProfile')
 	if request.method == 'POST':
 		form = MugForm(request.POST, request.FILES)
+		print request.FILES
 		if form.is_valid():
 			print "form is valid"
 			userdetails.mug = request.FILES['mug']
 			userdetails.save()
 			print "just saved user details"
+			request.session['user'] = user
 			return HttpResponseRedirect(reverse('onBaristaApp:view_profile'))
 	else:
 		form = MugForm()

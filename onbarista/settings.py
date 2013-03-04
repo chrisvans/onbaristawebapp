@@ -49,8 +49,6 @@ USE_TZ = True
 # Example: "/home/media/media.lawrence.com/media/"
 MEDIA_BASE_DIR = os.path.dirname(os.path.abspath('__file__'))
 MEDIA_ROOT = MEDIA_BASE_DIR + '/onBaristaApp/static/Media'
-print MEDIA_ROOT
-print '/Users/Gigglande/desktop/obaristawebapp/onBaristaApp/static/Media'
 #MEDIA_ROOT = '/Users/LBMBPro/desktop/devrampup/onbaristawebapp/onBaristaApp/static/Media'
 #MEDIA_ROOT = '/Users/Chris Van Schyndel/desktop/obaristawebapp/onBaristaApp/static/Media'
 #MEDIA_ROOT = '/Users/Gigglande/desktop/obaristawebapp/onBaristaApp/static/Media'
