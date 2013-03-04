@@ -108,12 +108,12 @@ def companyHome(request, companyID=0):
 	# Issues: navFlag, companies, locations, selectedID
 	navigation = True
 	fromHome = True
-
 	local_d = {'companies':companies, 
 				'locations':locations, 
 				'selectedID': str(companyID), 
 				'navigation': navigation,
-				'fromHome':fromHome,}
+				'fromHome':fromHome,
+				}
 	params = dict(d.items() + local_d.items())
 
 	return render(request, 'home.html', params)

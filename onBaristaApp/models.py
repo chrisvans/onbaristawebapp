@@ -148,6 +148,9 @@ class checkIn(models.Model):
 		user = self.barista
 		userdetails = self.barista.get_profile()
 		return user.first_name + " " + user.last_name
+	def get_barista_mug(self):
+		baristadetails = self.barista.get_profile()
+		return baristadetails.mug
 	def __unicode__(self):
 		#baristadetails = self.barista.get_profile()
 		#showUser = baristadetails.userType + ": " + self.barista.first_name + " " + self.barista.last_name
@@ -155,7 +158,7 @@ class checkIn(models.Model):
 		uniInTime = uniInTime[0:16]
 		uniOutTime = str(self.outTime)
 		uniOutTime = uniOutTime[0:16]
-		baristadetails = self.barista.get_profile()
+		#baristadetails = self.barista.get_profile()
 		if self.checkedin:
 			checkinDesc = self.showBarista() + " checked in at " + unicode(uniInTime)
 		else:
