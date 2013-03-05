@@ -28,7 +28,7 @@ def view_manager(request, view_name, companyID=0):
 		userdetails = user.get_profile()
 
 		# Make sure that the user has the rights to use the admin page
-		if userdetails.isCompanyAdmin == False and view_name == 'Admin':
+		if not userdetails.isCompanyAdmin and view_name == 'Admin':
 			raise PermissionDenied()
 		company= ''
 		locations = ''
@@ -72,16 +72,12 @@ def login_view(request):
 				# When the session dictionary is indexed with keyword 'user', returns this user object.
 				request.session['user'] = user
 				# Initialize variables, only populate them if the if conditions allow it.
-				#locList=''
 				favCompany= Company()
 				favCompany.pk = '0'
 				# Populate database table with UserProfile class attributes.  Store object as userdetails.
 				userdetails = user.get_profile()
 				if userdetails.favCompany:
 					favCompany = userdetails.favCompany
-					#locList = favCompany.get_locations()
-					#for location in locList:
-					#	location.checkins = location.get_checkins()
 				# After successful login, return to home, populate dictionary.
 				return companyHome(request, favCompany.pk)
 			else:
@@ -95,7 +91,6 @@ def login_view(request):
 		# If the session dictionary has a 'user' keyword, the only means by which this happens is a successful login.
 		# Update appropriate fields and sends user to the homepage instead of login.
 		user = request.session['user']
-		#locList=''
 		userdetails = user.get_profile()
 		if userdetails.favCompany:
 			favCompany = userdetails.favCompany
@@ -265,7 +260,7 @@ def register(request):
 		email = request.POST['email']
 		first_name = request.POST['first_name']
 		last_name = request.POST['last_name']
-		
+
 		if username == '' or password == '' or email == '':
 			return render(request, 'register.html', {'error_message':"A required field has been left empty!",})
 

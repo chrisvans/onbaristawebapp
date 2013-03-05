@@ -48,7 +48,7 @@ class companyLocation(models.Model):
 		location_checkins = checkIn.objects.filter(location = self)
 		barista_list = []
 		for checkin in location_checkins:
-			if checkin.checkedin == False:
+			if not checkin.checkedin:
 				barista = checkin.barista
 				barista_list.append(barista)
 		return barista_list
@@ -57,7 +57,7 @@ class companyLocation(models.Model):
 		location_checkins = checkIn.objects.filter(location = self)
 		barista_list = []
 		for checkin in location_checkins:
-			if checkin.checkedin == True:
+			if checkin.checkedin:
 				barista = checkin.barista
 				barista_list.append(barista)
 		return barista_list
