@@ -38,6 +38,12 @@ def view_manager(request, view_name, companyID=0):
 			locations = company.get_locations()
 			for location in locations:
 				location.checkins = location.get_checkins()
+		else:
+			if userdetails.favCompany:
+				company = userdetails.favCompany
+				locations = company.get_locations()
+			for location in locations:
+				location.checkins = location.get_checkins()
 		# Create the default parameters that most views use
 		manager_dict = {'navFlag':{'Home':'', 'Baristas':'', 'ManageFavs':'', 'ManageProfile':'', 'Admin':''},
 		 'companies':companies, 
@@ -181,7 +187,7 @@ def mark_as_barista(request):
 		return companyBaristas(request, "Now registered as a barista!")
 
 def companyBaristas(request, message='', companyID=0):
-	manager_dict, user, userdetails = view_manager(request, 'Baristas')
+	manager_dict, user, userdetails = view_manager(request, 'Baristas', companyID)
 
 	navigation = True
 	fromBaristas = True
