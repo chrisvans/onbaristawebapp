@@ -77,9 +77,12 @@
             <!--<p class="navbar-text pull-right" style='float:right'>-->
             <div style='float:right'>
               <ul class="nav nav-pills" style='display:inline'>
-                <li><img src='/static/Media/{{user.mug}}' style='width:25px; display:inline' class="img-rounded"></li>
+                {% if user.get_mug %}
+                  <li><img src='/static/Media/{{user.mug}}' style='width:25px; display:inline' class="img-rounded"></li>
+                {% else %}
+                  <li></li>
+                {% endif %}
                 <li class="dropdown" style="display:inline">
-
                   <a class="dropdown-toggle" data-toggle="dropdown" href="#" style='color:#08C'>
                     {{user.user.username}}<b class="caret"></b>
                   </a> 

@@ -45,20 +45,20 @@ class companyLocation(models.Model):
 		return checkIn.objects.filter(location = self)
 	def get_checkin_out(self):
 		# Method returns all checked out baristas at this location
-		bagel = checkIn.objects.filter(location = self)
+		location_checkins = checkIn.objects.filter(location = self)
 		barista_list = []
-		for bagels in bagel:
-			if bagels.checkedin == False:
-				barista = bagels.barista
+		for checkin in location_checkins:
+			if checkin.checkedin == False:
+				barista = checkin.barista
 				barista_list.append(barista)
 		return barista_list
 	def get_checkin_in(self):
 		# Method returns all checked in baristas at this location
-		bagel = checkIn.objects.filter(location = self)
+		location_checkins = checkIn.objects.filter(location = self)
 		barista_list = []
-		for bagels in bagel:
-			if bagels.checkedin == True:
-				barista = bagels.barista
+		for checkin in location_checkins:
+			if checkin.checkedin == True:
+				barista = checkin.barista
 				barista_list.append(barista)
 		return barista_list
 
@@ -66,19 +66,12 @@ class companyLocation(models.Model):
 # class models.User
 # Comes with username, password, first_name, last_name, 
 # last_login, and date_joined - as well as check_password(raw_password) and set_password(raw_password)
-# Also has group permissions - Will want to use these for Barista-Consumer relationship
-
-# Django UserManager model
-# class models.UserManager
-# Comes with create_user(username, email=None, password=None) and make_random_password(length=10)
 
 class UserProfile(models.Model):
 	user = models.OneToOneField(User)
 	mug = models.FileField(upload_to='Mugs')
 	isCompanyAdmin = models.BooleanField(default=False)
-	#full_name =user.get_full_name()
-	# Use 'User'.get_profile().userType to get the userType, for example
-	full_name=models.CharField(max_length=50, default='', null=True, blank=True)
+	full_name = models.CharField(max_length=50, default='', null=True, blank=True)
 	user_type_choices = (
 		('Barista', 'Barista'),
 		('Consumer', 'Consumer'),
@@ -114,23 +107,22 @@ class UserProfile(models.Model):
 			companyObj = Company.objects.get(pk=companyID)
 			self.favCompany = companyObj
 		self.save()
+	def get_mug(self):
+		if self.mug == 'U1.jpg':
+			return None
+		return self.mug
 
 def create_user_profile(sender, instance, created, **kwargs):
-	# print "instance: " + str(instance)
-	# print " kwargs: " + str(kwargs)
-	# print "create up 1: " + instance.get_full_name()
 	name = instance.get_full_name()
 	if name:
 		profile = instance.get_profile()
 		profile.full_name = name
 		profile.save()
 	if created:
-		#UserProfile.objects.create(user=instance)
 		up = UserProfile()
 		up.full_name = instance.first_name + " " + instance.last_name
 		up.user = instance
 		up.save()
-		#print "in create user profile: "  + up.full_name
 
 
 post_save.connect(create_user_profile, sender=User)
@@ -141,8 +133,6 @@ class checkIn(models.Model):
 	location = models.ForeignKey(companyLocation)
 	inTime = models.DateTimeField(null=True, auto_now_add=True)
 	outTime = models.DateTimeField(null=True, auto_now_add=True)
-	#inTime = models.DateTimeField(null=True)
-	#outTime = models.DateTimeField(null=True)
 	checkedin = models.BooleanField(default=True)
 	def showBarista(self):
 		user = self.barista
@@ -150,31 +140,17 @@ class checkIn(models.Model):
 		return user.first_name + " " + user.last_name
 	def get_barista_mug(self):
 		baristadetails = self.barista.get_profile()
-		if baristadetails.mug == 'U1.jpg':
-			return None
-		return baristadetails.mug
+		return baristadetails.get_mug()
 	def __unicode__(self):
-		#baristadetails = self.barista.get_profile()
-		#showUser = baristadetails.userType + ": " + self.barista.first_name + " " + self.barista.last_name
 		uniInTime = str(self.inTime)
 		uniInTime = uniInTime[0:16]
 		uniOutTime = str(self.outTime)
 		uniOutTime = uniOutTime[0:16]
-		#baristadetails = self.barista.get_profile()
 		if self.checkedin:
 			checkinDesc = self.showBarista() + " checked in at " + unicode(uniInTime)
 		else:
 			checkinDesc = self.showBarista() + " checked out at " + unicode(uniOutTime)
 		return checkinDesc
-
-# Possible use of dictionary in the database.
-#class Dicty(models.Model):
-#	name = models.CharField(max_length=25)
-
-#class KeyVal(models.Model):
-#	container = models.ForeignKey(Dicty, db_index=True)
-#	key = models.CharField(max_length=240, db_index=True)
-#	value = models.CharField(max_length=240, db_index=True)
 
 
 

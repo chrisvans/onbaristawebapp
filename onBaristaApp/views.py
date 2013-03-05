@@ -20,7 +20,7 @@ def login_handler(request):
 	except KeyError:
 		return None
 
-def view_manager(request, view_name):
+def view_manager(request, view_name, companyID=0):
 	user = login_handler(request)
 	if user is None:
 		raise PermissionDenied()
@@ -30,9 +30,20 @@ def view_manager(request, view_name):
 		# Make sure that the user has the rights to use the admin page
 		if userdetails.isCompanyAdmin == False and view_name == 'Admin':
 			raise PermissionDenied()
-
-		#Create the default parameters that most views use
-		d = {'navFlag':{'Home':'', 'Baristas':'', 'ManageFavs':'', 'ManageProfile':'', 'Admin':''},
+		company= ''
+		locations = ''
+		companies = Company.objects.all()
+		if companyID and companyID != '0':
+			company = Company.objects.get(pk=companyID)
+			locations = company.get_locations()
+			for location in locations:
+				location.checkins = location.get_checkins()
+		# Create the default parameters that most views use
+		manager_dict = {'navFlag':{'Home':'', 'Baristas':'', 'ManageFavs':'', 'ManageProfile':'', 'Admin':''},
+		 'companies':companies, 
+		 'locations':locations, 
+		 'selectedID': str(companyID), 
+		 'companyID':companyID,
 		 'user_name':user.username,
 		 'user':userdetails,
 		 'userObj': user,
@@ -41,10 +52,10 @@ def view_manager(request, view_name):
 		 'usercheck':userdetails.usercheckedin, 
 		 }
 
-		 #Set the 'active' class to the correct view -- currently we're doing this for items that aren't in the nav anymore.
-		 #can't hurt though I guess
-		d['navFlag'][view_name] = 'active'
-	return d, user, userdetails
+		 # Set the 'active' class to the correct view -- currently we're doing this for items that aren't in the nav anymore.
+		 # can't hurt though I guess
+		manager_dict['navFlag'][view_name] = 'active'
+	return manager_dict, user, userdetails
 
 def login_view(request):
 	# If you're at the login page and have submitted information, then..
@@ -61,16 +72,16 @@ def login_view(request):
 				# When the session dictionary is indexed with keyword 'user', returns this user object.
 				request.session['user'] = user
 				# Initialize variables, only populate them if the if conditions allow it.
-				locList=''
+				#locList=''
 				favCompany= Company()
 				favCompany.pk = '0'
 				# Populate database table with UserProfile class attributes.  Store object as userdetails.
 				userdetails = user.get_profile()
 				if userdetails.favCompany:
 					favCompany = userdetails.favCompany
-					locList = favCompany.get_locations()
-					for location in locList:
-						location.checkins = location.get_checkins()
+					#locList = favCompany.get_locations()
+					#for location in locList:
+					#	location.checkins = location.get_checkins()
 				# After successful login, return to home, populate dictionary.
 				return companyHome(request, favCompany.pk)
 			else:
@@ -84,7 +95,7 @@ def login_view(request):
 		# If the session dictionary has a 'user' keyword, the only means by which this happens is a successful login.
 		# Update appropriate fields and sends user to the homepage instead of login.
 		user = request.session['user']
-		locList=''
+		#locList=''
 		userdetails = user.get_profile()
 		if userdetails.favCompany:
 			favCompany = userdetails.favCompany
@@ -95,26 +106,14 @@ def login_view(request):
 		return render(request, 'login.html')
 
 def companyHome(request, companyID=0):
-	d, user, userdetails = view_manager(request, 'Home')
-
-	company= ''
-	locations = ''
-	companies = Company.objects.all()
-	if companyID and companyID != '0':
-		company = Company.objects.get(pk=companyID)
-		locations = company.get_locations()
-		for location in locations:
-			location.checkins = location.get_checkins()
-	# Issues: navFlag, companies, locations, selectedID
+	manager_dict, user, userdetails = view_manager(request, 'Home', companyID)
 	navigation = True
 	fromHome = True
-	local_d = {'companies':companies, 
-				'locations':locations, 
-				'selectedID': str(companyID), 
+	local_dict = {
 				'navigation': navigation,
 				'fromHome':fromHome,
 				}
-	params = dict(d.items() + local_d.items())
+	params = dict(manager_dict.items() + local_dict.items())
 
 	return render(request, 'home.html', params)
 
@@ -174,6 +173,7 @@ def mark_as_barista(request):
 	user = login_handler(request)
 	if user is None:
 		return render(request, 'login.html')
+
 	userdetails = user.get_profile()
 	if userdetails.userType == "Barista":
 		print 'Warning from mark_as_barista, user accessed barista signup button or refreshed page on submit when user was already a barista.'
@@ -186,88 +186,71 @@ def mark_as_barista(request):
 		return companyBaristas(request, "Now registered as a barista!")
 
 def companyBaristas(request, message='', companyID=0):
-	d, user, userdetails = view_manager(request, 'Baristas')
+	manager_dict, user, userdetails = view_manager(request, 'Baristas')
 
-	locations= ''
-	if userdetails.favCompany:
-		favCompany = userdetails.favCompany
-		locations = favCompany.get_locations()
-	if companyID and companyID != '0':
-		company = Company.objects.get(pk=companyID)
-		locations = company.get_locations()
-		for location in locations:
-			location.checkins = location.get_checkins()
-	companies = Company.objects.all()
 	navigation = True
 	fromBaristas = True
-
-	local_d = {'companyID':companyID,
-			   'locations':locations,
-			   'message':message,
-			   'companies':companies,
+	local_dict = {
 			   'navigation':navigation,
 			   'fromBaristas':fromBaristas,}
-	params = dict(d.items() + local_d.items())
-
+	params = dict(manager_dict.items() + local_dict.items())
 	return render(request, 'baristas.html', params)
 
 def favorites(request, message='', navigation=False):
-	params, user, userdetails = view_manager(request, 'ManageFavs')
-	params['message'] = message
-	params['navigation'] = navigation
+	manager_dict, user, userdetails = view_manager(request, 'ManageFavs')
 
-	return render(request, 'Favorites.html', params)
+	manager_dict['message'] = message
+	manager_dict['navigation'] = navigation
+	return render(request, 'Favorites.html', manager_dict)
 
 
 def update_favs(request):
-	params, user, userdetails = view_manager(request, 'Baristas')
+	manager_dict, user, userdetails = view_manager(request, 'Baristas')
 
 	userdetails.update_favs(request.POST['companyID'], request.POST['baristaID'])
-
 	request.session['user'] = user
-	params['navigation'] = False
-
-	return favorites(request, "Your favorites have been updated", params)
+	manager_dict['navigation'] = False
+	return favorites(request, "Your favorites have been updated", manager_dict)
 
 def baristaList(request):
 	user = login_handler(request)
 	if user is None:
 		return render(request, 'login.html')
-	ud = user.get_profile()
-	userdetailsList = UserProfile.objects.filter(userType='Barista', full_name__startswith = request.POST['searchString']).exclude(pk = ud.pk)
+
+	userdetails = user.get_profile()
+	userdetailsList = UserProfile.objects.filter(userType='Barista', full_name__startswith = request.POST['searchString']).exclude(pk = userdetails.pk)
 	return render(request, 'autocompleteList.html', {'results':userdetailsList})
 
 def companyList(request):
 	user = login_handler(request)
 	if user is None:
 		return render(request, 'login.html')
+
 	companies = Company.objects.filter(companyName__startswith = request.POST['searchString'])
 	return render(request, 'autocompleteList.html', {'results':companies})
 
 def view_profile(request):
-	params, user, userdetails = view_manager(request, 'ManageProfile')
+	manager_dict, user, userdetails = view_manager(request, 'ManageProfile')
+
 	if request.method == 'POST':
 		form = MugForm(request.POST, request.FILES)
-		print request.FILES
 		if form.is_valid():
-			print "form is valid"
 			userdetails.mug = request.FILES['mug']
 			userdetails.save()
-			print "just saved user details"
 			request.session['user'] = user
 			return HttpResponseRedirect(reverse('onBaristaApp:view_profile'))
 	else:
 		form = MugForm()
-	params['form'] = form
+
+	manager_dict['form'] = form
 	userdetails = user.get_profile()
-	params['user'] = userdetails
+	manager_dict['user'] = userdetails
 	request.session['user'] = user
-	print userdetails.mug
-	return render(request, 'profile.html', params)
+	return render(request, 'profile.html', manager_dict)
 
 def admin_panel(request):
-	params, user, userdetails = view_manager(request, 'Admin')
-	return render(request, 'admin.html', params)
+	manager_dict, user, userdetails = view_manager(request, 'Admin')
+	return render(request, 'admin.html', manager_dict)
 
 def logout_view(request):
 	logout(request)
@@ -282,11 +265,12 @@ def register(request):
 		email = request.POST['email']
 		first_name = request.POST['first_name']
 		last_name = request.POST['last_name']
+		
 		if username == '' or password == '' or email == '':
 			return render(request, 'register.html', {'error_message':"A required field has been left empty!",})
+
 		try:
 			user = User.objects.get(username = username)
-
 		except (KeyError,User.DoesNotExist):
 			# Add in e-mail authentication!
 			user = User.objects.create_user(username, email, password)
@@ -296,7 +280,6 @@ def register(request):
 			user.save()
 			user = authenticate(username=username, password=password)
 			login(request, user)
-
 			return render(request, 'login.html', {'success_message':"You successfully registered!  Now log in!",})
 		else:
 			return render(request, 'register.html', {'error_message':"Username already exists!",})
