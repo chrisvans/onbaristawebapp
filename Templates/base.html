@@ -86,11 +86,11 @@
                   <a class="dropdown-toggle" data-toggle="dropdown" href="#" style='color:#08C'>
                     {{user.user.username}}<b class="caret"></b>
                   </a>
-                <ul class='dropdown-menu' data-toggle='dropdown'>
-                  <li><a href="{% url 'onBaristaApp:favorites' %}">Manage Favs</a></li>
+                <ul class='dropdown-menu pull-right' data-toggle='dropdown'>
+                  <li><a href="{% url 'onBaristaApp:favorites' %}">Manage Favorites</a></li>
                   <li><a href="{% url 'onBaristaApp:view_profile' %}">Manage Profile</a></li>
                   <li class="divider"></li>
-                  <li><a href="{% url 'onBaristaApp:logout' %}">logout</a></li>
+                  <li><a href="{% url 'onBaristaApp:logout' %}">Logout</a></li>
                 </ul>
                 </li>
               </ul>
@@ -130,8 +130,7 @@
               {% endfor %}
   					</ul>
   				</div>
-          {% endif %}
-          {% if fromBaristas %}
+          {% elif fromBaristas %}
           <div class="well sidebar-nav">
             <ul class="nav nav-list">
               {% if user.favCompany %}
@@ -160,7 +159,11 @@
           {% endif %}
           {% endif %}
   			</div>
+        {% if not fromFavorites %}
   			<div class="span9">
+        {% else %}
+        <div class="span10">
+        {% endif %}
   			  	{% block contents %}{% endblock %}
   			</div>
   		</div>

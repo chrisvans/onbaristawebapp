@@ -193,15 +193,18 @@ def companyBaristas(request, message='', companyID=0):
 	fromBaristas = True
 	local_dict = {
 			   'navigation':navigation,
-			   'fromBaristas':fromBaristas,}
+			   'fromBaristas':fromBaristas,
+			   'message':message,
+			   }
 	params = dict(manager_dict.items() + local_dict.items())
 	return render(request, 'baristas.html', params)
 
-def favorites(request, message='', navigation=False):
+def favorites(request, message='', navigation=False, fromFavorites=True):
 	manager_dict, user, userdetails = view_manager(request, 'ManageFavs')
 
 	manager_dict['message'] = message
 	manager_dict['navigation'] = navigation
+	manager_dict['fromFavorites'] = fromFavorites
 	return render(request, 'Favorites.html', manager_dict)
 
 
@@ -244,7 +247,6 @@ def view_profile(request):
 		form = MugForm()
 
 	manager_dict['form'] = form
-	userdetails = user.get_profile()
 	manager_dict['user'] = userdetails
 	request.session['user'] = user
 	return render(request, 'profile.html', manager_dict)
@@ -281,7 +283,7 @@ def register(request):
 			user.save()
 			user = authenticate(username=username, password=password)
 			login(request, user)
-			return render(request, 'login.html', {'success_message':"You successfully registered!  Now log in!",})
+			return render(request, 'login.html', {'success_message':"You successfully registered!",})
 		else:
 			return render(request, 'register.html', {'error_message':"Username already exists!",})
 	else:
