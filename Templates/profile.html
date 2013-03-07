@@ -5,31 +5,33 @@
 {% if message %}
 <div class="alert">
 	<button type="button" class="close" data-dismiss="alert alert-success">&times;</button>
-	<strong>Hey!</strong> {{message}}
+	<strong>Hey!</strong> {{ message }}
 </div>
 {% endif %}
-<div style=''>
-<blockquote>
-<img src='/static/Media/{{user.mug}}' style='width:50px' class="img-polaroid">
-
-        <form style='' action="{% url 'onBaristaApp:view_profile' %}" method="post" enctype="multipart/form-data">
+<div class=hero-unit>
+  <h1>{{ user.full_name }}</h1>
+    <br>
+        <form action="{% url 'onBaristaApp:view_profile' %}" method="post" enctype="multipart/form-data">
             {% csrf_token %}
-            <p>{{ form.non_field_errors }}</p>
-
-            <small>{{ form.mug.help_text }}</small>
-            </blockquote>
-            <p>
+            {{ form.non_field_errors }}
                 {{ form.mug.errors }}
+            <blockquote>
+              <img src='/static/Media/{{user.mug}}' style='width:50px' class="img-polaroid">
                 {{ form.mug }}
-            </p>
+                  <small>{{ form.mug.help_text }}</small>
+            </blockquote>
             <p>
             <input value="Upload" style="display:none"></input>
             <button class="btn btn-large btn-primary" type="submit">Upload Selected File</button></p>
         </form>
-</div>
-<div style= 'float:left'>
-{{user.full_name}} <br>
-{{user.user.email}}
+{{ user.userType }}
+{% if user.usercheckedin %}
+<br>
+Checked in at <a href="{% url 'onBaristaApp:companyHome' user.get_self_checkIn.location.companyID.pk %}">{{ user.get_self_checkIn.location }}</a>
+{% endif %}
+<br>
+Email: {{ user.user.email }}
+
 
 </div>
 

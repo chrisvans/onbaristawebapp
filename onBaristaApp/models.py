@@ -111,6 +111,11 @@ class UserProfile(models.Model):
 		if self.mug == 'U1.jpg':
 			return None
 		return self.mug
+	def get_self_checkIn(self):
+		if self.usercheckedin:
+			return checkIn.objects.get(barista=self.user)
+		else:
+			return None
 
 def create_user_profile(sender, instance, created, **kwargs):
 	name = instance.get_full_name()
