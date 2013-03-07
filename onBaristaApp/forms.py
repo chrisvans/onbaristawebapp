@@ -4,5 +4,5 @@ from django import forms
 class MugForm(forms.Form):
     mug = forms.FileField(
         label='Select a file',
-        help_text='max. 42 megabytes'
+        help_text='Max. file size: 42 MB'
     )

@@ -52,7 +52,6 @@ def view_manager(request, view_name, companyID=0):
 		 'companyID':companyID,
 		 'user_name':user.username,
 		 'user':userdetails,
-		 'userObj': user,
 		 'isCheckedIn':userdetails.isFavBarCheckedIn(),
 		 'checkIn':userdetails.get_favBarCheckIn(),
 		 'usercheck':userdetails.usercheckedin, 
@@ -199,12 +198,12 @@ def companyBaristas(request, message='', companyID=0):
 	params = dict(manager_dict.items() + local_dict.items())
 	return render(request, 'baristas.html', params)
 
-def favorites(request, message='', navigation=False, fromFavorites=True):
+def favorites(request, message='', navigation=False, fullSpanBlock=True):
 	manager_dict, user, userdetails = view_manager(request, 'ManageFavs')
 
 	manager_dict['message'] = message
 	manager_dict['navigation'] = navigation
-	manager_dict['fromFavorites'] = fromFavorites
+	manager_dict['fullSpanBlock'] = fullSpanBlock
 	return render(request, 'Favorites.html', manager_dict)
 
 
@@ -233,7 +232,7 @@ def companyList(request):
 	companies = Company.objects.filter(companyName__startswith = request.POST['searchString'])
 	return render(request, 'autocompleteList.html', {'results':companies})
 
-def view_profile(request):
+def view_profile(request, fullSpanBlock=True):
 	manager_dict, user, userdetails = view_manager(request, 'ManageProfile')
 
 	if request.method == 'POST':
@@ -245,7 +244,7 @@ def view_profile(request):
 			return HttpResponseRedirect(reverse('onBaristaApp:view_profile'))
 	else:
 		form = MugForm()
-
+	manager_dict['fullSpanBlock'] = fullSpanBlock
 	manager_dict['form'] = form
 	manager_dict['user'] = userdetails
 	request.session['user'] = user

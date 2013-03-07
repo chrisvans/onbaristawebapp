@@ -12,7 +12,8 @@
 		{% if locations %}
 		{% for location in locations %}
 			<div class="hero-unit">
-				<span>{{ location }}</span><br>
+				<span><strong> {{ location }} </strong></span><br>
+				&nbsp;
 				{% if user.user not in location.get_checkin_in and not usercheck %}
 				<form class="form-signin" action="{% url 'onBaristaApp:checkInPost' %}" method="post">
 					{% csrf_token %}

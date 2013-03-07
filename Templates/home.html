@@ -9,7 +9,7 @@
 				{% if location.checkins %}
 					{% for checkin in location.checkins %}
 						{% if checkin.get_barista_mug %}
-							<li><img src='/static/Media/{{ checkin.get_barista_mug }}' style='width:50px' class="img-polaroid">{{ checkin }}</li>
+							<li><img src='/static/Media/{{ checkin.get_barista_mug }}' style='width:50px' class="img-polaroid"> &nbsp;{{ checkin }}</li>
 						{% else %}
 						    <li>{{ checkin }}</li>
 						{% endif %}

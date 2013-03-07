@@ -9,23 +9,27 @@
 </div>
 {% endif %}
 <div style=''>
+<blockquote>
 <img src='/static/Media/{{user.mug}}' style='width:50px' class="img-polaroid">
 
         <form style='' action="{% url 'onBaristaApp:view_profile' %}" method="post" enctype="multipart/form-data">
             {% csrf_token %}
             <p>{{ form.non_field_errors }}</p>
-            <p>{{ form.mug.help_text }}</p>
+
+            <small>{{ form.mug.help_text }}</small>
+            </blockquote>
             <p>
                 {{ form.mug.errors }}
                 {{ form.mug }}
             </p>
-            <p><input type="submit" value="Upload" /></p>
+            <p>
+            <input value="Upload" style="display:none"></input>
+            <button class="btn btn-large btn-primary" type="submit">Upload Selected File</button></p>
         </form>
 </div>
-<div style= 'float:right'>
-	{{userObj.first_name}} {{userObj.last_name}}, {{userObj.email}}
-{{userObj.pk}}
-{{user.mug}}
+<div style= 'float:left'>
+{{user.full_name}} <br>
+{{user.user.email}}
 
 </div>
 
