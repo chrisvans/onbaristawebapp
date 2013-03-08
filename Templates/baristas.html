@@ -2,71 +2,87 @@
 {% load url from future %}
 
 {% block contents %}
+
 {% if message %}
 <div class="alert alert-info">
-	<button type="button" class="close" data-dismiss="alert">&times;</button>
-	{{message}}
+  <button type="button" class="close" data-dismiss="alert">&times;</button>
+  {{message}}
 </div>
 {% endif %}
-	{% if user.userType == 'Barista' %}
-		{% if locations %}
-		{% for location in locations %}
-			<div class="hero-unit">
-				<span><strong> {{ location }} </strong></span><br>
-				&nbsp;
-				{% if user.user not in location.get_checkin_in and not usercheck %}
-				<form class="form-signin" action="{% url 'onBaristaApp:checkInPost' %}" method="post">
-					{% csrf_token %}
-					<input style="display:none" name = "location" value={{location.id}}></input>
-					<button class="btn btn-large btn-primary" type="submit">Check In</button>
-				</form>
-				{% elif user.user in location.get_checkin_in %}
-				<form class="form-signin" action="{% url 'onBaristaApp:checkOutPost' %}" method="post">
-					{% csrf_token %}
-					<input style="display:none" name = "location" value={{location.id}}></input>
-					<button class="btn btn-large btn-primary" type="submit">Check Out</button>
-				</form>
-				{% endif %}
-			</div>
-		{% endfor %}
-		{% else %}
-			<div class="hero-unit">
-				<p> Please select a company to view.</p>
-			</div>
+
+{% if user.userType == 'Barista' %}
+
+  {% if locations %}
+	{% for location in locations %}
+      <div class="hero-unit">
+		<span><strong> {{ location }} </strong></span><br>
+		&nbsp;
+		{% if user.user not in location.get_checkin_in and not usercheck %}
+	      <form class="form-signin" action="{% url 'onBaristaApp:checkInPost' %}" method="post">
+			{% csrf_token %}
+			<input style="display:none" name = "location" value={{location.id}}></input>
+			<button class="btn btn-large btn-primary" type="submit">Check In</button>
+		  </form>
+		{% elif user.user in location.get_checkin_in %}
+		  <form class="form-signin" action="{% url 'onBaristaApp:checkOutPost' %}" method="post">
+			{% csrf_token %}
+			<input style="display:none" name = "location" value={{location.id}}></input>
+			<button class="btn btn-large btn-primary" type="submit">Check Out</button>
+		  </form>
 		{% endif %}
-	{% else %}
-		<div class="hero-unit">
-			<form class="form-signin" action="{% url 'onBaristaApp:mark_as_barista' %}" method="post">
-				{% csrf_token %}
-				<button class="btn btn-large btn-primary" type="submit">Sign up to be a barista!</button>
-			</form>
-		</div>
-	{% endif %}
+	  </div>
+	{% endfor %}
+  {% else %}
+    <div class="hero-unit">
+      <p> Please select a company to view.</p>
+    </div>
+  {% endif %}
+
+{% else %}
+  <div class="hero-unit">
+    <form class="form-signin" action="{% url 'onBaristaApp:mark_as_barista' %}" method="post">
+      {% csrf_token %}
+      <button class="btn btn-large btn-primary" type="submit">Sign up to be a barista!</button>
+    </form>
+  </div>
+{% endif %}
+
 {% endblock %}
+
 {% block nav %}
-          <div class="well sidebar-nav">
-            <ul class="nav nav-list">
-              {% if user.favCompany %}
-                <li class="nav-header">Favorite Company:</li>
-                {% if selectedID|stringformat:"s" == user.favCompany.pk|stringformat:"s" %}
-                  <li id ="{{user.favCompany.pk}}" class="active"><a href="{% url 'onBaristaApp:baristas' user.favCompany.pk %}">{{user.favCompany.companyName}}</a></li>
-                {% else %}
-                  <li id ="{{user.favCompany.pk}}"><a href="{% url 'onBaristaApp:baristas' user.favCompany.pk %}">{{user.favCompany.companyName}}</a></li>
-                {% endif %}
-              {% else %}
-              <li class="nav-header">Favorite Company:</li>
-              <li><a href="{% url 'onBaristaApp:favorites' %}">Click to add a fav company</a></li>
-              {% endif %}
-              <li class="nav-header">All Companies:</li>
-              {% for company in companies %}
-                {% if user.favCompany != company %}
-                {% if selectedID|stringformat:"s" == company.pk|stringformat:"s" %}
-                  <li id="{{company.pk}}" class='active'><a href="{% url 'onBaristaApp:baristas' company.pk %}">{{company.companyName}}</a></li>
-                {% else %}
-                  <li id="{{company.pk}}"><a href="{% url 'onBaristaApp:baristas' company.pk %}">{{company.companyName}}</a></li>
-                {% endif %}
-                {% endif %}
-              {% endfor %}
-            </ul>
-          </div>
+
+<div class="well sidebar-nav">
+  <ul class="nav nav-list">
+
+    {% if user.favCompany %}
+      <li class="nav-header">Favorite Company:</li>
+
+      {% if selectedID|stringformat:"s" == user.favCompany.pk|stringformat:"s" %}
+        <li id ="{{user.favCompany.pk}}" class="active"><a href="{% url 'onBaristaApp:baristas' user.favCompany.pk %}">{{user.favCompany.companyName}}</a></li>
+      {% else %}
+        <li id ="{{user.favCompany.pk}}"><a href="{% url 'onBaristaApp:baristas' user.favCompany.pk %}">{{user.favCompany.companyName}}</a></li>
+      {% endif %}
+
+    {% else %}
+      <li class="nav-header">Favorite Company:</li>
+      <li><a href="{% url 'onBaristaApp:favorites' %}">Click to add a fav company</a></li>
+    {% endif %}
+
+    <li class="nav-header">All Companies:</li>
+    {% for company in companies %}
+
+      {% if user.favCompany != company %}
+
+        {% if selectedID|stringformat:"s" == company.pk|stringformat:"s" %}
+          <li id="{{company.pk}}" class='active'><a href="{% url 'onBaristaApp:baristas' company.pk %}">{{company.companyName}}</a></li>
+        {% else %}
+          <li id="{{company.pk}}"><a href="{% url 'onBaristaApp:baristas' company.pk %}">{{company.companyName}}</a></li>
+        {% endif %}
+
+      {% endif %}
+
+    {% endfor %}
+  </ul>
+</div>
+
 {% endblock %}

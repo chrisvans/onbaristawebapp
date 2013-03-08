@@ -3,11 +3,8 @@ from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.contrib.auth import authenticate
 from django.http import HttpResponse
-import datetime
 from django.utils.timezone import utc, get_current_timezone
-
-# Create your models here.
-
+import datetime
 
 
 class Company(models.Model):

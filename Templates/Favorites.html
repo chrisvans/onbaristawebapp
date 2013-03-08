@@ -2,13 +2,14 @@
 {% load url from future %}
 
 {% block contents %}
-	{% if message %}
 
+  {% if message %}
 	<div class="alert alert-info">
-		<button type="button" class="close" data-dismiss="alert">&times;</button>
-		{{message}}
+	  <button type="button" class="close" data-dismiss="alert">&times;</button>
+	  {{message}}
 	</div>
 	{% endif %}
+
 	<script>
 	$(function(){
 		
@@ -61,27 +62,28 @@
     	});
 	});
 	</script>
+
 	<div class="hero-unit">
-		<form class="" action="{% url 'onBaristaApp:updateFavs' %}" method="post">
+	  <form class="" action="{% url 'onBaristaApp:updateFavs' %}" method="post">
 		{% csrf_token %}
-			<div class='control-group'>
-				<label class='control-label'>Favorite Company:</label>
-				<div class='controls'>
-					<input type="text" class='acInput' id="inputCompany" name='company' placeholder="Company" {% if user.favCompany %}value='{{user.favCompany}}' {% endif %} autocomplete='off'>
-					<input type="text" id="HiddenID" name ='companyID' style='display:none'>
-					<div class='autoComplete'></div>
-				</div>
+		<div class='control-group'>
+	      <label class='control-label'>Favorite Company:</label>
+		  <div class='controls'>
+		    <input type="text" class='acInput' id="inputCompany" name='company' placeholder="Company" {% if user.favCompany %}value='{{user.favCompany}}' {% endif %} autocomplete='off'>
+		    <input type="text" id="HiddenID" name ='companyID' style='display:none'>
+			<div class='autoComplete'></div>
+		  </div>
+		</div>
+		  <div class='control-group'>
+			<label class='control-label'>Favorite Barista:</label>
+		    <div class='controls'>
+			  <input class='acInput'type="text" id="inputBarista" name='barista' placeholder="Barista" {% if user.favBaristaObj %}value = '{{user.favBaristaObj}}' {% endif %} autocomplete='off'>
+			  <input type="text" id="HiddenID" name ='baristaID' style='display:none'>
+				<div class='autoComplete'></div>
 			</div>
-			<div class='control-group'>
-				<label class='control-label'>Favorite Barista:</label>
-				<div class='controls'>
-					<input class='acInput'type="text" id="inputBarista" name='barista' placeholder="Barista" {% if user.favBaristaObj %}value = '{{user.favBaristaObj}}' {% endif %} autocomplete='off'>
-					<input type="text" id="HiddenID" name ='baristaID' style='display:none'>
-					<div class='autoComplete'></div>
-				</div>
-			</div>
-			
-			<button class="btn" type="submit">Update Favorites!</button>
-		</form>
+		  </div>
+		<button class="btn" type="submit">Update Favorites!</button>
+	  </form>
 	</div>
+	
 {% endblock %}

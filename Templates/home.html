@@ -1,58 +1,77 @@
 {% extends "base.html" %}
 {% load url from future %}
 {% load tz %}
+
 {% block contents %}
-	{% if locations %}
-		{% for location in locations %}
-			<div class="hero-unit">
-				<span><strong>{{ location }}</strong></span><br>
-				<ul class="nav nav-list">
-				{% if location.checkins %}
-					{% for checkin in location.checkins %}
-						{% localtime on %}
-						{% if checkin.get_barista_mug %}
-							<li><img src='/static/Media/{{ checkin.get_barista_mug }}' style='width:50px;' class="img-polaroid"> &nbsp;{{ checkin }}{{ checkin.get_tzobject }}</li>
-						{% else %}
-						    <li>{{ checkin }}{{ checkin.get_tzobject }}</li>
-						{% endif %}
-				        {% endlocaltime %}
-					{% endfor %}
-				{% else %}
-					<li>There are no Baristas checked in at this location</li>
-				{% endif %}
-				</ul>
-			</div>
-		{% endfor %}
-	{% else %}
-		<div class="hero-unit">
-			<p>Please select a company to view.</p>
-		</div>
-	{% endif %}
+
+{% if locations %}
+  {% for location in locations %}
+	<div class="hero-unit">
+      <span><strong>{{ location }}</strong></span><br>
+	  <ul class="nav nav-list">
+
+		{% if location.checkins %}
+	      {% for checkin in location.checkins %}
+
+			{% localtime on %}
+			  {% if checkin.get_barista_mug %}
+				<li><img src='/static/Media/{{ checkin.get_barista_mug }}' style='width:50px;' class="img-polaroid"> &nbsp;{{ checkin }}{{ checkin.get_tzobject }}</li>
+			  {% else %}
+			    <li>{{ checkin }}{{ checkin.get_tzobject }}</li>
+			  {% endif %}
+
+			{% endlocaltime %}
+
+		  {% endfor %}
+		{% else %}
+		  <li>There are no Baristas checked in at this location</li>
+		{% endif %}
+
+	  </ul>
+	</div>
+  {% endfor %}
+{% else %}
+  <div class="hero-unit">
+	<p>Please select a company to view.</p>
+  </div>
+{% endif %}
+
 {% endblock %}
+
 {% block nav %}
+
 <div class="well sidebar-nav">
   <ul class="nav nav-list">
+
   	{% if user.favCompany %}
   	  <li class="nav-header">Favorite Company:</li>
-        {% if selectedID|stringformat:"s" == user.favCompany.pk|stringformat:"s" %}
-          <li id ="{{user.favCompany.pk}}" class="active"><a href="{% url 'onBaristaApp:companyHome' user.favCompany.pk %}">{{user.favCompany.companyName}}</a></li>
-        {% else %}
-          <li id ="{{user.favCompany.pk}}"><a href="{% url 'onBaristaApp:companyHome' user.favCompany.pk %}">{{user.favCompany.companyName}}</a></li>
-        {% endif %}
+
+      {% if selectedID|stringformat:"s" == user.favCompany.pk|stringformat:"s" %}
+        <li id ="{{user.favCompany.pk}}" class="active"><a href="{% url 'onBaristaApp:companyHome' user.favCompany.pk %}">{{user.favCompany.companyName}}</a></li>
+      {% else %}
+        <li id ="{{user.favCompany.pk}}"><a href="{% url 'onBaristaApp:companyHome' user.favCompany.pk %}">{{user.favCompany.companyName}}</a></li>
+      {% endif %}
+
   	{% else %}
       <li class="nav-header">Favorite Company:</li>
   	  <li><a href="{% url 'onBaristaApp:favorites' %}">Click to add a fav company</a></li>
   	{% endif %}
+
     <li class="nav-header">All Companies:</li>
-      {% for company in companies %}
-        {% if user.favCompany != company %}
-          {% if selectedID|stringformat:"s" == company.pk|stringformat:"s" %}
-            <li id="{{company.pk}}" class='active'><a href="{% url 'onBaristaApp:companyHome' company.pk %}">{{company.companyName}}</a></li>
-          {% else %}
-            <li id="{{company.pk}}"><a href="{% url 'onBaristaApp:companyHome' company.pk %}">{{company.companyName}}</a></li>
-          {% endif %}
+    {% for company in companies %}
+
+      {% if user.favCompany != company %}
+
+        {% if selectedID|stringformat:"s" == company.pk|stringformat:"s" %} 
+          <li id="{{company.pk}}" class='active'><a href="{% url 'onBaristaApp:companyHome' company.pk %}">{{company.companyName}}</a></li>
+        {% else %}
+          <li id="{{company.pk}}"><a href="{% url 'onBaristaApp:companyHome' company.pk %}">{{company.companyName}}</a></li>
         {% endif %}
-      {% endfor %}
+
+      {% endif %}
+
+    {% endfor %}
   </ul>
 </div>
+
 {% endblock %}

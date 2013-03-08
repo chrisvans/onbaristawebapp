@@ -1,15 +1,14 @@
-# Create your views here.
 from django.http import HttpResponse, Http404, HttpResponseRedirect
 from django.template import Context, loader
 from django.shortcuts import render, get_object_or_404
 from django.core.urlresolvers import reverse
-from onBaristaApp.models import User, checkIn, companyLocation, Company, UserProfile
-from onBaristaApp.forms import MugForm
 from django.utils.timezone import utc, get_current_timezone
 from django.utils import timezone
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
+from onBaristaApp.models import User, checkIn, companyLocation, Company, UserProfile
+from onBaristaApp.forms import MugForm
 import datetime
 
 
@@ -107,14 +106,10 @@ def login_view(request):
 
 def companyHome(request, companyID=0):
 	manager_dict, user, userdetails = view_manager(request, 'Home', companyID)
-	navigation = True
-	fromHome = True
+
 	local_dict = {
-				'navigation': navigation,
-				'fromHome':fromHome,
 				}
 	params = dict(manager_dict.items() + local_dict.items())
-
 	return render(request, 'home.html', params)
 
 def checkInPost(request):
@@ -188,11 +183,7 @@ def mark_as_barista(request):
 def companyBaristas(request, message='', companyID=0):
 	manager_dict, user, userdetails = view_manager(request, 'Baristas', companyID)
 
-	navigation = True
-	fromBaristas = True
 	local_dict = {
-			   'navigation':navigation,
-			   'fromBaristas':fromBaristas,
 			   'message':message,
 			   }
 	params = dict(manager_dict.items() + local_dict.items())

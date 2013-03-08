@@ -1,11 +1,14 @@
 {% extends "autoCompleteWrapper.html" %}
 {% load url from future %}
+
 {% block contents %}
+
 {% if companies %}
-	{% for company in companies %}
+  {% for company in companies %}
 	<pre class= "ACResult" id="{{company.pk}}" fullName = "{{company.companyName}}">{{company}}</pre>
-	{% endfor %}
+  {% endfor %}
 {% else %}
-	<pre> No results found</pre>
+  <pre> No results found</pre>
 {% endif %}
+
 {% endblock %}

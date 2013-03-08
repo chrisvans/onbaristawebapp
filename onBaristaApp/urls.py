@@ -1,6 +1,6 @@
 from django.conf.urls import patterns, url
-from onBaristaApp import views
 from django.contrib.auth import authenticate
+from onBaristaApp import views
 
 urlpatterns = patterns('',
 			url(r'^$', views.login_view, name = 'login_view'),

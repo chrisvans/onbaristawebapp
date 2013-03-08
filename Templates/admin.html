@@ -2,12 +2,14 @@
 {% load url from future %}
 
 {% block contents %}
+
 {% if message %}
-<div class="alert">
+  <div class="alert">
 	<button type="button" class="close" data-dismiss="alert alert-success">&times;</button>
 	<strong>Hey!</strong> {{message}}
-</div>
+  </div>
 {% endif %}
+
 <h2> Do Admin things!</h2>
 <ul>
 	<li>Create a company!</li>

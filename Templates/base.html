@@ -73,16 +73,27 @@
   				<div class="nav-collapse collapse">
   					<ul class="nav">
               <li class="{{navFlag.Home}}">
+
                 {% if user.favCompany %}
   						    <a href="{% url 'onBaristaApp:companyHome' user.favCompany.pk %}">Home</a>
                 {% else %}
                   <a href="{% url 'onBaristaApp:companyHome' '0' %}">Home</a>
                 {% endif %}
+
               </li>
-  						<li class="{{navFlag.Baristas}}"><a href="{% url 'onBaristaApp:baristas' '0' %}">Baristas</a></li>
+  						<li class="{{navFlag.Baristas}}">
+                {% if user.favCompany %}
+                  <a href="{% url 'onBaristaApp:baristas' user.favCompany.pk %}">Baristas</a>
+                {% else %}
+                  <a href="{% url 'onBaristaApp:baristas' '0' %}">Baristas</a></li>
+                {% endif %}
+
+              </li>
+
               {% if user.isCompanyAdmin %}
-              <li class="{{navFlag.Admin}}"><a href="{% url 'onBaristaApp:admin_panel' %}">Admin Panel</a></li>
+                <li class="{{navFlag.Admin}}"><a href="{% url 'onBaristaApp:admin_panel' %}">Admin Panel</a></li>
               {% endif %}
+
   						<!--<li class="{{navFlag.ManageFavs}}"><a href="{% url 'onBaristaApp:favorites' %}">Manage Favs</a></li>
               <li class="{{navFlag.ManageProfile}}"><a href="{% url 'onBaristaApp:view_profile' %}">Manage Profile</a></li>
               <li><a href="{% url 'onBaristaApp:logout' %}">logout</a></li>-->
@@ -91,11 +102,13 @@
             <!--<p class="navbar-text pull-right" style='float:right'>-->
             <div style='float:right'>
               <ul class="nav nav-pills" style='display:inline'>
+
                 {% if user.get_mug %}
                   <li><img src='/static/Media/{{user.mug}}' style='width:45px; display:inline' class="img-rounded"></li>
                 {% else %}
                   <li></li>
                 {% endif %}
+
                 <li class="dropdown" style='display:inline'>
                   <a class="dropdown-toggle" data-toggle="dropdown" href="#" style='color:#08C'>
                     {{user.user.username}}<b class="caret"></b>
@@ -119,27 +132,33 @@
   			<div class="span3">
           {% block nav %}{% endblock %}
   			</div>
+
         {% if not fullSpanBlock %}
   			<div class="span9">
         {% else %}
         <div class="span10">
         {% endif %}
-  			  	{% block contents %}{% endblock %}
+
+  			  {% block contents %}{% endblock %}
   			</div>
   		</div>
   	</div>
 
     <div class='navbar navbar-inverse navbar-fixed-bottom'>
       <div class="navbar-inner" style="color: #999; padding: 10px;">
+
         {% if user.favBaristaObj %}
-         {% if isCheckedIn %}
-         <img src='/static/Media/{{user.favBaristaObj.get_mug}}' style='width:35px; display:inline' class="img-rounded"> &nbsp;&nbsp;&nbsp;{{user.favBaristaObj.full_name}} is checked in at <a href="{% url 'onBaristaApp:companyHome' checkIn.location.companyID.pk %}">{{checkIn.location.companyID}}</a>
-         {% else %}
-         <img src='/static/Media/{{user.favBaristaObj.get_mug}}' style='width:35px; display:inline' class="img-rounded"> &nbsp;&nbsp;&nbsp;{{user.favBaristaObj.full_name}} is not checked in.
-         {% endif %}
+
+          {% if isCheckedIn %}
+            <img src='/static/Media/{{user.favBaristaObj.get_mug}}' style='width:35px; display:inline' class="img-rounded"> &nbsp;&nbsp;&nbsp;{{user.favBaristaObj.full_name}} is checked in at <a href="{% url 'onBaristaApp:companyHome' checkIn.location.companyID.pk %}">{{checkIn.location.companyID}}</a>
+          {% else %}
+            <img src='/static/Media/{{user.favBaristaObj.get_mug}}' style='width:35px; display:inline' class="img-rounded"> &nbsp;&nbsp;&nbsp;{{user.favBaristaObj.full_name}} is not checked in.
+          {% endif %}
+
         {% else %}
-        You have not selected a favorite barista!  <a href="{% url 'onBaristaApp:favorites' %}">Manage Favorites</a>
+          You have not selected a favorite barista!  <a href="{% url 'onBaristaApp:favorites' %}">Manage Favorites</a>
         {% endif %}
+        
       </div>
     </div>
   </body>
