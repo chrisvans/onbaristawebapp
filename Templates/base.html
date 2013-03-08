@@ -117,61 +117,7 @@
   	<div class="container-fluid">
   		<div class="row-fluid">
   			<div class="span3">
-          {% if navigation %}
-          {% if fromHome %}
-  				<div class="well sidebar-nav">
-  					<ul class="nav nav-list">
-  						{% if user.favCompany %}
-  						  <li class="nav-header">Favorite Company:</li>
-                {% if selectedID|stringformat:"s" == user.favCompany.pk|stringformat:"s" %}
-                  <li id ="{{user.favCompany.pk}}" class="active"><a href="{% url 'onBaristaApp:companyHome' user.favCompany.pk %}">{{user.favCompany.companyName}}</a></li>
-                {% else %}
-                  <li id ="{{user.favCompany.pk}}"><a href="{% url 'onBaristaApp:companyHome' user.favCompany.pk %}">{{user.favCompany.companyName}}</a></li>
-                {% endif %}
-  						{% else %}
-              <li class="nav-header">Favorite Company:</li>
-  						<li><a href="{% url 'onBaristaApp:favorites' %}">Click to add a fav company</a></li>
-  						{% endif %}
-              <li class="nav-header">All Companies:</li>
-              {% for company in companies %}
-                {% if user.favCompany != company %}
-                {% if selectedID|stringformat:"s" == company.pk|stringformat:"s" %}
-                  <li id="{{company.pk}}" class='active'><a href="{% url 'onBaristaApp:companyHome' company.pk %}">{{company.companyName}}</a></li>
-                {% else %}
-                  <li id="{{company.pk}}"><a href="{% url 'onBaristaApp:companyHome' company.pk %}">{{company.companyName}}</a></li>
-                {% endif %}
-                {% endif %}
-              {% endfor %}
-  					</ul>
-  				</div>
-          {% elif fromBaristas %}
-          <div class="well sidebar-nav">
-            <ul class="nav nav-list">
-              {% if user.favCompany %}
-                <li class="nav-header">Favorite Company:</li>
-                {% if selectedID|stringformat:"s" == user.favCompany.pk|stringformat:"s" %}
-                  <li id ="{{user.favCompany.pk}}" class="active"><a href="{% url 'onBaristaApp:baristas' user.favCompany.pk %}">{{user.favCompany.companyName}}</a></li>
-                {% else %}
-                  <li id ="{{user.favCompany.pk}}"><a href="{% url 'onBaristaApp:baristas' user.favCompany.pk %}">{{user.favCompany.companyName}}</a></li>
-                {% endif %}
-              {% else %}
-              <li class="nav-header">Favorite Company:</li>
-              <li><a href="{% url 'onBaristaApp:favorites' %}">Click to add a fav company</a></li>
-              {% endif %}
-              <li class="nav-header">All Companies:</li>
-              {% for company in companies %}
-                {% if user.favCompany != company %}
-                {% if selectedID|stringformat:"s" == company.pk|stringformat:"s" %}
-                  <li id="{{company.pk}}" class='active'><a href="{% url 'onBaristaApp:baristas' company.pk %}">{{company.companyName}}</a></li>
-                {% else %}
-                  <li id="{{company.pk}}"><a href="{% url 'onBaristaApp:baristas' company.pk %}">{{company.companyName}}</a></li>
-                {% endif %}
-                {% endif %}
-              {% endfor %}
-            </ul>
-          </div>
-          {% endif %}
-          {% endif %}
+          {% block nav %}{% endblock %}
   			</div>
         {% if not fullSpanBlock %}
   			<div class="span9">
@@ -182,8 +128,6 @@
   			</div>
   		</div>
   	</div>
-
-
 
     <div class='navbar navbar-inverse navbar-fixed-bottom'>
       <div class="navbar-inner" style="color: #999; padding: 10px;">
