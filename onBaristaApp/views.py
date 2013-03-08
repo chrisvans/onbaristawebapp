@@ -5,12 +5,12 @@ from django.shortcuts import render, get_object_or_404
 from django.core.urlresolvers import reverse
 from onBaristaApp.models import User, checkIn, companyLocation, Company, UserProfile
 from onBaristaApp.forms import MugForm
-
+from django.utils.timezone import utc, get_current_timezone
 from django.utils import timezone
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
-
+import datetime
 
 
 def login_handler(request):

@@ -4,6 +4,7 @@ from django.db.models.signals import post_save
 from django.contrib.auth import authenticate
 from django.http import HttpResponse
 import datetime
+from django.utils.timezone import utc, get_current_timezone
 
 # Create your models here.
 
@@ -136,8 +137,8 @@ post_save.connect(create_user_profile, sender=User)
 class checkIn(models.Model):
 	barista = models.ForeignKey(User)
 	location = models.ForeignKey(companyLocation)
-	inTime = models.DateTimeField(null=True, auto_now_add=True)
-	outTime = models.DateTimeField(null=True, auto_now_add=True)
+	inTime = models.DateTimeField(null=True)
+	outTime = models.DateTimeField(null=True)
 	checkedin = models.BooleanField(default=True)
 	def showBarista(self):
 		user = self.barista
@@ -147,16 +148,18 @@ class checkIn(models.Model):
 		baristadetails = self.barista.get_profile()
 		return baristadetails.get_mug()
 	def __unicode__(self):
-		uniInTime = str(self.inTime)
-		uniInTime = uniInTime[0:16]
-		uniOutTime = str(self.outTime)
-		uniOutTime = uniOutTime[0:16]
+		#now = datetime.datetime.utcnow().replace(tzinfo=get_current_timezone())
 		if self.checkedin:
-			checkinDesc = self.showBarista() + " checked in at " + unicode(uniInTime)
+			checkinDesc = self.showBarista() + " checked in on " 
 		else:
-			checkinDesc = self.showBarista() + " checked out at " + unicode(uniOutTime)
+			checkinDesc = self.showBarista() + " checked out on "
 		return checkinDesc
-
+	def get_tzobject(self):
+		if self.checkedin:
+			TZTime = self.inTime.replace(tzinfo=get_current_timezone())
+		else:
+			TZTime = self.outTime.replace(tzinfo=get_current_timezone())
+		return TZTime
 
 
 
