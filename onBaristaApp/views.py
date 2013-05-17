@@ -56,13 +56,11 @@ def view_manager(request, view_name, companyID=0):
 		 'usercheck':userdetails.usercheckedin, 
 		 }
 
-		 # Set the 'active' class to the correct view -- currently we're doing this for items that aren't in the nav anymore.
-		 # can't hurt though I guess
+		 # Set the 'active' class to the correct view
 		manager_dict['navFlag'][view_name] = 'active'
 	return manager_dict, user, userdetails
 
 def login_view(request):
-	# If you're at the login page and have submitted information, then..
 	if request.method == 'POST':
 		# Django's user authentication via user submission into form
 		user = authenticate(username=request.POST['username'], password=request.POST['password'])
@@ -75,7 +73,7 @@ def login_view(request):
 				# Pass the user into the session dictionary so we can keep track of the logged in user.
 				# When the session dictionary is indexed with keyword 'user', returns this user object.
 				request.session['user'] = user
-				# Initialize variables, only populate them if the if conditions allow it.
+				# Initialize variables, only populate them if the logic conditions allow it.
 				favCompany= Company()
 				favCompany.pk = '0'
 				# Populate database table with UserProfile class attributes.  Store object as userdetails.
