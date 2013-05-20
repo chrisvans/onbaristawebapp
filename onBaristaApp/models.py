@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.contrib.auth import authenticate
 from django.http import HttpResponse
-from django.utils.timezone import utc, get_current_timezone
+from django.utils.timezone import utc, get_current_timezone, activate, localtime
 import datetime
 
 
@@ -153,9 +153,15 @@ class checkIn(models.Model):
 		return checkinDesc
 	def get_tzobject(self):
 		if self.checkedin:
-			TZTime = self.inTime.replace(tzinfo=get_current_timezone())
+			TZTime = self.inTime
+			TZTime = localtime(TZTime)
+			activate(TZTime.tzinfo)
+			print TZTime, TZTime.tzinfo
 		else:
-			TZTime = self.outTime.replace(tzinfo=get_current_timezone())
+			TZTime = self.inTime
+			TZTime = localtime(TZTime)
+			activate(TZTime.tzinfo)
+			#TZTime = self.outTime.replace(tzinfo=get_current_timezone())
 		return TZTime
 
 
