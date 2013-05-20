@@ -4,11 +4,7 @@ onbaristawebapp
 Web App for Baristas to check in when they are on bar at their cafe.
 Customers can check to see when their favorite barista is making drinks.
 
-For those who want a peek at the latest alpha version check out http://acoats.myds.me:9867/
-
-This currently is running off of a Raspberry Pi for testing purposes, so it may be slow at times.
-
-This App uses Python 2.7.3, Django 1.4.3, and South 0.7.6.
+This App uses Python 2.7.3 and Django 1.4.3.
 
 App Use-
 
