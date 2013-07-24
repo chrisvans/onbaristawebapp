@@ -136,19 +136,12 @@ def checkInPost(request):
         return render(request, 'login.html')
 
     location = companyLocation.objects.get(pk=request.POST['location'])
-
-    try:
-        d = checkIn.objects.get(barista = user)
-        # If there is already a checkin object, delete it to reduce errors.
-        # Also takes care of a checked out object.
-        # Delete the checked out entry.
-        d.delete()
-    except (KeyError,checkIn.DoesNotExist):
-        1+1
     
     # Create new check in object with the barista ( logged in user ) and associate it with the location.
     # Creates and saves the checkIn object.
+    # Deletes the old checkIn object if there is one, and creates a new one.
     checkIn.create(user, location)
+    # Edit and save user details to reflect the checked-in status.
     ModelManager.check_in_user(user, request)
     return HttpResponseRedirect(reverse('onBaristaApp:baristas', kwargs={'companyID':location.companyID.pk}))
 

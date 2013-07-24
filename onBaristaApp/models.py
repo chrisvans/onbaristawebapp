@@ -184,6 +184,14 @@ class checkIn(models.Model):
 
     @classmethod
     def create(cls, barista, location):
+        try:
+            old_checkin_object = checkIn.objects.get(barista = barista)
+            # If there is already a checkin object, delete it to reduce errors.
+            # Also takes care of a checked out object.
+            # Delete the checked out entry.
+            old_checkin_object.delete()
+        except (KeyError,checkIn.DoesNotExist):
+            1+1
         check_in = cls(barista=barista, location=location, inTime=timezone.now())
         check_in.save()
 
