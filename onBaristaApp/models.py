@@ -11,17 +11,19 @@ import datetime
 class Company(models.Model):
     companyName = models.CharField(max_length=200)
     companyContact = models.CharField(max_length=200, blank=True)
+
     def __unicode__(self):
         return self.companyName
+
     def get_locations(self):
         return companyLocation.objects.filter(companyID = self)
+
 
 class companyLocation(models.Model):
     checkins = {}
     companyID = models.ForeignKey(Company)
     street = models.CharField(max_length=200, blank=True)
     city = models.CharField(max_length= 20, blank=True)
-
     state_choices = (
             ('MA', 'Massachusetts'),
             ('CT', 'Connecticut'),
@@ -40,8 +42,10 @@ class companyLocation(models.Model):
 
     def __unicode__(self):
         return self.address_string()
+
     def get_checkins(self):
         return checkIn.objects.filter(location = self)
+
     def get_checkin_out(self):
         # Method returns all checked out baristas at this location
         location_checkins = checkIn.objects.filter(location = self)
@@ -51,6 +55,7 @@ class companyLocation(models.Model):
                 barista = checkin.barista
                 barista_list.append(barista)
         return barista_list
+
     def get_checkin_in(self):
         # Method returns all checked in baristas at this location
         location_checkins = checkIn.objects.filter(location = self)
@@ -60,6 +65,7 @@ class companyLocation(models.Model):
                 barista = checkin.barista
                 barista_list.append(barista)
         return barista_list
+
 
 # Django User model
 # class models.User
@@ -79,10 +85,13 @@ class UserProfile(models.Model):
     favCompany = models.ForeignKey(Company, null=True, blank=True)
     favBaristaObj = models.ForeignKey('self', null=True, blank=True)
     usercheckedin = models.BooleanField(default=False)
+
     def __unicode__(self):
         return self.userType + ": " + self.user.first_name + " " + self.user.last_name
+
     def showUser(self):
         return self.userType + ": " + self.user.first_name + " " + self.user.last_name
+
     def isFavBarCheckedIn(self):
         # Returns true if this user's favorite barista is checked in.
         if self.favBaristaObj:
@@ -93,6 +102,7 @@ class UserProfile(models.Model):
             if checkInObj and checkInObj.checkedin:
                 return True
         return False
+
     def get_favBarCheckIn(self):
         # Returns the favorite barista's user object if it exists, otherwise returns an empty string.
         if self.favBaristaObj:
@@ -101,6 +111,7 @@ class UserProfile(models.Model):
                 return checkIn.objects.get(barista = self.favBaristaObj.user)
             except (KeyError,checkIn.DoesNotExist):
                 return 'error'
+
     def update_favs(self, companyID, baristaID):
         if baristaID:
             baristaObj = UserProfile.objects.get(pk=baristaID)
@@ -109,15 +120,18 @@ class UserProfile(models.Model):
             companyObj = Company.objects.get(pk=companyID)
             self.favCompany = companyObj
         self.save()
+
     def get_mug(self):
         if self.mug == 'U1.jpg':
             return None
         return self.mug
+
     def get_self_checkIn(self):
         if self.usercheckedin:
             return checkIn.objects.get(barista=self.user)
         else:
             return None
+
 
 def create_user_profile(sender, instance, created, **kwargs):
     name = instance.get_full_name()
@@ -152,7 +166,6 @@ class checkIn(models.Model):
         return baristadetails.get_mug()
 
     def __unicode__(self):
-        #now = datetime.datetime.utcnow().replace(tzinfo=get_current_timezone())
         if self.checkedin:
             checkinDesc = self.showBarista() + " checked in on " 
         else:
@@ -167,6 +180,7 @@ class checkIn(models.Model):
 
         activate(timezone_corrected_time.tzinfo)
         return timezone_corrected_time
+
 
     @classmethod
     def create(cls, barista, location):

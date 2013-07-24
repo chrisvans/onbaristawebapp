@@ -25,8 +25,10 @@ class ViewManager():
     @classmethod
     def view_manager(cls, request, view_name, companyID=0):
         user = ViewManager.login_handler(request)
+
         if user is None:
             raise PermissionDenied()
+
         else:
             userdetails = user.get_profile()
 
@@ -36,17 +38,23 @@ class ViewManager():
             company= ''
             locations = ''
             companies = Company.objects.all()
+
             if companyID and companyID != '0':
                 company = Company.objects.get(pk=companyID)
                 locations = company.get_locations()
+
                 for location in locations:
                     location.checkins = location.get_checkins()
+
             else:
+
                 if userdetails.favCompany:
                     company = userdetails.favCompany
                     locations = company.get_locations()
+
                 for location in locations:
                     location.checkins = location.get_checkins()
+                    
             # Create the default parameters that most views use
             manager_dict = {'navFlag':{'Home':'', 'Baristas':'', 'ManageFavs':'', 'ManageProfile':'', 'Admin':''},
              'companies':companies, 
@@ -70,7 +78,9 @@ def login_view(request):
         user = authenticate(username=request.POST['username'], password=request.POST['password'])
         # authenticate() returns None if the passed arguments are incorrect,
         # otherwise it returns the proper user object associated with them.
+
         if user is not None:
+
             if user.is_active:
                 # Login passing in the user object gained from authenticate()
                 login(request, user)
@@ -82,13 +92,16 @@ def login_view(request):
                 favCompany.pk = '0'
                 # Populate database table with UserProfile class attributes.  Store object as userdetails.
                 userdetails = user.get_profile()
+
                 if userdetails.favCompany:
                     favCompany = userdetails.favCompany
                 # After successful login, return to home, populate dictionary.
                 return companyHome(request, favCompany.pk)
+
             else:
                 # If user.is_active returns False.  Boolean that can be set manually.
                 return render(request, 'login.html', {'error_message':"Your account has been disabled!",})
+        
         else:
             # If authentication() returns None (fails).
             return render(request, 'login.html', {'error_message':"Username or password do not match our records.",})
@@ -98,10 +111,12 @@ def login_view(request):
         # Update appropriate fields and sends user to the homepage instead of login.
         user = request.session['user']
         userdetails = user.get_profile()
+
         if userdetails.favCompany:
             favCompany = userdetails.favCompany
             return companyHome(request, favCompany.pk)
         return companyHome(request, 0)
+
     else:
         # If no information has been submitted, and there is no active 'user' in session (login).
         return render(request, 'login.html')
@@ -148,6 +163,7 @@ def checkInPost(request):
 
 def checkOutPost(request):
     user = ViewManager.login_handler(request)
+
     if user is None:
         return render(request, 'login.html')
     location = companyLocation.objects.get(pk=request.POST['location'])
@@ -155,6 +171,7 @@ def checkOutPost(request):
     # Same as checkInPost but inverted when necessary.
     d = checkIn.objects.get(barista = user)
     co = checkIn.objects.get(barista = user)
+
     if d.checkedin:
         d.delete()
     co.outTime = currTime
@@ -169,13 +186,16 @@ def checkOutPost(request):
 
 def mark_as_barista(request):
     user = ViewManager.login_handler(request)
+
     if user is None:
         return render(request, 'login.html')
 
     userdetails = user.get_profile()
+
     if userdetails.userType == "Barista":
         print 'Warning from mark_as_barista, user accessed barista signup button or refreshed page on submit when user was already a barista.'
         return companyBaristas(request)
+
     else:
         userdetails.userType = "Barista"
         userdetails.save()
@@ -211,18 +231,18 @@ def update_favs(request):
 
 def baristaList(request):
     user = ViewManager.login_handler(request)
+
     if user is None:
         return render(request, 'login.html')
-
     userdetails = user.get_profile()
     userdetailsList = UserProfile.objects.filter(userType='Barista', full_name__startswith = request.POST['searchString']).exclude(pk = userdetails.pk)
     return render(request, 'autocompleteList.html', {'results':userdetailsList})
 
 def companyList(request):
     user = ViewManager.login_handler(request)
+
     if user is None:
         return render(request, 'login.html')
-
     companies = Company.objects.filter(companyName__startswith = request.POST['searchString'])
     return render(request, 'autocompleteList.html', {'results':companies})
 
@@ -231,11 +251,13 @@ def view_profile(request, fullSpanBlock=True):
 
     if request.method == 'POST':
         form = MugForm(request.POST, request.FILES)
+
         if form.is_valid():
             userdetails.mug = request.FILES['mug']
             userdetails.save()
             request.session['user'] = user
             return HttpResponseRedirect(reverse('onBaristaApp:view_profile'))
+
     else:
         form = MugForm()
     manager_dict['fullSpanBlock'] = fullSpanBlock
@@ -250,6 +272,7 @@ def admin_panel(request):
 
 def logout_view(request):
     logout(request)
+
     if ('user' in request.session):
         del request.session['user']
     return render(request, 'login.html')
@@ -277,7 +300,9 @@ def register(request):
             user = authenticate(username=username, password=password)
             login(request, user)
             return render(request, 'login.html', {'success_message':"You successfully registered!",})
+
         else:
             return render(request, 'register.html', {'error_message':"Username already exists!",})
+
     else:
         return render(request, 'register.html')
