@@ -49,40 +49,4 @@
 
 {% endblock %}
 
-{% block nav %}
-
-<div class="well sidebar-nav">
-  <ul class="nav nav-list">
-
-    {% if user.favCompany %}
-      <li class="nav-header">Favorite Company:</li>
-
-      {% if selectedID|stringformat:"s" == user.favCompany.pk|stringformat:"s" %}
-        <li id ="{{user.favCompany.pk}}" class="active"><a href="{% url 'onBaristaApp:baristas' user.favCompany.pk %}">{{user.favCompany.companyName}}</a></li>
-      {% else %}
-        <li id ="{{user.favCompany.pk}}"><a href="{% url 'onBaristaApp:baristas' user.favCompany.pk %}">{{user.favCompany.companyName}}</a></li>
-      {% endif %}
-
-    {% else %}
-      <li class="nav-header">Favorite Company:</li>
-      <li><a href="{% url 'onBaristaApp:favorites' %}">Click to add a fav company</a></li>
-    {% endif %}
-
-    <li class="nav-header">All Companies:</li>
-    {% for company in companies %}
-
-      {% if user.favCompany != company %}
-
-        {% if selectedID|stringformat:"s" == company.pk|stringformat:"s" %}
-          <li id="{{company.pk}}" class='active'><a href="{% url 'onBaristaApp:baristas' company.pk %}">{{company.companyName}}</a></li>
-        {% else %}
-          <li id="{{company.pk}}"><a href="{% url 'onBaristaApp:baristas' company.pk %}">{{company.companyName}}</a></li>
-        {% endif %}
-
-      {% endif %}
-
-    {% endfor %}
-  </ul>
-</div>
-
-{% endblock %}
+{% include "left_nav_bar.html" %}

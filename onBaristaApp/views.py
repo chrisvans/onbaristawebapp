@@ -7,12 +7,12 @@ from django.utils import timezone
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
-from .models import User, checkIn, companyLocation, Company, UserProfile, ModelManager
+from .models import User, checkIn, companyLocation, Company, UserProfile, UserProfileManager
 from .forms import MugForm
 import datetime
 
 
-class ViewManager():
+class ViewManager(object):
     
     @classmethod
     def login_handler(cls, request):
@@ -142,7 +142,9 @@ def checkInPost(request):
     # Deletes the old checkIn object if there is one, and creates a new one.
     checkIn.create(user, location)
     # Edit and save user details to reflect the checked-in status.
-    ModelManager.check_in_user(user, request)
+    # ModelManager.check_in_user(user, request)
+    userdetails = user.get_profile()
+    userdetails.objects.check_in_user(user, request)
     return HttpResponseRedirect(reverse('onBaristaApp:baristas', kwargs={'companyID':location.companyID.pk}))
 
 def checkOutPost(request):
@@ -262,6 +264,7 @@ def logout_view(request):
     return render(request, 'login.html')
 
 def register(request):
+    # Use a form - pass in dictionary of data
     if request.method == 'POST':
         username = request.POST['username']
         password = request.POST['password']

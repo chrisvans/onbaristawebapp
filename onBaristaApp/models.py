@@ -72,7 +72,17 @@ class companyLocation(models.Model):
 # Comes with username, password, first_name, last_name, 
 # last_login, and date_joined - as well as check_password(raw_password) and set_password(raw_password)
 
+class UserProfileManager(models.Manager):
+    def check_in_user(self, user, request):
+        # Set user's usercheckedin flag to True, and then refresh the current session user.
+        userdetails = self.get(user = user) # user.get_profile()
+        userdetails.usercheckedin = True
+        user.save()
+        userdetails.save()
+        request.session['user'] = User.objects.get(username = user.username)
+
 class UserProfile(models.Model):
+    objects = UserProfileManager()
     user = models.OneToOneField(User)
     mug = models.FileField(upload_to='Mugs')
     isCompanyAdmin = models.BooleanField(default=False)
@@ -195,13 +205,3 @@ class checkIn(models.Model):
         check_in = cls(barista=barista, location=location, inTime=timezone.now())
         check_in.save()
 
-
-class ModelManager(models.Model):
-    @classmethod
-    def check_in_user(self, user, request):
-        # Set user's usercheckedin flag to True, and then refresh the current session user.
-        userdetails = user.get_profile()
-        userdetails.usercheckedin = True
-        user.save()
-        userdetails.save()
-        request.session['user'] = User.objects.get(username = user.username)
