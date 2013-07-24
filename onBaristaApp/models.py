@@ -86,7 +86,10 @@ class UserProfile(models.Model):
     def isFavBarCheckedIn(self):
         # Returns true if this user's favorite barista is checked in.
         if self.favBaristaObj:
-            checkInObj = checkIn.objects.get(barista = self.favBaristaObj.user)
+            try:
+                checkInObj = checkIn.objects.get(barista = self.favBaristaObj.user)
+            except (KeyError,checkIn.DoesNotExist):
+                return False
             if checkInObj and checkInObj.checkedin:
                 return True
         return False

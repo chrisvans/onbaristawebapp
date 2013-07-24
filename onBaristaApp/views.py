@@ -210,7 +210,7 @@ def update_favs(request):
     return favorites(request, "Your favorites have been updated", manager_dict)
 
 def baristaList(request):
-    user = login_handler(request)
+    user = ViewManager.login_handler(request)
     if user is None:
         return render(request, 'login.html')
 
