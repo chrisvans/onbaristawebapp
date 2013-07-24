@@ -7,7 +7,7 @@ from django.utils import timezone
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
-from .models import User, checkIn, companyLocation, Company, UserProfile
+from .models import User, checkIn, companyLocation, Company, UserProfile, ModelManager
 from .forms import MugForm
 import datetime
 
@@ -147,18 +147,9 @@ def checkInPost(request):
         1+1
     
     # Create new check in object with the barista ( logged in user ) and associate it with the location.
-    check_in = checkIn.create(user, location)
-
-    # Set user's usercheckedin flag to True, and then refresh the current session user.
-    userdetails = user.get_profile()
-    userdetails.usercheckedin = True
-
-    user.save()
-    userdetails.save()
-
-    request.session['user'] = User.objects.get(username = user.username)
-
-    check_in.save()
+    # Creates and saves the checkIn object.
+    checkIn.create(user, location)
+    ModelManager.check_in_user(user, request)
     return HttpResponseRedirect(reverse('onBaristaApp:baristas', kwargs={'companyID':location.companyID.pk}))
 
 def checkOutPost(request):
@@ -285,7 +276,7 @@ def register(request):
         first_name = request.POST['first_name']
         last_name = request.POST['last_name']
 
-        if username == '' or password == '' or email == '':
+        if username.strip() == '' or password.strip() == '' or email.strip() == '':
             return render(request, 'register.html', {'error_message':"A required field has been left empty!",})
 
         try:

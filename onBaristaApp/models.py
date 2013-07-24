@@ -185,9 +185,15 @@ class checkIn(models.Model):
     @classmethod
     def create(cls, barista, location):
         check_in = cls(barista=barista, location=location, inTime=timezone.now())
-
-        return check_in
-
+        check_in.save()
 
 
-
+class ModelManager(models.Model):
+    @classmethod
+    def check_in_user(self, user, request):
+        # Set user's usercheckedin flag to True, and then refresh the current session user.
+        userdetails = user.get_profile()
+        userdetails.usercheckedin = True
+        user.save()
+        userdetails.save()
+        request.session['user'] = User.objects.get(username = user.username)
