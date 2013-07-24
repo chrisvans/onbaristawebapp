@@ -7,8 +7,8 @@ from django.utils import timezone
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
-from onBaristaApp.models import User, checkIn, companyLocation, Company, UserProfile
-from onBaristaApp.forms import MugForm
+from .models import User, checkIn, companyLocation, Company, UserProfile
+from .forms import MugForm
 import datetime
 
 
@@ -54,7 +54,7 @@ class ViewManager():
 
                 for location in locations:
                     location.checkins = location.get_checkins()
-                    
+
             # Create the default parameters that most views use
             manager_dict = {'navFlag':{'Home':'', 'Baristas':'', 'ManageFavs':'', 'ManageProfile':'', 'Admin':''},
              'companies':companies, 
