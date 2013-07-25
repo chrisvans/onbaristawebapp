@@ -144,7 +144,7 @@ class UserProfile(models.Model):
 
     def get_favorite_company_id(self):
         if self.favCompany:
-            return favCompany.pk
+            return self.favCompany.pk
         else:
             return '0'
 
