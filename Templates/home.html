@@ -5,14 +5,13 @@
 
 {% block contents %}
 
-{% for location_checkins in all_checkin_data %}
-<div class="hero-unit">
-  {% for check_in_object in location_checkins %}
+{% for company in companies %}
 	<div class="hero-unit">
-		{% if forloop.counter == 1 %}
-      <span><strong>{{ check_in_object.location }}</strong></span><br>
-        {% endif %}
-		{% if check_in_object.location %}
+      {% for single_location in company.get_locations %}
+        <span><strong>{{ single_location }}</strong></span><br>
+        {% for check_in_object in single_location.get_checkins %}
+
+		  {% if check_in_object %}
 
 			{% localtime on %}
 			  {% if check_in_object.get_barista_mug %}
@@ -26,10 +25,9 @@
 		{% else %}
 		  <ul>There are no Baristas checked in at this location</ul>
 		{% endif %}
+        {% endfor %}
+	  {% endfor %}
 	</div>
-  {% endfor %}
-	</div>
-
 {% endfor %}
 
 {% endblock %}

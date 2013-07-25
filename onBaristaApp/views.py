@@ -57,16 +57,15 @@ class ViewManager(object):
                 for location in locations:
                     location.checkins = location.get_checkins()
 
-            location_groups = []
-            company_locations = []
-            all_checkin_data = []
+            # location_groups = []
+            # company_locations = []
+            # all_checkin_data = []
 
-            for single_company in companies:
-                company_locations.append(single_company.get_locations())
+            # for single_company in companies:
+            #     company_locations.append(single_company.get_locations())
 
-            for location_group in company_locations:
-                for single_location in location_group:
-                    all_checkin_data.append(single_location.get_checkins())
+            # for location_group in company_locations:
+            #     all_checkin_data.append(location_group)
             # Create nested arrays of checkin data sorted ( nested ) by location.
 
             # Create the default parameters that most views use
@@ -80,7 +79,6 @@ class ViewManager(object):
              'isCheckedIn':userdetails.isFavBarCheckedIn(),
              'checkIn':userdetails.get_favBarCheckIn(),
              'usercheck':userdetails.usercheckedin, 
-             'all_checkin_data':all_checkin_data,
              }
 
              # Set the 'active' class to the correct view
