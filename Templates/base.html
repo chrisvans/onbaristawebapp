@@ -11,20 +11,20 @@
     <meta name="description" content="">
     <meta name="author" content="">
     <style type="text/css">
-    	body{
-    		padding-top:60px;
-    		padding-bottom:40px;
-    	}
-    	.sidebar-nav{
-    		padding: 9px 0;
-    	}
-    	@media (min-width: 768px) and (max-width: 979px){
-    		.navbar-text.pull-right{
-    			float:none;
-    			padding-left: 5px;
-    			padding-right: 5px;
-    		}
-    	}
+      body{
+        padding-top:60px;
+        padding-bottom:40px;
+      }
+      .sidebar-nav{
+        padding: 9px 0;
+      }
+      @media (min-width: 768px) and (max-width: 979px){
+        .navbar-text.pull-right{
+          float:none;
+          padding-left: 5px;
+          padding-right: 5px;
+        }
+      }
       @media (max-width: 767px){
         .navbar-text.pull-right{
           float:none;
@@ -61,27 +61,27 @@
     <![endif]-->
   </head>
   <body>
-  	<div class='navbar navbar-inverse navbar-fixed-top'>
-  		<div class="navbar-inner">
-  			<div class="container-fluid">
-  				<button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-  					<span class="icon-bar"></span>
-  					<span class="icon-bar"></span>
-  					<span class="icon-bar"></span>
-  				</button>
-  				<a class="brand" href="#">On Barista</a>
-  				<div class="nav-collapse collapse">
-  					<ul class="nav">
+    <div class='navbar navbar-inverse navbar-fixed-top'>
+      <div class="navbar-inner">
+        <div class="container-fluid">
+          <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="brand" href="#">On Barista</a>
+          <div class="nav-collapse collapse">
+            <ul class="nav">
               <li class="{{navFlag.Home}}">
 
                 {% if user.favCompany %}
-  						    <a href="{% url 'onBaristaApp:companyHome' user.favCompany.pk %}">Home</a>
+                  <a href="{% url 'onBaristaApp:companyHome' user.favCompany.pk %}">Home</a>
                 {% else %}
                   <a href="{% url 'onBaristaApp:companyHome' '0' %}">Home</a>
                 {% endif %}
 
               </li>
-  						<li class="{{navFlag.Baristas}}">
+              <li class="{{navFlag.Baristas}}">
                 {% if user.favCompany %}
                   <a href="{% url 'onBaristaApp:baristas' user.favCompany.pk %}">Baristas</a>
                 {% else %}
@@ -94,7 +94,7 @@
                 <li class="{{navFlag.Admin}}"><a href="{% url 'onBaristaApp:admin_panel' %}">Admin Panel</a></li>
               {% endif %}
 
-  						<!--<li class="{{navFlag.ManageFavs}}"><a href="{% url 'onBaristaApp:favorites' %}">Manage Favs</a></li>
+              <!--<li class="{{navFlag.ManageFavs}}"><a href="{% url 'onBaristaApp:favorites' %}">Manage Favs</a></li>
               <li class="{{navFlag.ManageProfile}}"><a href="{% url 'onBaristaApp:view_profile' %}">Manage Profile</a></li>
               <li><a href="{% url 'onBaristaApp:logout' %}">logout</a></li>-->
             </ul>
@@ -123,26 +123,26 @@
               </ul>
             </div>
             <!--</p>-->
-  				</div>
-  			</div>
-  		</div>
-  	</div>
-  	<div class="container-fluid">
-  		<div class="row-fluid">
-  			<div class="span3">
-          {% include "left_nav_bar.html" %}
-  			</div>
-
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="container-fluid">
+      <div class="row-fluid">
         {% if not fullSpanBlock %}
-  			<div class="span9">
+        <div class="span3">
+          {% include "left_nav_bar.html" %}
+        </div>
+
+        <div class="span9">
         {% else %}
         <div class="span10">
         {% endif %}
 
-  			  {% block contents %}{% endblock %}
-  			</div>
-  		</div>
-  	</div>
+          {% block contents %}{% endblock %}
+        </div>
+      </div>
+    </div>
 
     <div class='navbar navbar-inverse navbar-fixed-bottom'>
       <div class="navbar-inner" style="color: #999; padding: 10px;">
