@@ -142,6 +142,12 @@ class UserProfile(models.Model):
         else:
             return None
 
+    def get_favorite_company_id(self):
+        if self.favCompany:
+            return favCompany.pk
+        else:
+            return '0'
+
 
 def create_user_profile(sender, instance, created, **kwargs):
     name = instance.get_full_name()

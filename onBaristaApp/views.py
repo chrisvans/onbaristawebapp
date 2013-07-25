@@ -18,7 +18,7 @@ class ViewManager(object):
     def login_handler(cls, request, **kwargs):
         if request.user.is_authenticated():
             return request.user
-            
+
         else:
             send_to_login = reverse('onBaristaApp:login_view')
             redirect(send_to_login)
@@ -29,10 +29,12 @@ class ViewManager(object):
 
         if user is None:
             raise PermissionDenied()
+
         userdetails = user.get_profile()
         # Make sure that the user has the rights to use the admin page
         if not userdetails.isCompanyAdmin and view_name == 'Admin':
             raise PermissionDenied()
+
         companies = Company.objects.all()
 
         # Create the default parameters that most views use
@@ -62,22 +64,12 @@ def login_view(request):
         if user is not None:
 
             if user.is_active:
-                # Login passing in the user object gained from authenticate()
-
                 login(request, user)
-                # Pass the user into the session dictionary so we can keep track of the logged in user.
-                # When the session dictionary is indexed with keyword 'user', returns this user object.
                 request.session['user'] = user
                 # Initialize variables, only populate them if the logic conditions allow it.
-                favCompany = Company()
-                favCompany.pk = '0'
-                # Populate database table with UserProfile class attributes.  Store object as userdetails.
                 userdetails = user.get_profile()
 
-                if userdetails.favCompany:
-                    favCompany = userdetails.favCompany
-                # After successful login, return to home, populate dictionary.
-                return companyHome(request, favCompany.pk)
+                return companyHome(request, get_favorite_company_id())
 
             else:
                 # If user.is_active returns False.  Boolean that can be set manually.
@@ -87,16 +79,12 @@ def login_view(request):
             # If authentication() returns None (fails).
             return render(request, 'login.html', {'error_message':"Username or password do not match our records.",})
             
-    elif 'user' in request.session:
-        # If the session dictionary has a 'user' keyword, the only means by which this happens is a successful login.
-        # Update appropriate fields and sends user to the homepage instead of login.
+    elif request.user_is_authenticated():
+        # Do not show login view if user is already logged in, direct to homepage.
         user = request.session['user']
         userdetails = user.get_profile()
 
-        if userdetails.favCompany:
-            favCompany = userdetails.favCompany
-            return companyHome(request, favCompany.pk)
-        return companyHome(request, 0)
+        return companyHome(request, userdetails.get_favorite_company_id())
 
     else:
         # If no information has been submitted, and there is no active 'user' in session (login).
@@ -114,9 +102,7 @@ def companyHome(request, companyID=0):
 
 def checkInPost(request):
     user = ViewManager.login_handler(request)
-
     location = companyLocation.objects.get(pk=request.POST['location'])
-    
     # Create new check in object with the barista ( logged in user ) and associate it with the location.
     # Deletes the old checkIn object if there is one, and creates a new one, saving it.
     checkIn.create(user, location)
