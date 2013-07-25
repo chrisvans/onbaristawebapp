@@ -24,7 +24,7 @@ class ViewManager(object):
             redirect(send_to_login)
     
     @classmethod
-    def view_manager(cls, request, view_name, companyID=0):
+    def view_manager(cls, request, view_name, companyID='0'):
         user = ViewManager.login_handler(request)
 
         if user is None:
@@ -68,7 +68,6 @@ def login_view(request):
                 request.session['user'] = user
                 # Initialize variables, only populate them if the logic conditions allow it.
                 userdetails = user.get_profile()
-
                 return companyHome(request, get_favorite_company_id())
 
             else:
@@ -83,14 +82,14 @@ def login_view(request):
         # Do not show login view if user is already logged in, direct to homepage.
         user = request.session['user']
         userdetails = user.get_profile()
-
         return companyHome(request, userdetails.get_favorite_company_id())
 
     else:
         # If no information has been submitted, and there is no active 'user' in session (login).
         return render(request, 'login.html')
 
-def companyHome(request, companyID=0):
+def companyHome(request, companyID='0'):
+    # Homepage view.
     # The company ID being passed here is the user's favorite company,
     # populate this to the top of the feed.
     manager_dict, user, userdetails = ViewManager.view_manager(request, 'Home')
@@ -101,52 +100,38 @@ def companyHome(request, companyID=0):
     return render(request, 'home.html', params)
 
 def checkInPost(request):
+    # Barista view - Check In Button.
     user = ViewManager.login_handler(request)
     location = companyLocation.objects.get(pk=request.POST['location'])
     # Create new check in object with the barista ( logged in user ) and associate it with the location.
     # Deletes the old checkIn object if there is one, and creates a new one, saving it.
     checkIn.create(user, location)
     # Edit and save user details to reflect the checked-in status.
-    userdetails = user.get_profile()
-    userdetails.objects.check_in_user(user, request)
+    UserProfile.objects.check_in_user(user, request)
     return HttpResponseRedirect(reverse('onBaristaApp:baristas', kwargs={'companyID':location.companyID.pk}))
 
 def checkOutPost(request):
+    # Barista view - Check Out Button.
     user = ViewManager.login_handler(request)
     location = companyLocation.objects.get(pk=request.POST['location'])
-    currTime = timezone.now()
-    # Same as checkInPost but inverted when necessary.
-    d = checkIn.objects.get(barista = user)
-    co = checkIn.objects.get(barista = user)
-
-    if d.checkedin:
-        d.delete()
-    co.outTime = currTime
-    co.checkedin = False
-    userdetails = user.get_profile()
-    userdetails.usercheckedin = False
+    # Change check in object to reflect checked out status.
+    check_in = checkIn.objects.get(barista = user)
+    check_in.check_out_user()
     user.save()
-    userdetails.save()
     request.session['user'] = User.objects.get(username = user.username)
-    co.save()
+
     return HttpResponseRedirect(reverse('onBaristaApp:baristas', kwargs={'companyID':location.companyID.pk}))
 
 def mark_as_barista(request):
     user = ViewManager.login_handler(request)
     userdetails = user.get_profile()
+    userdetails.userType = "Barista"
+    userdetails.save()
+    user.save()
+    request.session['user'] = User.objects.get(username = user.username)
+    return companyBaristas(request, "Now registered as a barista!")
 
-    if userdetails.userType == "Barista":
-        print 'Warning from mark_as_barista, user accessed barista signup button or refreshed page on submit when user was already a barista.'
-        return companyBaristas(request)
-
-    else:
-        userdetails.userType = "Barista"
-        userdetails.save()
-        user.save()
-        request.session['user'] = User.objects.get(username = user.username)
-        return companyBaristas(request, "Now registered as a barista!")
-
-def companyBaristas(request, message='', companyID=0):
+def companyBaristas(request, message='', companyID='0'):
     manager_dict, user, userdetails = ViewManager.view_manager(request, 'Baristas', companyID)
 
     local_dict = {
@@ -155,12 +140,11 @@ def companyBaristas(request, message='', companyID=0):
     params = dict(manager_dict.items() + local_dict.items())
     return render(request, 'baristas.html', params)
 
-def favorites(request, message='', navigation=False, fullSpanBlock=True):
+def favorites(request, message='', navigation=False):
     manager_dict, user, userdetails = ViewManager.view_manager(request, 'ManageFavs')
 
     manager_dict['message'] = message
     manager_dict['navigation'] = navigation
-    manager_dict['fullSpanBlock'] = fullSpanBlock
     return render(request, 'favorites.html', manager_dict)
 
 
@@ -183,7 +167,7 @@ def companyList(request):
     companies = Company.objects.filter(companyName__startswith = request.POST['searchString'])
     return render(request, 'autocompleteList.html', {'results':companies})
 
-def view_profile(request, fullSpanBlock=True):
+def view_profile(request):
     manager_dict, user, userdetails = ViewManager.view_manager(request, 'ManageProfile')
 
     if request.method == 'POST':
@@ -197,7 +181,6 @@ def view_profile(request, fullSpanBlock=True):
 
     else:
         form = MugForm()
-    manager_dict['fullSpanBlock'] = fullSpanBlock
     manager_dict['form'] = form
     manager_dict['user'] = userdetails
     request.session['user'] = user

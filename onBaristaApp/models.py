@@ -197,6 +197,15 @@ class checkIn(models.Model):
         activate(timezone_corrected_time.tzinfo)
         return timezone_corrected_time
 
+    def check_out_user(self):
+        self.outTime = timezone.now()
+        self.checkedin = False
+        userdetails = self.barista.get_profile()
+        userdetails.usercheckedin = False
+        userdetails.save()
+        self.save()
+
+
 
     @classmethod
     def create(cls, barista, location):
