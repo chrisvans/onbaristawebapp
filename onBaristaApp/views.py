@@ -123,6 +123,7 @@ def checkOutPost(request):
     return HttpResponseRedirect(reverse('onBaristaApp:baristas', kwargs={'companyID':location.companyID.pk}))
 
 def mark_as_barista(request):
+    # Barista view - Register as Barista Button.
     user = ViewManager.login_handler(request)
     userdetails = user.get_profile()
     userdetails.userType = "Barista"
@@ -132,6 +133,7 @@ def mark_as_barista(request):
     return companyBaristas(request, "Now registered as a barista!")
 
 def companyBaristas(request, message='', companyID='0'):
+    # Barista view.
     manager_dict, user, userdetails = ViewManager.view_manager(request, 'Baristas', companyID)
 
     local_dict = {
@@ -141,6 +143,7 @@ def companyBaristas(request, message='', companyID='0'):
     return render(request, 'baristas.html', params)
 
 def favorites(request, message='', navigation=False):
+    # Manage Favorites page.
     manager_dict, user, userdetails = ViewManager.view_manager(request, 'ManageFavs')
 
     manager_dict['message'] = message
@@ -149,6 +152,7 @@ def favorites(request, message='', navigation=False):
 
 
 def update_favs(request):
+    # Submit from Favorites page.
     manager_dict, user, userdetails = ViewManager.view_manager(request, 'Baristas')
 
     userdetails.update_favs(request.POST['companyID'], request.POST['baristaID'])
@@ -157,12 +161,14 @@ def update_favs(request):
     return favorites(request, "Your favorites have been updated", manager_dict)
 
 def baristaList(request):
+    # Search form from Favorites page.
     user = ViewManager.login_handler(request)
     userdetails = user.get_profile()
     userdetailsList = UserProfile.objects.filter(userType='Barista', full_name__startswith = request.POST['searchString']).exclude(pk = userdetails.pk)
     return render(request, 'autocompleteList.html', {'results':userdetailsList})
 
 def companyList(request):
+    # Search form from Favorites page.
     user = ViewManager.login_handler(request)
     companies = Company.objects.filter(companyName__startswith = request.POST['searchString'])
     return render(request, 'autocompleteList.html', {'results':companies})
