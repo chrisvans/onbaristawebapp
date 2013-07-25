@@ -78,7 +78,7 @@ def login_view(request):
             # If authentication() returns None (fails).
             return render(request, 'login.html', {'error_message':"Username or password do not match our records.",})
             
-    elif request.user_is_authenticated():
+    elif 'user' in request.session:
         # Do not show login view if user is already logged in, direct to homepage.
         user = request.session['user']
         userdetails = user.get_profile()
