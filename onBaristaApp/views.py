@@ -1,6 +1,6 @@
 from django.http import HttpResponse, Http404, HttpResponseRedirect
 from django.template import Context, loader
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.core.urlresolvers import reverse
 from django.utils.timezone import utc, get_current_timezone
 from django.utils import timezone
@@ -11,16 +11,16 @@ from .models import User, checkIn, companyLocation, Company, UserProfile, UserPr
 from .forms import MugForm
 import datetime
 
-
+# Stick into a view helper module
 class ViewManager(object):
     
     @classmethod
-    def login_handler(cls, request):
-        try:
-            user = request.session['user']
-            return user
-        except KeyError:
-            return None
+    def login_handler(cls, request, **kwargs):
+        if request.user.is_authenticated():
+            return request.user
+        else:
+            send_to_login = reverse('onBaristaApp:login_view')
+            redirect(send_to_login)
     
     @classmethod
     def view_manager(cls, request, view_name, companyID=0):
@@ -83,6 +83,7 @@ def login_view(request):
 
             if user.is_active:
                 # Login passing in the user object gained from authenticate()
+
                 login(request, user)
                 # Pass the user into the session dictionary so we can keep track of the logged in user.
                 # When the session dictionary is indexed with keyword 'user', returns this user object.
@@ -132,9 +133,6 @@ def companyHome(request, companyID=0):
 def checkInPost(request):
     user = ViewManager.login_handler(request)
 
-    if not user:
-        return render(request, 'login.html')
-
     location = companyLocation.objects.get(pk=request.POST['location'])
     
     # Create new check in object with the barista ( logged in user ) and associate it with the location.
@@ -149,9 +147,6 @@ def checkInPost(request):
 
 def checkOutPost(request):
     user = ViewManager.login_handler(request)
-
-    if user is None:
-        return render(request, 'login.html')
     location = companyLocation.objects.get(pk=request.POST['location'])
     currTime = timezone.now()
     # Same as checkInPost but inverted when necessary.
@@ -172,10 +167,6 @@ def checkOutPost(request):
 
 def mark_as_barista(request):
     user = ViewManager.login_handler(request)
-
-    if user is None:
-        return render(request, 'login.html')
-
     userdetails = user.get_profile()
 
     if userdetails.userType == "Barista":
@@ -217,18 +208,12 @@ def update_favs(request):
 
 def baristaList(request):
     user = ViewManager.login_handler(request)
-
-    if user is None:
-        return render(request, 'login.html')
     userdetails = user.get_profile()
     userdetailsList = UserProfile.objects.filter(userType='Barista', full_name__startswith = request.POST['searchString']).exclude(pk = userdetails.pk)
     return render(request, 'autocompleteList.html', {'results':userdetailsList})
 
 def companyList(request):
     user = ViewManager.login_handler(request)
-
-    if user is None:
-        return render(request, 'login.html')
     companies = Company.objects.filter(companyName__startswith = request.POST['searchString'])
     return render(request, 'autocompleteList.html', {'results':companies})
 
