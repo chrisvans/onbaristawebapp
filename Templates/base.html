@@ -98,7 +98,7 @@
               <li class="{{navFlag.ManageProfile}}"><a href="{% url 'onBaristaApp:view_profile' %}">Manage Profile</a></li>
               <li><a href="{% url 'onBaristaApp:logout' %}">logout</a></li>-->
             </ul>
-            <!-- This is the User Name/nav drop down. for updating profile/favorites/loging out -->
+            <!-- This is the User Name/nav drop down. for updating profile/favorites/logging out -->
             <!--<p class="navbar-text pull-right" style='float:right'>-->
             <div style='float:right'>
               <ul class="nav nav-pills" style='display:inline'>
@@ -129,15 +129,7 @@
     </div>
     <div class="container-fluid">
       <div class="row-fluid">
-        {% if not fullSpanBlock %}
-        <div class="span3">
-          {% include "left_nav_bar.html" %}
-        </div>
-
-        <div class="span9">
-        {% else %}
         <div class="span10">
-        {% endif %}
 
           {% block contents %}{% endblock %}
         </div>
@@ -149,10 +141,11 @@
 
         {% if user.favBaristaObj %}
 
+            <img src='/static/Media/{{user.favBaristaObj.get_mug}}' style='width:35px; display:inline' class="img-rounded"> &nbsp;&nbsp;&nbsp;{{user.favBaristaObj.full_name}} 
           {% if isCheckedIn %}
-            <img src='/static/Media/{{user.favBaristaObj.get_mug}}' style='width:35px; display:inline' class="img-rounded"> &nbsp;&nbsp;&nbsp;{{user.favBaristaObj.full_name}} is checked in at <a href="{% url 'onBaristaApp:companyHome' checkIn.location.companyID.pk %}">{{checkIn.location.companyID}}</a>
+            is checked in at <a href="{% url 'onBaristaApp:companyHome' checkIn.location.companyID.pk %}">{{checkIn.location.companyID}}</a>
           {% else %}
-            <img src='/static/Media/{{user.favBaristaObj.get_mug}}' style='width:35px; display:inline' class="img-rounded"> &nbsp;&nbsp;&nbsp;{{user.favBaristaObj.full_name}} is not checked in.
+             is not checked in.
           {% endif %}
 
         {% else %}

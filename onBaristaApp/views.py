@@ -29,6 +29,8 @@ class ViewManager(object):
         if user is None:
             raise PermissionDenied()
 
+
+        # Remember to remove this else...
         else:
             userdetails = user.get_profile()
 
@@ -55,6 +57,18 @@ class ViewManager(object):
                 for location in locations:
                     location.checkins = location.get_checkins()
 
+            location_groups = []
+            company_locations = []
+            all_checkin_data = []
+
+            for single_company in companies:
+                company_locations.append(single_company.get_locations())
+
+            for location_group in company_locations:
+                for single_location in location_group:
+                    all_checkin_data.append(single_location.get_checkins())
+            # Create nested arrays of checkin data sorted ( nested ) by location.
+
             # Create the default parameters that most views use
             manager_dict = {'navFlag':{'Home':'', 'Baristas':'', 'ManageFavs':'', 'ManageProfile':'', 'Admin':''},
              'companies':companies, 
@@ -66,6 +80,7 @@ class ViewManager(object):
              'isCheckedIn':userdetails.isFavBarCheckedIn(),
              'checkIn':userdetails.get_favBarCheckIn(),
              'usercheck':userdetails.usercheckedin, 
+             'all_checkin_data':all_checkin_data,
              }
 
              # Set the 'active' class to the correct view
@@ -89,7 +104,7 @@ def login_view(request):
                 # When the session dictionary is indexed with keyword 'user', returns this user object.
                 request.session['user'] = user
                 # Initialize variables, only populate them if the logic conditions allow it.
-                favCompany= Company()
+                favCompany = Company()
                 favCompany.pk = '0'
                 # Populate database table with UserProfile class attributes.  Store object as userdetails.
                 userdetails = user.get_profile()
@@ -136,11 +151,9 @@ def checkInPost(request):
     location = companyLocation.objects.get(pk=request.POST['location'])
     
     # Create new check in object with the barista ( logged in user ) and associate it with the location.
-    # Creates and saves the checkIn object.
-    # Deletes the old checkIn object if there is one, and creates a new one.
+    # Deletes the old checkIn object if there is one, and creates a new one, saving it.
     checkIn.create(user, location)
     # Edit and save user details to reflect the checked-in status.
-    # ModelManager.check_in_user(user, request)
     userdetails = user.get_profile()
     userdetails.objects.check_in_user(user, request)
     return HttpResponseRedirect(reverse('onBaristaApp:baristas', kwargs={'companyID':location.companyID.pk}))
