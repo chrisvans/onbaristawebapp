@@ -9,25 +9,23 @@
 <div class="hero-unit">
   {% for check_in_object in location_checkins %}
 	<div class="hero-unit">
+		{% if forloop.counter == 1 %}
       <span><strong>{{ check_in_object.location }}</strong></span><br>
-	  <ul class="nav nav-list">
-
-		{% if check_in_object %}
+        {% endif %}
+		{% if check_in_object.location %}
 
 			{% localtime on %}
 			  {% if check_in_object.get_barista_mug %}
-				<li><img src='/static/Media/{{ check_in_object.get_barista_mug }}' style='width:50px;' class="img-polaroid"> &nbsp;{{ check_in_object }}{{ check_in_object.get_tzobject }}</li>
+				<ul><img src='/static/Media/{{ check_in_object.get_barista_mug }}' style='width:50px;' class="img-polaroid"> &nbsp;{{ check_in_object }}{{ check_in_object.get_tzobject }}</ul>
 			  {% else %}
-			    <li>{{ check_in_object }}{{ check_in_object.get_tzobject }}</li>
+			    <ul>{{ check_in_object }}{{ check_in_object.get_tzobject }}</ul>
 			  {% endif %}
 
 			{% endlocaltime %}
 
 		{% else %}
-		  <li>There are no Baristas checked in at this location</li>
+		  <ul>There are no Baristas checked in at this location</ul>
 		{% endif %}
-
-	  </ul>
 	</div>
   {% endfor %}
 	</div>
