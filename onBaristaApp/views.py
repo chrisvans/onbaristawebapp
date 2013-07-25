@@ -68,7 +68,7 @@ def login_view(request):
                 request.session['user'] = user
                 # Initialize variables, only populate them if the logic conditions allow it.
                 userdetails = user.get_profile()
-                return companyHome(request, get_favorite_company_id())
+                return companyHome(request, userdetails.get_favorite_company_id())
 
             else:
                 # If user.is_active returns False.  Boolean that can be set manually.
