@@ -7,9 +7,9 @@
 
 {% for company in companies %}
 	<div class="hero-unit">
-      {% for single_location in company.get_locations %}
-        <span><strong>{{ single_location }}</strong></span><br>
-        {% for check_in_object in single_location.get_checkins %}
+      {% for location in company.get_locations %}
+        <span><strong>{{ location }}</strong></span><br>
+        {% for check_in_object in location.get_checkins %}
 
 		  {% if check_in_object %}
 

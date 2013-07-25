@@ -18,6 +18,7 @@ class ViewManager(object):
     def login_handler(cls, request, **kwargs):
         if request.user.is_authenticated():
             return request.user
+            
         else:
             send_to_login = reverse('onBaristaApp:login_view')
             redirect(send_to_login)
@@ -28,61 +29,27 @@ class ViewManager(object):
 
         if user is None:
             raise PermissionDenied()
+        userdetails = user.get_profile()
+        # Make sure that the user has the rights to use the admin page
+        if not userdetails.isCompanyAdmin and view_name == 'Admin':
+            raise PermissionDenied()
+        companies = Company.objects.all()
 
-
-        # Remember to remove this else...
-        else:
-            userdetails = user.get_profile()
-
-            # Make sure that the user has the rights to use the admin page
-            if not userdetails.isCompanyAdmin and view_name == 'Admin':
-                raise PermissionDenied()
-            company= ''
-            locations = ''
-            companies = Company.objects.all()
-
-            if companyID and companyID != '0':
-                company = Company.objects.get(pk=companyID)
-                locations = company.get_locations()
-
-                for location in locations:
-                    location.checkins = location.get_checkins()
-
-            else:
-
-                if userdetails.favCompany:
-                    company = userdetails.favCompany
-                    locations = company.get_locations()
-
-                for location in locations:
-                    location.checkins = location.get_checkins()
-
-            # location_groups = []
-            # company_locations = []
-            # all_checkin_data = []
-
-            # for single_company in companies:
-            #     company_locations.append(single_company.get_locations())
-
-            # for location_group in company_locations:
-            #     all_checkin_data.append(location_group)
-            # Create nested arrays of checkin data sorted ( nested ) by location.
-
-            # Create the default parameters that most views use
-            manager_dict = {'navFlag':{'Home':'', 'Baristas':'', 'ManageFavs':'', 'ManageProfile':'', 'Admin':''},
-             'companies':companies, 
-             'locations':locations, 
-             'selectedID': str(companyID), 
-             'companyID':companyID,
-             'user_name':user.username,
-             'user':userdetails,
-             'isCheckedIn':userdetails.isFavBarCheckedIn(),
-             'checkIn':userdetails.get_favBarCheckIn(),
-             'usercheck':userdetails.usercheckedin, 
+        # Create the default parameters that most views use
+        manager_dict = {
+         'navFlag':{'Home':'', 'Baristas':'', 'ManageFavs':'', 'ManageProfile':'', 'Admin':''},
+         'companies':companies, 
+         'selectedID': str(companyID), 
+         'companyID':companyID,
+         'user_name':user.username,
+         'user':userdetails,
+         'isCheckedIn':userdetails.isFavBarCheckedIn(),
+         'checkIn':userdetails.get_favBarCheckIn(),
+         'usercheck':userdetails.usercheckedin, 
              }
 
-             # Set the 'active' class to the correct view
-            manager_dict['navFlag'][view_name] = 'active'
+        # Set the 'active' class to the correct view
+        manager_dict['navFlag'][view_name] = 'active'
         return manager_dict, user, userdetails
 
 def login_view(request):
@@ -136,7 +103,9 @@ def login_view(request):
         return render(request, 'login.html')
 
 def companyHome(request, companyID=0):
-    manager_dict, user, userdetails = ViewManager.view_manager(request, 'Home', companyID)
+    # The company ID being passed here is the user's favorite company,
+    # populate this to the top of the feed.
+    manager_dict, user, userdetails = ViewManager.view_manager(request, 'Home')
 
     local_dict = {
                 }

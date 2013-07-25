@@ -12,31 +12,33 @@
 
 {% if user.userType == 'Barista' %}
 
-  {% if locations %}
-	{% for location in locations %}
+	{% for company in companies %}
       <div class="hero-unit">
+
+      	{% for location in company.get_locations %}
 		<span><strong> {{ location }} </strong></span><br>
 		&nbsp;
+
 		{% if user.user not in location.get_checkin_in and not usercheck %}
 	      <form class="form-signin" action="{% url 'onBaristaApp:checkInPost' %}" method="post">
 			{% csrf_token %}
 			<input style="display:none" name = "location" value={{location.id}}></input>
 			<button class="btn btn-large btn-primary" type="submit">Check In</button>
 		  </form>
+
 		{% elif user.user in location.get_checkin_in %}
 		  <form class="form-signin" action="{% url 'onBaristaApp:checkOutPost' %}" method="post">
 			{% csrf_token %}
 			<input style="display:none" name = "location" value={{location.id}}></input>
 			<button class="btn btn-large btn-primary" type="submit">Check Out</button>
 		  </form>
+
 		{% endif %}
+
+        {% endfor %}
 	  </div>
+
 	{% endfor %}
-  {% else %}
-    <div class="hero-unit">
-      <p> Please select a company to view.</p>
-    </div>
-  {% endif %}
 
 {% else %}
   <div class="hero-unit">
@@ -48,5 +50,3 @@
 {% endif %}
 
 {% endblock %}
-
-{% include "left_nav_bar.html" %}
