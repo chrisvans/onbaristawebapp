@@ -1,22 +1,10 @@
 onbaristawebapp
 ===============
 
-Web App for Baristas to check in when they are on bar at their cafe.
-Customers can check to see when their favorite barista is making drinks.
+Web App for Baristas to check in when they are on bar making drinks.
 
-This App uses Python 2.7.3 and Django 1.4.3.
+This App uses Python 2.7.3 and Django 1.5.1
 
-App Use-
-
-After registering, you will be presented with the main page, containing the companies
-that are currently registered in the app.  Future functionality will allow users to
-register companies, once a verification system is in place.  In the upper right section
-of the page is your profile, which you can click on to set your profile image, favorite
-company ( shows up first on the home page ), favorite barista ( shows up on the bottom
-lane, tells you whether or not they are checked in, and where ), and other information.
-From the main page, you can select a company to view, and then see who is currently
-checked in.  This is not a beta version yet, so none of the information is real.  
-If you are a barista, you can check out the barista tab, where you can register as
-a barista.  This will allow you to check in/check out at a location.
+This app's purpose is to allow baristas and customers to easily communicate with each other.  A feed shows customers and other baristas who is making drinks where.  Customers who have a favorite Barista can quickly see if they are on bar at a location.  Beta is coming soon.
 
 Please report any bugs to chrisvanschyndel@gmail.com
