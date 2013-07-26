@@ -7,43 +7,15 @@
     <script src="/static/bootstrap/js/jquery.js"></script>
     <script src="/static/bootstrap/js/bootstrap.js"></script>
     <!--<script src="/static/bootstrap/js/bootstrap-dropdown.js"></script>-->
+    <link href='http://fonts.googleapis.com/css?family=Dosis:300,500,700' rel='stylesheet' type='text/css'>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">
-    <style type="text/css">
-      body{
-        padding-top:60px;
-        padding-bottom:40px;
-      }
-      .sidebar-nav{
-        padding: 9px 0;
-      }
-      @media (min-width: 768px) and (max-width: 979px){
-        .navbar-text.pull-right{
-          float:none;
-          padding-left: 5px;
-          padding-right: 5px;
-        }
-      }
-      @media (max-width: 767px){
-        .navbar-text.pull-right{
-          float:none;
-          padding-left: 5px;
-          padding-right: 5px;
-        }
-      }
-      @media (max-width: 480px){
-        .navbar-text.pull-right{
-          float:none;
-          padding-left: 5px;
-          padding-right: 5px;
-        }
-      }
-    </style>
+
     <!-- Le styles -->
     <link href="/static/bootstrap/css/bootstrap.css" rel="stylesheet">
-    <link href="/static/onBarista.css" rel="stylesheet">
     <link href="/static/bootstrap/css/bootstrap-responsive.css" rel="stylesheet">
+    <link href="/static/onBarista.css" rel="stylesheet">
     <script>
     /*$(function(){
       $('li').live('click', function(){
@@ -60,8 +32,9 @@
       <script src="/bootstrap/js/html5shiv.js"></script>
     <![endif]-->
   </head>
-  <body>
-    <div class='navbar navbar-inverse navbar-fixed-top'>
+  <body class="{% block body_tag %}{% endblock %}">
+    <div class="everything">
+    <div class='navbar navbar-fixed-top' >
       <div class="navbar-inner">
         <div class="container-fluid">
           <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
@@ -110,7 +83,7 @@
                 {% endif %}
 
                 <li class="dropdown" style='display:inline'>
-                  <a class="dropdown-toggle" data-toggle="dropdown" href="#" style='color:#08C'>
+                  <a class="dropdown-toggle" data-toggle="dropdown" href="#">
                     {{user.user.username}}<b class="caret"></b>
                   </a>
                 <ul class='dropdown-menu pull-right' data-toggle='dropdown'>
@@ -127,7 +100,7 @@
         </div>
       </div>
     </div>
-    <div class="container-fluid">
+    <div class="container-fluid" id="basediv">
       <div class="row-fluid">
         <div class="span10">
 
@@ -136,8 +109,8 @@
       </div>
     </div>
 
-    <div class='navbar navbar-inverse navbar-fixed-bottom'>
-      <div class="navbar-inner" style="color: #999; padding: 10px;">
+    <div class='navbar navbar-fixed-bottom'>
+      <div class="navbar-inner">
 
         {% if user.favBaristaObj %}
 
@@ -154,5 +127,6 @@
         
       </div>
     </div>
+  </div>
   </body>
 </html>

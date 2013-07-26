@@ -1,3 +1,222 @@
+*, input, button, select, textarea {
+  font-family: 'Dosis', sans-serif;
+}
+
+/* styles from base.html & body classes for each pg */
+.container {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #392310;
+}
+
+.home {
+  background-image: url("/static/images/onbarista.jpg");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-color: #392310;
+}
+
+.baristas {
+  background-image: url("/static/images/ethan.jpg");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-color: #392310;
+}
+
+.favorites {
+  background-image: url("/static/images/milstead2.jpg");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-color: #392310;
+}
+
+.profile {
+  background-image: url("/static/images/beautiful.jpg");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-color: #392310;
+}
+
+body{
+  padding-left: 0;
+  padding-right: 0;
+}
+
+@media (min-width: 768px) and (max-width: 979px){
+  .navbar-text.pull-right{
+    float:none;
+
+  }
+
+    div .hero-unit {
+  width: 500px;
+}
+}
+
+@media (max-width: 767px){
+  .navbar-text.pull-right{
+    float:none;
+
+  }
+
+    div .hero-unit {
+  width: 400px;
+}
+}
+
+@media (max-width: 480px){
+  .navbar-text.pull-right{
+    float:none;
+
+  }
+
+  div .hero-unit {
+  width: 300px;
+}
+}
+/* -------------------------- */
+
+/* styles for login.html & register.html */
+
+#logindiv, #registerdiv {
+  padding-top: 40px;
+  padding-bottom: 40px;
+  background-image: url("/static/images/HUGE.jpg");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  color: #392310;
+}
+
+.form-signin {
+  max-width: 300px;
+  padding: 29px 19px 29px 29px;
+  margin: 0 auto 20px;
+  background-color: rgba(255,255,255,0.5);
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+/*  -webkit-box-shadow: 0 1px 2px rgba(0,0,0,.05);
+  -moz-box-shadow: 0 1px 2px rgba(0,0,0,.05);
+  box-shadow: 0 1px 2px rgba(0,0,0,.05);*/
+}
+.form-signin .form-signin-heading,
+.form-signin .checkbox {
+  margin-bottom: 10px;
+}
+.form-signin input[type="text"],
+.form-signin input[type="password"] {
+  font-size: 16px;
+  height: auto;
+  margin-bottom: 15px;
+  padding: 7px 9px;
+}
+
+.btn {
+  text-shadow: none;
+  color: white;
+}
+
+.btn, .btn-primary:hover {
+  background-color: #392310;
+  background-image: none;
+}
+
+.btn, .btn-large, .btn-primary:hover {
+  margin-left: 50px;
+}
+
+.btn-primary:hover,
+ 3369: .btn-primary:focus,
+ 3370: .btn-primary:active,
+ 3371: .btn-primary.active,
+ 3372: .btn-primary.disabled,
+ 3373: .btn-primary[disabled] {
+ 3374    color: #ffffff;
+ 3375    background-color: #392310;
+ ....
+ 3377  }
+ /* input[type="submit"] */ 
+/* -------------------------- */
+
+/* styles for base.html */
+.navbar .nav > li > a, .navbar .brand {
+  color: white;
+  text-shadow: none;
+  padding-top: .25em;
+}
+
+.navbar-inner a {
+  color: white;
+  font-size: 1.25em;
+}
+
+.navbar .brand {
+  padding-left: 30px;
+  font-size: 4em;
+}
+
+.dropdown-toggle {
+  color: white;
+  box-shadow: none;
+}
+
+ div .navbar-inner {
+  margin: 10px;
+  background-color: #392310;
+  background-image: none;
+  background-repeat: no-repeat;
+  color: white;
+}
+
+#basediv {
+    background-color: none;
+    background-position:50% 50%; 
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+div .hero-unit {
+  padding: 0;
+  margin-top: 10%;
+  margin-left: 10%;
+/*  margin-right: 0;
+  margin-bottom: 0;*/
+  background-color: rgba(255,255,255,0.5);
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+  -webkit-box-shadow: 0 1px 2px rgba(0,0,0,.05);
+  -moz-box-shadow: 0 1px 2px rgba(0,0,0,.05);
+  box-shadow: 0 1px 2px rgba(0,0,0,.05);
+}
+
+div .navbar-inner, div .container-fluid {
+  padding: 0 auto;
+  margin: 0 auto;
+  border: none;
+  height: 4em;
+}
+
+.hero-unit form {
+  padding: 30px 30px 30px 30px;
+
+}
+/*
+div .navbar-fixed-bottom {
+  overflow: auto;
+}*/
+/* .navbar .navbar-fixed-top {
+  height: 20%;
+ }*/
+
+/* -------------------------- */
+
 .autoComplete{
 
 	position: relative;
@@ -31,23 +250,23 @@ pre.ACResult{
   border: 1px solid rgba(0, 0, 0, 0.3);
   *border: 1px solid #999;
   -webkit-border-radius: 6px;
-     -moz-border-radius: 6px;
-          border-radius: 6px;
+  -moz-border-radius: 6px;
+  border-radius: 6px;
   outline: none;
   -webkit-box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3);
-     -moz-box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3);
-          box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3);
+  -moz-box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3);
   -webkit-background-clip: padding-box;
-     -moz-background-clip: padding-box;
-          background-clip: padding-box;
+  -moz-background-clip: padding-box;
+  background-clip: padding-box;
 }
 
 .modalOB.fade {
   top: -25%;
   -webkit-transition: opacity 0.3s linear, top 0.3s ease-out;
-     -moz-transition: opacity 0.3s linear, top 0.3s ease-out;
-       -o-transition: opacity 0.3s linear, top 0.3s ease-out;
-          transition: opacity 0.3s linear, top 0.3s ease-out;
+  -moz-transition: opacity 0.3s linear, top 0.3s ease-out;
+  -o-transition: opacity 0.3s linear, top 0.3s ease-out;
+  transition: opacity 0.3s linear, top 0.3s ease-out;
 }
 
 .modalOB.fade.in {
