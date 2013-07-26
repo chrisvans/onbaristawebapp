@@ -145,6 +145,41 @@ body{
 /* -------------------------- */
 
 /* styles for base.html */
+
+/*.nav-collapse {
+  float: left;
+}*/
+.nav-collapse .nav > li > a, .nav-collapse .dropdown-menu a {
+  padding: 0 auto;
+  font-weight: normal;
+}
+
+div.nav-collapse.collapse.in.collapse {
+  background-color: white;
+  z-index: 10000;
+/*top: 100%;
+left: 0;
+z-index: 1000;
+float: right;
+min-width: 160px;
+padding: 5px 0;
+margin: 2px 0 0;
+list-style: none;
+background-color: #ffffff;
+border: 1px solid #ccc;
+border: 1px solid rgba(0, 0, 0, 0.2);*/
+-webkit-border-radius: 6px;
+-moz-border-radius: 6px;
+border-radius: 6px;/*
+-webkit-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+-moz-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+-webkit-background-clip: padding-box;
+-moz-background-clip: padding;
+background-clip: padding-box;*/
+
+}
+
 .navbar .nav > li > a, .navbar .brand {
   color: white;
   text-shadow: none;
@@ -207,10 +242,15 @@ div .navbar-inner, div .container-fluid {
   padding: 30px 30px 30px 30px;
 
 }
-/*
-div .navbar-fixed-bottom {
-  overflow: auto;
-}*/
+
+div.navbar-fixed-bottom {
+  width: 100%;
+}
+
+div .navbar-inner #test {
+  display: inline-block;
+
+}
 /* .navbar .navbar-fixed-top {
   height: 20%;
  }*/
