@@ -1,7 +1,7 @@
 # Django settings for onbarista project.
 import os
 
-DEBUG = True
+DEBUG = os.environ.get('DJANGO_DEBUG')
 TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
@@ -67,7 +67,7 @@ STATIC_ROOT = ''
 
 # URL prefix for static files.
 # Example: "http://media.lawrence.com/static/"
-STATIC_URL = '/static/'
+# STATIC_URL = '/static/'
 
 # URL for redirecting users that aren't logged in.
 LOGIN_URL = '/login/'
