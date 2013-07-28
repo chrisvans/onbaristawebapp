@@ -1,7 +1,7 @@
 # Django settings for onbarista project.
 import os
 
-DEBUG = os.environ.get('DJANGO_DEBUG')
+DEBUG = True #os.environ.get('DJANGO_DEBUG')
 TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
@@ -48,8 +48,7 @@ USE_TZ = True
 
 # Absolute filesystem path to the directory that will hold user-uploaded files.
 # Example: "/home/media/media.lawrence.com/media/"
-MEDIA_BASE_DIR = os.path.dirname(os.path.abspath('__file__'))
-MEDIA_ROOT = MEDIA_BASE_DIR + '/onBaristaApp/static/Media/'
+
 #MEDIA_ROOT = '/Users/LBMBPro/desktop/devrampup/onbaristawebapp/onBaristaApp/static/Media'
 #MEDIA_ROOT = '/Users/Chris Van Schyndel/desktop/obaristawebapp/onBaristaApp/static/Media'
 #MEDIA_ROOT = '/Users/Gigglande/desktop/obaristawebapp/onBaristaApp/static/Media'
@@ -57,7 +56,6 @@ MEDIA_ROOT = MEDIA_BASE_DIR + '/onBaristaApp/static/Media/'
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash.
 # Examples: "http://media.lawrence.com/media/", "http://example.com/media/"
-MEDIA_URL = '/Media/'
 
 # Absolute path to the directory static files should be collected to.
 # Don't put anything in this directory yourself; store your static files
@@ -88,6 +86,8 @@ STATICFILES_FINDERS = (
 )
 
 # Make this unique, and don't share it with anybody.
+SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')
+
 AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
 AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
 AWS_STORAGE_BUCKET_NAME = os.environ.get('S3_BUCKET_DJANGO')
@@ -95,9 +95,15 @@ AWS_STORAGE_BUCKET_NAME = os.environ.get('S3_BUCKET_DJANGO')
 STATICFILES_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
 DEFAULT_FILE_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
 
-STATIC_URL = 'http://' + AWS_STORAGE_BUCKET_NAME + '.s3.amazonaws.com/'
-ADMIN_MEDIA_PREFIX = STATIC_URL + 'admin/'
-SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')
+AWS_URL = 'http://' + AWS_STORAGE_BUCKET_NAME + '.s3.amazonaws.com/'
+STATIC_URL = AWS_URL + '/static/'
+#ADMIN_MEDIA_PREFIX = STATIC_URL + 'admin/'
+#MEDIA_DIRECTORY = '/Media/'
+#MEDIA_URL = STATIC_URL + MEDIA_DIRECTORY
+#MEDIA_BASE_DIR = MEDIA_URL
+#MEDIA_ROOT = '/onBaristaApp' + MEDIA_URL
+
+
 # SECRET_KEY = '6#xda^sls1#jy3*ktp3i*vx%%xoqii=^4p@2qeardiz2rdx3q1'
 
 # List of callables that know how to import templates from various sources.
