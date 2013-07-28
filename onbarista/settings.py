@@ -102,7 +102,7 @@ STATIC_URL = AWS_URL + '/static/'
 #MEDIA_URL = STATIC_URL + MEDIA_DIRECTORY
 #MEDIA_BASE_DIR = MEDIA_URL
 #MEDIA_ROOT = '/onBaristaApp' + MEDIA_URL
-
+MEDIA_ROOT = MEDIA_BASE_DIR + '/onBaristaApp/static/Media/'
 
 # SECRET_KEY = '6#xda^sls1#jy3*ktp3i*vx%%xoqii=^4p@2qeardiz2rdx3q1'
 
