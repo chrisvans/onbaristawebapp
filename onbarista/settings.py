@@ -97,16 +97,8 @@ STATICFILES_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
 DEFAULT_FILE_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
 
 AWS_URL = 'http://' + AWS_STORAGE_BUCKET_NAME + '.s3.amazonaws.com/'
-STATIC_URL = 'onBaristaApp/static/'
-#ADMIN_MEDIA_PREFIX = STATIC_URL + 'admin/'
-MEDIA_DIRECTORY = 'Media/'
-MEDIA_URL = STATIC_URL + MEDIA_DIRECTORY
-#MEDIA_BASE_DIR = MEDIA_URL
-#MEDIA_ROOT = '/onBaristaApp' + MEDIA_URL
-MEDIA_BASE_DIR = os.path.dirname(os.path.abspath('__file__'))
-MEDIA_ROOT = MEDIA_BASE_DIR + '/onBaristaApp/static/Media/'
-
-# SECRET_KEY = '6#xda^sls1#jy3*ktp3i*vx%%xoqii=^4p@2qeardiz2rdx3q1'
+STATIC_URL = '/static/'
+MEDIA_URL = AWS_URL
 
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
