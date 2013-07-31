@@ -97,7 +97,7 @@ STATICFILES_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
 DEFAULT_FILE_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
 
 AWS_URL = 'http://' + AWS_STORAGE_BUCKET_NAME + '.s3.amazonaws.com/'
-STATIC_URL = '/static/'
+STATIC_URL = AWS_URL + '/static/'
 MEDIA_URL = AWS_URL
 
 # List of callables that know how to import templates from various sources.
