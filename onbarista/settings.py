@@ -71,6 +71,15 @@ STATIC_ROOT = ''
 LOGIN_URL = '/login/'
 
 # Additional locations of static files
+
+PROJECT_PATH = os.path.dirname(os.path.abspath(__file__))
+STATIC_ROOT = 'staticfiles'
+STATIC_URL = '/static/'
+
+STATICFILES_DIRS = (
+    os.path.join(PROJECT_PATH, 'static'),
+)
+
 STATICFILES_DIRS = (
     #os.path.dirname(os.path.abspath('__file__')) + 
     # Put strings here, like "/home/html/static" or "C:/www/django/static".
@@ -97,8 +106,8 @@ STATICFILES_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
 DEFAULT_FILE_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
 
 AWS_URL = 'http://' + AWS_STORAGE_BUCKET_NAME + '.s3.amazonaws.com/'
-STATIC_URL = AWS_URL
-ADMIN_MEDIA_PREFIX = STATIC_URL + 'admin/'
+# STATIC_URL = AWS_URL
+# ADMIN_MEDIA_PREFIX = STATIC_URL + 'admin/'
 # MEDIA_URL = AWS_URL
 
 # List of callables that know how to import templates from various sources.
