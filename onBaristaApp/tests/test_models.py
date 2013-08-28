@@ -277,16 +277,13 @@ class checkInTest(TestCase):
         self.assertEquals(checkin.get_barista_mug(), 'abra.jpg')
 
     def test_get_tzobject_returns_datetime_object(self):
-        pass
+        checkin = checkIn.objects.get(location=companyLocation.objects.get(companyID=1))
+        self.assertEquals(type(checkin.get_tzobject()), type(timezone.now()))
 
     def test_check_out_user_changes_checkedin_state(self):
-        pass
-
-    def test_check_out_user_saves_user(self):
-        pass
-
-    def test_check_out_user_saves_userdetails_profile(self):
-        pass
+        checkin = checkIn.objects.get(location=companyLocation.objects.get(companyID=1))        
+        checkin.check_out_user()
+        self.assertEquals(checkIn.objects.get(location=companyLocation.objects.get(companyID=1)).checkedin, False)
 
 
 
