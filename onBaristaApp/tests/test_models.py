@@ -122,8 +122,8 @@ class UserProfileManagerTest(TestCase):
         user.save()
         userdetails = user.get_profile()
         userdetails.mug = 'U1.jpg'
-        userdetails.first_name='chris'
-        userdetails.last_name='van schyndel'
+        userdetails.first_name = 'chris'
+        userdetails.last_name = 'van schyndel'
         user.save()
         userdetails.save()
 
@@ -150,8 +150,9 @@ class UserAndUserProfileTest(TestCase):
         user.save()
         userdetails = user.get_profile()
         userdetails.mug = 'U1.jpg'
-        userdetails.first_name='chris'
-        userdetails.last_name='van schyndel'
+        userdetails.first_name = 'chris'
+        userdetails.last_name = 'van schyndel'
+        userdetails.favCompany = company
         user.save()
         userdetails.save()
         barista = User(username='jimmy', email='jimmydean@bagel.com')
@@ -159,8 +160,8 @@ class UserAndUserProfileTest(TestCase):
         baristadetails = barista.get_profile()
         baristadetails.userType = 'Barista'
         baristadetails.usercheckedin = True
-        baristadetails.first_name='jimmy'
-        baristadetails.last_name='dean'
+        baristadetails.first_name = 'jimmy'
+        baristadetails.last_name = 'dean'
         barista.save()
         baristadetails.save()
         checkin = checkIn()
@@ -213,13 +214,19 @@ class UserAndUserProfileTest(TestCase):
         self.assertEquals(userdetails.get_self_checkIn(), checkIn.objects.get(barista=user))
 
     def test_get_self_checkin_fail_returns_None(self):
-        pass
+        user = User.objects.get(username='chris')
+        userdetails = user.get_profile()
+        self.assertEquals(userdetails.get_self_checkIn(), None)
 
     def test_get_favorite_company_id_returns_favCompany(self):
-        pass
+        user = User.objects.get(username='chris')
+        userdetails = user.get_profile()
+        self.assertEquals(userdetails.get_favorite_company_id(), userdetails.favCompany.id)
 
     def test_get_favorite_company_id_returns_0string(self):
-        pass
+        user = User.objects.get(username='jimmy')
+        userdetails = user.get_profile()
+        self.assertEquals(userdetails.get_favorite_company_id(), '0')
 
 class checkInTest(TestCase):
 
