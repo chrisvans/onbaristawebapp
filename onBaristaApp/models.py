@@ -40,7 +40,7 @@ class companyLocation(models.Model):
 
     def address_string(self):
         address = self.companyID.companyName + ": " + self.street + ", " + self.city + ", " + self.state + " " + self.zipCode
-        return address
+        return unicode(address)
 
     def get_checkins(self):
         return checkIn.objects.filter(location = self)
@@ -177,7 +177,7 @@ class checkIn(models.Model):
         else:
             checkinDesc = self.showBarista() + " checked out on "
         return unicode(checkinDesc)
-        
+
     def showBarista(self):
         user = self.barista
         userdetails = self.barista.get_profile()
