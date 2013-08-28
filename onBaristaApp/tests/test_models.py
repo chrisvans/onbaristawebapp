@@ -33,6 +33,7 @@ def create_user_and_details(username, password, email, first_name, last_name, mu
     userdetails.save()
 
 def create_checkin_and_association(barista, company, checkedin):
+    # Create checkin with associated user(barista) and company, with checkin state
     checkin = checkIn()
     checkin.barista = User.objects.get(username=barista.username)
     checkin.location = companyLocation.objects.get(companyID=company)
@@ -44,7 +45,14 @@ def create_checkin_and_association(barista, company, checkedin):
 class CompanyTest(TestCase):
 
     def setUp(self):
-        create_company_and_associated_location(companyName="Voltage", companyContact="Lucy", street="275 3rd street", city="Cambridge", state="Massachusetts", zipCode="21432")
+        create_company_and_associated_location(
+            companyName="Voltage", 
+            companyContact="Lucy", 
+            street="275 3rd street", 
+            city="Cambridge", 
+            state="Massachusetts", 
+            zipCode="21432"
+            )
 
     def test_unicode(self):
         self.assertEquals(type(u'a'), type(Company.objects.all()[0].__unicode__()))
@@ -63,12 +71,35 @@ class CompanyTest(TestCase):
 class CompanyLocationTest(TestCase):
 
     def setUp(self):
-        create_company_and_associated_location(companyName="Voltage", companyContact="Lucy", street="275 3rd street", city="Cambridge", state="Massachusetts", zipCode="21432")
+        create_company_and_associated_location(
+            companyName="Voltage", 
+            companyContact="Lucy", 
+            street="275 3rd street", 
+            city="Cambridge", 
+            state="Massachusetts", 
+            zipCode="21432"
+            )
         company = Company.objects.all()[0]
-        create_barista_and_details(username='jimmy', password='popcorn', email='jimmydean@bagel.com', usercheckedin=True, first_name='jimmy', last_name='dean', mug='abra.jpg')
+        create_barista_and_details(
+            username='jimmy', 
+            password='popcorn', 
+            email='jimmydean@bagel.com', 
+            usercheckedin=True, 
+            first_name='jimmy', 
+            last_name='dean', 
+            mug='abra.jpg'
+            )
         barista = User.objects.get(username='jimmy')
         create_checkin_and_association(barista=barista, company=company, checkedin=True)
-        create_barista_and_details(username='quayle', password='popcorn', email='leanqueen@bagel.com', usercheckedin=False, first_name='quayle', last_name='the brave', mug='whileawayflowers.jpg')
+        create_barista_and_details(
+            username='quayle', 
+            password='popcorn', 
+            email='leanqueen@bagel.com', 
+            usercheckedin=False, 
+            first_name='quayle', 
+            last_name='the brave', 
+            mug='whileawayflowers.jpg'
+            )
         barista2 = User.objects.get(username='quayle')
         create_checkin_and_association(barista=barista2, company=company, checkedin=False)
 
@@ -130,7 +161,16 @@ class CompanyLocationTest(TestCase):
 class UserProfileManagerTest(TestCase):
 
     def setUp(self):
-        create_user_and_details(username='chris', password='bagel', email='chrisvanschyndel@gmail.com', first_name='chris', last_name='van schyndel', mug='U1.jpg', favCompany=None, favBaristaObj=None)
+        create_user_and_details(
+            username='chris', 
+            password='bagel', 
+            email='chrisvanschyndel@gmail.com', 
+            first_name='chris', 
+            last_name='van schyndel', 
+            mug='U1.jpg', 
+            favCompany=None, 
+            favBaristaObj=None
+            )
 
     def test_check_in_user_checks_in_user(self):
         client = Client()
@@ -149,11 +189,35 @@ class UserProfileManagerTest(TestCase):
 class UserAndUserProfileTest(TestCase):
 
     def setUp(self):
-        create_company_and_associated_location(companyName="Voltage", companyContact="Lucy", street="275 3rd street", city="Cambridge", state="Massachusetts", zipCode="21432")
+        create_company_and_associated_location(
+            companyName="Voltage", 
+            companyContact="Lucy", 
+            street="275 3rd street", 
+            city="Cambridge", 
+            state="Massachusetts", 
+            zipCode="21432"
+            )
         company = Company.objects.all()[0]
-        create_barista_and_details(username='jimmy', password='popcorn', email='jimmydean@bagel.com', usercheckedin=True, first_name='jimmy', last_name='dean', mug='abra.jpg')
+        create_barista_and_details(
+            username='jimmy', 
+            password='popcorn', 
+            email='jimmydean@bagel.com', 
+            usercheckedin=True, 
+            first_name='jimmy', 
+            last_name='dean', 
+            mug='abra.jpg'
+            )
         barista = User.objects.get(username='jimmy')
-        create_user_and_details(username='chris', password='bagel', email='chrisvanschyndel@gmail.com', first_name='chris', last_name='van schyndel', mug='U1.jpg', favCompany=company, favBaristaObj=barista.get_profile())
+        create_user_and_details(
+            username='chris', 
+            password='bagel', 
+            email='chrisvanschyndel@gmail.com', 
+            first_name='chris', 
+            last_name='van schyndel', 
+            mug='U1.jpg', 
+            favCompany=company, 
+            favBaristaObj=barista.get_profile()
+            )
         create_checkin_and_association(barista=barista, company=company, checkedin=True)
 
     def test_unicode(self):
@@ -214,11 +278,35 @@ class UserAndUserProfileTest(TestCase):
 class checkInTest(TestCase):
 
     def setUp(self):
-        create_company_and_associated_location(companyName="Voltage", companyContact="Lucy", street="275 3rd street", city="Cambridge", state="Massachusetts", zipCode="21432")
+        create_company_and_associated_location(
+            companyName="Voltage", 
+            companyContact="Lucy", 
+            street="275 3rd street", 
+            city="Cambridge", 
+            state="Massachusetts", 
+            zipCode="21432"
+            )
         company = Company.objects.all()[0]
-        create_barista_and_details(username='jimmy', password='popcorn', email='jimmydean@bagel.com', usercheckedin=True, first_name='jimmy', last_name='dean', mug='abra.jpg')
+        create_barista_and_details(
+            username='jimmy', 
+            password='popcorn', 
+            email='jimmydean@bagel.com', 
+            usercheckedin=True, 
+            first_name='jimmy', 
+            last_name='dean', 
+            mug='abra.jpg'
+            )
         barista = User.objects.get(username='jimmy')
-        create_user_and_details(username='chris', password='bagel', email='chrisvanschyndel@gmail.com', first_name='chris', last_name='van schyndel', mug='U1.jpg', favCompany=company, favBaristaObj=barista.get_profile())
+        create_user_and_details(
+            username='chris', 
+            password='bagel', 
+            email='chrisvanschyndel@gmail.com', 
+            first_name='chris', 
+            last_name='van schyndel', 
+            mug='U1.jpg', 
+            favCompany=company, 
+            favBaristaObj=barista.get_profile()
+            )
         create_checkin_and_association(barista=barista, company=company, checkedin=True)
 
     def test_unicode(self):
