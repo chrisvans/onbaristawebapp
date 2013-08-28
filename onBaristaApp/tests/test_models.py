@@ -1,6 +1,9 @@
 from django.utils import unittest
 from django.test import TestCase
 from onBaristaApp.models import User, checkIn, companyLocation, Company, UserProfile, UserProfileManager
+from django.utils import timezone
+from django.utils.timezone import utc, get_current_timezone, activate, localtime
+import datetime
 
 class CompanyTest(TestCase):
 
@@ -25,10 +28,11 @@ class CompanyTest(TestCase):
 class CompanyLocationTest(TestCase):
 
     def setUp(self):
-        pass
+        company = Company.objects.create(companyName="Voltage", companyContact="Lucy")
+        location = companyLocation.objects.create(companyID=company, street="275 3rd street", city="Cambridge", state="Massachusetts", zipCode="21432")
 
     def test_unicode(self):
-        pass
+        self.assertEquals(type(u'a'), type(companyLocation.objects.all()[0].__unicode__()))
 
     def test_address_string_returns_string(self):
         pass
@@ -65,10 +69,34 @@ class UserProfileManagerTest(TestCase):
 class UserAndUserProfileTest(TestCase):
 
     def setUp(self):
-        pass
+        company = Company.objects.create(companyName="Voltage", companyContact="Lucy")
+        location = companyLocation.objects.create(companyID=company, street="275 3rd street", city="Cambridge", state="Massachusetts", zipCode="21432")
+        user = User(username='chris', password='bagel', email='chrisvanschyndel@gmail.com')
+        user.save()
+        userdetails = user.get_profile()
+        userdetails.mug = 'U1.jpg'
+        userdetails.first_name='chris'
+        userdetails.last_name='van schyndel'
+        user.save()
+        userdetails.save()
+        barista = User(username='jimmy', email='jimmydean@bagel.com')
+        barista.save()
+        baristadetails = barista.get_profile()
+        baristadetails.userType = 'Barista'
+        baristadetails.usercheckedin = True
+        baristadetails.first_name='jimmy'
+        baristadetails.last_name='dean'
+        barista.save()
+        baristadetails.save()
+        checkin = checkIn()
+        checkin.barista = User.objects.get(username=barista.username)
+        checkin.location = companyLocation.objects.get(companyID=company)
+        checkin.inTime = timezone.now()
+        checkin.outTime = timezone.now()
+        checkin.save()
 
     def test_unicode(self):
-        pass
+        self.assertEquals(type(u'a'), type(User.objects.all()[0].__unicode__()))
 
     def test_show_user_returns_string(self):
         pass
@@ -97,10 +125,34 @@ class UserAndUserProfileTest(TestCase):
 class checkInTest(TestCase):
 
     def setUp(self):
-        pass
+        company = Company.objects.create(companyName="Voltage", companyContact="Lucy")
+        location = companyLocation.objects.create(companyID=company, street="275 3rd street", city="Cambridge", state="Massachusetts", zipCode="21432")
+        user = User(username='chris', password='bagel', email='chrisvanschyndel@gmail.com')
+        user.save()
+        userdetails = user.get_profile()
+        userdetails.mug = 'U1.jpg'
+        userdetails.first_name='chris'
+        userdetails.last_name='van schyndel'
+        user.save()
+        userdetails.save()
+        barista = User(username='jimmy', email='jimmydean@bagel.com')
+        barista.save()
+        baristadetails = barista.get_profile()
+        baristadetails.userType = 'Barista'
+        baristadetails.usercheckedin = True
+        baristadetails.first_name='jimmy'
+        baristadetails.last_name='dean'
+        barista.save()
+        baristadetails.save()
+        checkin = checkIn()
+        checkin.barista = User.objects.get(username=barista.username)
+        checkin.location = companyLocation.objects.get(companyID=company)
+        checkin.inTime = timezone.now()
+        checkin.outTime = timezone.now()
+        checkin.save()
 
     def test_unicode(self):
-        pass
+        self.assertEquals(type(u'a'), type(checkIn.objects.all()[0].__unicode__()))
 
     def test_show_barista_returns_string(self):
         pass

@@ -142,7 +142,7 @@ INSTALLED_APPS = (
 )
 
 # Adds in custom profile for Django's User class model
-# AUTH_PROFILE_MODULE = 'onBaristaApp.UserProfile'
+AUTH_PROFILE_MODULE = 'onBaristaApp.UserProfile'
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to
