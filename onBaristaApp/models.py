@@ -12,7 +12,7 @@ class Company(models.Model):
     companyContact = models.CharField(max_length=200, blank=True)
 
     def __unicode__(self):
-        return self.companyName
+        return unicode(self.companyName)
 
     def get_locations(self):
         return companyLocation.objects.filter(companyID = self)
@@ -35,12 +35,12 @@ class companyLocation(models.Model):
                             default='MA', blank=True)
     zipCode= models.CharField(max_length= 5, blank=True)
 
+    def __unicode__(self):
+        return unicode(self.address_string())
+
     def address_string(self):
         address = self.companyID.companyName + ": " + self.street + ", " + self.city + ", " + self.state + " " + self.zipCode
         return address
-
-    def __unicode__(self):
-        return self.address_string()
 
     def get_checkins(self):
         return checkIn.objects.filter(location = self)
@@ -96,7 +96,7 @@ class UserProfile(models.Model):
     usercheckedin = models.BooleanField(default=False)
 
     def __unicode__(self):
-        return self.userType + ": " + self.user.first_name + " " + self.user.last_name
+        return unicode(self.userType + ": " + self.user.first_name + " " + self.user.last_name)
 
     def showUser(self):
         return self.userType + ": " + self.user.first_name + " " + self.user.last_name
@@ -171,6 +171,13 @@ class checkIn(models.Model):
     outTime = models.DateTimeField(null=True)
     checkedin = models.BooleanField(default=True)
 
+    def __unicode__(self):
+        if self.checkedin:
+            checkinDesc = self.showBarista() + " checked in on " 
+        else:
+            checkinDesc = self.showBarista() + " checked out on "
+        return unicode(checkinDesc)
+        
     def showBarista(self):
         user = self.barista
         userdetails = self.barista.get_profile()
@@ -179,13 +186,6 @@ class checkIn(models.Model):
     def get_barista_mug(self):
         baristadetails = self.barista.get_profile()
         return baristadetails.get_mug()
-
-    def __unicode__(self):
-        if self.checkedin:
-            checkinDesc = self.showBarista() + " checked in on " 
-        else:
-            checkinDesc = self.showBarista() + " checked out on "
-        return checkinDesc
 
     def get_tzobject(self):
         if self.checkedin:
