@@ -3,6 +3,7 @@ from django.test import TestCase
 from onBaristaApp.models import User, checkIn, companyLocation, Company, UserProfile, UserProfileManager
 from django.utils import timezone
 from django.utils.timezone import utc, get_current_timezone, activate, localtime
+from django.test.client import Client
 import datetime
 
 class CompanyTest(TestCase):
@@ -127,10 +128,18 @@ class UserProfileManagerTest(TestCase):
         userdetails.save()
 
     def test_check_in_user_checks_in_user(self):
-        self.assertEquals('this test will fail', 'simulate a request to make it pass')
+        client = Client()
+        user = User.objects.all()[0]
+        UserProfile.objects.check_in_user(user, client)
+        userdetails = user.get_profile()
+        self.assertEquals(userdetails.usercheckedin, True)
 
-    def test_check_in_user_saves_user(self):
-        self.assertEquals('this test will fail', 'simulate a request to make it pass')
+    def test_check_in_user_saves_user_checkinflag(self):
+        client = Client()
+        user = User.objects.all()[0]
+        UserProfile.objects.check_in_user(user, client)
+        userdetails = user.get_profile()
+        self.assertEquals(userdetails.usercheckedin, User.objects.get(username=user.username).get_profile().usercheckedin)
 
 class UserAndUserProfileTest(TestCase):
 
