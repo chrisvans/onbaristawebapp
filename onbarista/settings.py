@@ -1,12 +1,23 @@
 # Django settings for onbarista project.
 import os
+from django.core.exceptions import ImproperlyConfigured
+from unipath import Path
+
+def get_env_variable(env_variable):
+    # Get the env variable or return exception
+    try:
+        return os.environ[env_variable]
+    except KeyError:
+        error_msg = "Set the %s environment variable" % env_variable
+        raise ImproperlyConfigured(error_msg)
+
+PROJECT_DIR = Path(__file__).ancestor(3)
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
-    # ('Your Name', 'your_email@example.com'),
-    ('anthony', 'anthony.leonardi@gmail.com'),
+    ('chris', 'chrisvanschyndel@gmail.com'),
 )
 
 MANAGERS = ADMINS
@@ -50,9 +61,6 @@ USE_TZ = True
 # Example: "/home/media/media.lawrence.com/media/"
 MEDIA_BASE_DIR = os.path.dirname(os.path.abspath('__file__'))
 MEDIA_ROOT = MEDIA_BASE_DIR + '/onBaristaApp/static/Media/'
-#MEDIA_ROOT = '/Users/LBMBPro/desktop/devrampup/onbaristawebapp/onBaristaApp/static/Media'
-#MEDIA_ROOT = '/Users/Chris Van Schyndel/desktop/obaristawebapp/onBaristaApp/static/Media'
-#MEDIA_ROOT = '/Users/Gigglande/desktop/obaristawebapp/onBaristaApp/static/Media'
 
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash.
@@ -60,13 +68,9 @@ MEDIA_ROOT = MEDIA_BASE_DIR + '/onBaristaApp/static/Media/'
 MEDIA_URL = '/Media/'
 
 # Absolute path to the directory static files should be collected to.
-# Don't put anything in this directory yourself; store your static files
-# in apps' "static/" subdirectories and in STATICFILES_DIRS.
-# Example: "/home/media/media.lawrence.com/static/"
 STATIC_ROOT = ''
 
 # URL prefix for static files.
-# Example: "http://media.lawrence.com/static/"
 STATIC_URL = '/static/'
 
 # URL for redirecting users that aren't logged in.
@@ -74,9 +78,7 @@ LOGIN_URL = '/login/'
 
 # Additional locations of static files
 STATICFILES_DIRS = (
-    # Put strings here, like "/home/html/static" or "C:/www/django/static".
-    # Always use forward slashes, even on Windows.
-    # Don't forget to use absolute paths, not relative paths.
+
 )
 
 # List of finder classes that know how to find static files in
@@ -87,18 +89,7 @@ STATICFILES_FINDERS = (
 #    'django.contrib.staticfiles.finders.DefaultStorageFinder',
 )
 
-# Make this unique, and don't share it with anybody.
-# AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
-# AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
-# AWS_STORAGE_BUCKET_NAME = os.environ.get('S3_BUCKET_DJANGO')
-
-# STATICFILES_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
-# DEFAULT_FILE_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
-
-# STATIC_URL = 'http://' + AWS_STORAGE_BUCKET_NAME + '.s3.amazonaws.com/'
-# ADMIN_MEDIA_PREFIX = STATIC_URL + 'admin/'
-# SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')
-SECRET_KEY = '6#xda^sls1#jy3*ktp3i*vx%%xoqii=^4p@2qeardiz2rdx3q1'
+SECRET_KEY = get_env_variable('DJANGO_SECRET_KEY')
 
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
@@ -122,9 +113,6 @@ ROOT_URLCONF = 'onbarista.urls'
 # Python dotted path to the WSGI application used by Django's runserver.
 WSGI_APPLICATION = 'onbarista.wsgi.application'
 
-#BASE_DIR= '/Users/Chris VanSchyndel/Desktop/onbaristawebapp'
-#BASE_DIR= '/Users/Gigglande/Desktop/onbaristawebapp'
-#BASE_DIR= '/Users/LBMBPro/desktop/devrampup/onbaristawebapp'
 BASE_DIR= os.path.dirname(os.path.abspath('__file__'))
 
 TEMPLATE_DIRS = (
@@ -146,11 +134,15 @@ INSTALLED_APPS = (
     # Uncomment the next line to enable admin documentation:
     'django.contrib.admindocs',
     'onBaristaApp',
+    'coverage',
     'south',
+    'django_extensions',
+    'discover_runner',
+    'unipath',
 )
 
 # Adds in custom profile for Django's User class model
-AUTH_PROFILE_MODULE = 'onBaristaApp.UserProfile'
+# AUTH_PROFILE_MODULE = 'onBaristaApp.UserProfile'
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to

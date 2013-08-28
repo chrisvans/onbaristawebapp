@@ -7,7 +7,6 @@ from django.utils import timezone
 from django.utils.timezone import utc, get_current_timezone, activate, localtime
 import datetime
 
-
 class Company(models.Model):
     companyName = models.CharField(max_length=200)
     companyContact = models.CharField(max_length=200, blank=True)
