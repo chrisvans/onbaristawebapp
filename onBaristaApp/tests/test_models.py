@@ -207,10 +207,12 @@ class UserAndUserProfileTest(TestCase):
         userdetails.mug = "cheesecake.jpg"
         self.assertEquals(userdetails.get_mug(), "cheesecake.jpg")
 
-    def test_get_self_checkin_returns_user(self):
-        pass
+    def test_get_self_checkin_success_returns_user(self):
+        user = User.objects.get(username='jimmy')
+        userdetails = user.get_profile()
+        self.assertEquals(userdetails.get_self_checkIn(), checkIn.objects.get(barista=user))
 
-    def test_get_self_checkin_returns_None(self):
+    def test_get_self_checkin_fail_returns_None(self):
         pass
 
     def test_get_favorite_company_id_returns_favCompany(self):
