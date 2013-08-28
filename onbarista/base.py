@@ -127,6 +127,7 @@ INSTALLED_APPS = (
     'django_extensions',
     'discover_runner',
     'unipath',
+    'selenium',
 )
 
 # Adds in custom profile for Django's User class model
