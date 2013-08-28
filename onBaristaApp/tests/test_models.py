@@ -6,11 +6,45 @@ from django.utils.timezone import utc, get_current_timezone, activate, localtime
 from django.test.client import Client
 import datetime
 
+def create_company_and_associated_location(companyName, companyContact, street, city, state, zipCode):
+    company = Company.objects.create(companyName=companyName, companyContact=companyContact)
+    companyLocation.objects.create(companyID=company, street=street, city=city, state=state, zipCode=zipCode)
+
+def create_barista_and_details(username, password, email, usercheckedin, first_name, last_name, mug):
+    barista = User(username=username, password=password, email=email)
+    barista.save()
+    baristadetails = barista.get_profile()
+    baristadetails.userType = 'Barista'
+    baristadetails.usercheckedin = usercheckedin
+    baristadetails.first_name = first_name
+    baristadetails.last_name = last_name
+    baristadetails.mug = mug
+    baristadetails.save()
+
+def create_user_and_details(username, password, email, first_name, last_name, mug, favCompany, favBaristaObj):
+    user = User(username=username, password=password, email=email)
+    user.save()
+    userdetails = user.get_profile()
+    userdetails.mug = mug
+    userdetails.first_name = first_name
+    userdetails.last_name = last_name
+    userdetails.favCompany = favCompany
+    userdetails.favBaristaObj = favBaristaObj
+    userdetails.save()
+
+def create_checkin_and_association(barista, company, checkedin):
+    checkin = checkIn()
+    checkin.barista = User.objects.get(username=barista.username)
+    checkin.location = companyLocation.objects.get(companyID=company)
+    checkin.inTime = timezone.now()
+    checkin.outTime = timezone.now()
+    checkin.checkedin = checkedin
+    checkin.save()
+
 class CompanyTest(TestCase):
 
     def setUp(self):
-        company = Company.objects.create(companyName="Voltage", companyContact="Lucy")
-        location = companyLocation.objects.create(companyID=company, street="275 3rd street", city="Cambridge", state="Massachusetts", zipCode="21432")
+        create_company_and_associated_location(companyName="Voltage", companyContact="Lucy", street="275 3rd street", city="Cambridge", state="Massachusetts", zipCode="21432")
 
     def test_unicode(self):
         self.assertEquals(type(u'a'), type(Company.objects.all()[0].__unicode__()))
@@ -29,42 +63,14 @@ class CompanyTest(TestCase):
 class CompanyLocationTest(TestCase):
 
     def setUp(self):
-        company = Company.objects.create(companyName="Voltage", companyContact="Lucy")
-        location = companyLocation.objects.create(companyID=company, street="275 3rd street", city="Cambridge", state="Massachusetts", zipCode="21432")
-        barista = User(username='jimmy', password='popcorn', email='jimmydean@bagel.com')
-        barista.save()
-        baristadetails = barista.get_profile()
-        baristadetails.userType = 'Barista'
-        baristadetails.usercheckedin = True
-        baristadetails.first_name='jimmy'
-        baristadetails.last_name='dean'
-        baristadetails.mug = 'abra.jpg'
-        barista.save()
-        baristadetails.save()
-        checkin = checkIn()
-        checkin.barista = User.objects.get(username=barista.username)
-        checkin.location = companyLocation.objects.get(companyID=company)
-        checkin.inTime = timezone.now()
-        checkin.outTime = timezone.now()
-        checkin.checkedin = True
-        checkin.save()
-        barista2 = User(username='quayle', password='popcorn', email='leanqueen@bagel.com')
-        barista2.save()
-        barista2details = barista.get_profile()
-        barista2details.userType = 'Barista'
-        barista2details.usercheckedin = False
-        barista2details.first_name = 'quayle'
-        barista2details.last_name = 'the brave'
-        barista2details.mug = 'whileawayflowers.jpg'
-        barista2.save()
-        barista2details.save()
-        checkin2 = checkIn()
-        checkin2.barista = User.objects.get(username=barista2.username)
-        checkin2.location = companyLocation.objects.get(companyID=company)
-        checkin2.inTime = timezone.now()
-        checkin2.outTime = timezone.now()
-        checkin.checkedin = False
-        checkin2.save()
+        create_company_and_associated_location(companyName="Voltage", companyContact="Lucy", street="275 3rd street", city="Cambridge", state="Massachusetts", zipCode="21432")
+        company = Company.objects.all()[0]
+        create_barista_and_details(username='jimmy', password='popcorn', email='jimmydean@bagel.com', usercheckedin=True, first_name='jimmy', last_name='dean', mug='abra.jpg')
+        barista = User.objects.get(username='jimmy')
+        create_checkin_and_association(barista=barista, company=company, checkedin=True)
+        create_barista_and_details(username='quayle', password='popcorn', email='leanqueen@bagel.com', usercheckedin=False, first_name='quayle', last_name='the brave', mug='whileawayflowers.jpg')
+        barista2 = User.objects.get(username='quayle')
+        create_checkin_and_association(barista=barista2, company=company, checkedin=False)
 
     def test_unicode(self):
         self.assertEquals(type(u'a'), type(companyLocation.objects.all()[0].__unicode__()))
@@ -92,11 +98,12 @@ class CompanyLocationTest(TestCase):
         companylocation = companyLocation.objects.all()[0]
         barista_list = companylocation.get_checkin_out()
         for barista in barista_list:
-            self.assertEquals(barista.userType, 'Barista')
+            baristadetails = barista.get_profile()
+            self.assertEquals(baristadetails.userType, 'Barista')
 
     def test_get_checkin_out_barista_is_checked_out(self):
         companylocation = companyLocation.objects.all()[0]
-        barista_list = companylocation.get_checkin_in()
+        barista_list = companylocation.get_checkin_out()
         for barista in barista_list:
             baristadetails = barista.get_profile()
             self.assertEquals(False, baristadetails.usercheckedin)
@@ -110,11 +117,12 @@ class CompanyLocationTest(TestCase):
         companylocation = companyLocation.objects.all()[0]
         barista_list = companylocation.get_checkin_out()
         for barista in barista_list:
-            self.assertEquals(barista.userType, 'Barista')
+            baristadetails = barista.get_profile()
+            self.assertEquals(baristadetails.userType, 'Barista')
 
     def test_get_checkin_in_barista_is_checked_in(self):
         companylocation = companyLocation.objects.all()[0]
-        barista_list = companylocation.get_checkin_out()
+        barista_list = companylocation.get_checkin_in()
         for barista in barista_list:
             baristadetails = barista.get_profile()
             self.assertEquals(True, baristadetails.usercheckedin)
@@ -122,14 +130,7 @@ class CompanyLocationTest(TestCase):
 class UserProfileManagerTest(TestCase):
 
     def setUp(self):
-        user = User(username='chris', password='bagel', email='chrisvanschyndel@gmail.com')
-        user.save()
-        userdetails = user.get_profile()
-        userdetails.mug = 'U1.jpg'
-        userdetails.first_name = 'chris'
-        userdetails.last_name = 'van schyndel'
-        user.save()
-        userdetails.save()
+        create_user_and_details(username='chris', password='bagel', email='chrisvanschyndel@gmail.com', first_name='chris', last_name='van schyndel', mug='U1.jpg', favCompany=None, favBaristaObj=None)
 
     def test_check_in_user_checks_in_user(self):
         client = Client()
@@ -148,36 +149,12 @@ class UserProfileManagerTest(TestCase):
 class UserAndUserProfileTest(TestCase):
 
     def setUp(self):
-        company = Company.objects.create(companyName="Voltage", companyContact="Lucy")
-        location = companyLocation.objects.create(companyID=company, street="275 3rd street", city="Cambridge", state="Massachusetts", zipCode="21432")
-        user = User(username='chris', password='bagel', email='chrisvanschyndel@gmail.com')
-        user.save()
-        userdetails = user.get_profile()
-        userdetails.mug = 'U1.jpg'
-        userdetails.first_name = 'chris'
-        userdetails.last_name = 'van schyndel'
-        userdetails.favCompany = company
-        user.save()
-        userdetails.save()
-        barista = User(username='jimmy', email='jimmydean@bagel.com')
-        barista.save()
-        baristadetails = barista.get_profile()
-        baristadetails.userType = 'Barista'
-        baristadetails.usercheckedin = True
-        baristadetails.first_name = 'jimmy'
-        baristadetails.last_name = 'dean'
-        baristadetails.mug = 'abra.jpg'
-        barista.save()
-        baristadetails.save()
-        checkin = checkIn()
-        checkin.barista = User.objects.get(username=barista.username)
-        checkin.location = companyLocation.objects.get(companyID=company)
-        checkin.inTime = timezone.now()
-        checkin.outTime = timezone.now()
-        checkin.checkedin = True
-        checkin.save()
-        userdetails.favBaristaObj = barista.get_profile()
-        userdetails.save()
+        create_company_and_associated_location(companyName="Voltage", companyContact="Lucy", street="275 3rd street", city="Cambridge", state="Massachusetts", zipCode="21432")
+        company = Company.objects.all()[0]
+        create_barista_and_details(username='jimmy', password='popcorn', email='jimmydean@bagel.com', usercheckedin=True, first_name='jimmy', last_name='dean', mug='abra.jpg')
+        barista = User.objects.get(username='jimmy')
+        create_user_and_details(username='chris', password='bagel', email='chrisvanschyndel@gmail.com', first_name='chris', last_name='van schyndel', mug='U1.jpg', favCompany=company, favBaristaObj=barista.get_profile())
+        create_checkin_and_association(barista=barista, company=company, checkedin=True)
 
     def test_unicode(self):
         self.assertEquals(type(u'a'), type(User.objects.all()[0].__unicode__()))
@@ -192,7 +169,7 @@ class UserAndUserProfileTest(TestCase):
         self.assertEquals(type(userdetails.isFavBarCheckedIn()), type(False))
 
     def test_get_fav_bar_checked_in_returns_checkIn_obj(self):
-        userdetails = User.objects.all()[0].get_profile()
+        userdetails = User.objects.filter(username='chris')[0].get_profile()
         self.assertEquals(type(userdetails.get_favBarCheckIn()), type(checkIn()))
 
     def test_update_favs_updates_favBarista_properly(self):
@@ -237,33 +214,12 @@ class UserAndUserProfileTest(TestCase):
 class checkInTest(TestCase):
 
     def setUp(self):
-        company = Company.objects.create(companyName="Voltage", companyContact="Lucy")
-        location = companyLocation.objects.create(companyID=company, street="275 3rd street", city="Cambridge", state="Massachusetts", zipCode="21432")
-        user = User(username='chris', password='bagel', email='chrisvanschyndel@gmail.com')
-        user.save()
-        userdetails = user.get_profile()
-        userdetails.mug = 'U1.jpg'
-        userdetails.first_name='chris'
-        userdetails.last_name='van schyndel'
-        user.save()
-        userdetails.save()
-        barista = User(username='jimmy', email='jimmydean@bagel.com')
-        barista.save()
-        baristadetails = barista.get_profile()
-        baristadetails.userType = 'Barista'
-        baristadetails.usercheckedin = True
-        baristadetails.first_name = 'jimmy'
-        baristadetails.last_name = 'dean'
-        baristadetails.mug = 'abra.jpg'
-        barista.save()
-        baristadetails.save()
-        checkin = checkIn()
-        checkin.barista = User.objects.get(username=barista.username)
-        checkin.location = companyLocation.objects.get(companyID=company)
-        checkin.inTime = timezone.now()
-        checkin.outTime = timezone.now()
-        checkin.checkedin = True
-        checkin.save()
+        create_company_and_associated_location(companyName="Voltage", companyContact="Lucy", street="275 3rd street", city="Cambridge", state="Massachusetts", zipCode="21432")
+        company = Company.objects.all()[0]
+        create_barista_and_details(username='jimmy', password='popcorn', email='jimmydean@bagel.com', usercheckedin=True, first_name='jimmy', last_name='dean', mug='abra.jpg')
+        barista = User.objects.get(username='jimmy')
+        create_user_and_details(username='chris', password='bagel', email='chrisvanschyndel@gmail.com', first_name='chris', last_name='van schyndel', mug='U1.jpg', favCompany=company, favBaristaObj=barista.get_profile())
+        create_checkin_and_association(barista=barista, company=company, checkedin=True)
 
     def test_unicode(self):
         self.assertEquals(type(u'a'), type(checkIn.objects.all()[0].__unicode__()))
