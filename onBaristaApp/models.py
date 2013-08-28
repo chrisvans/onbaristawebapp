@@ -99,7 +99,7 @@ class UserProfile(models.Model):
         return unicode(self.userType + ": " + self.user.first_name + " " + self.user.last_name)
 
     def showUser(self):
-        return self.userType + ": " + self.user.first_name + " " + self.user.last_name
+        return unicode(self.userType + ": " + self.user.first_name + " " + self.user.last_name)
 
     def isFavBarCheckedIn(self):
         # Returns true if this user's favorite barista is checked in.

@@ -117,13 +117,20 @@ class CompanyLocationTest(TestCase):
 class UserProfileManagerTest(TestCase):
 
     def setUp(self):
-        pass
+        user = User(username='chris', password='bagel', email='chrisvanschyndel@gmail.com')
+        user.save()
+        userdetails = user.get_profile()
+        userdetails.mug = 'U1.jpg'
+        userdetails.first_name='chris'
+        userdetails.last_name='van schyndel'
+        user.save()
+        userdetails.save()
 
     def test_check_in_user_checks_in_user(self):
-        pass
+        self.assertEquals('this test will fail', 'simulate a request to make it pass')
 
     def test_check_in_user_saves_user(self):
-        pass
+        self.assertEquals('this test will fail', 'simulate a request to make it pass')
 
 class UserAndUserProfileTest(TestCase):
 
@@ -153,32 +160,54 @@ class UserAndUserProfileTest(TestCase):
         checkin.inTime = timezone.now()
         checkin.outTime = timezone.now()
         checkin.save()
+        userdetails.favBaristaObj = barista.get_profile()
+        userdetails.save()
 
     def test_unicode(self):
         self.assertEquals(type(u'a'), type(User.objects.all()[0].__unicode__()))
 
-    def test_show_user_returns_string(self):
-        pass
+    def test_show_user_returns_unicode(self):
+        user = User.objects.all()[0]
+        userdetails = user.get_profile()
+        self.assertEquals(type(userdetails.showUser()), type(u'a'))
 
     def test_isfavbarcheckedin_returns_boolean(self):
-        pass
+        userdetails = User.objects.all()[0].get_profile()
+        self.assertEquals(type(userdetails.isFavBarCheckedIn()), type(False))
 
-    def test_get_fav_bar_checked_in_returns_user(self):
-        pass
+    def test_get_fav_bar_checked_in_returns_checkIn_obj(self):
+        userdetails = User.objects.all()[0].get_profile()
+        self.assertEquals(type(userdetails.get_favBarCheckIn()), type(checkIn()))
 
     def test_update_favs_updates_favBarista_properly(self):
-        pass
+        barista = User.objects.get(username='jimmy')
+        baristadetails = barista.get_profile()
+        userdetails = User.objects.all()[0].get_profile()
+        userdetails.update_favs(False, baristadetails.id)
+        self.assertEquals(userdetails.favBaristaObj, baristadetails)
 
     def test_update_favs_updates_favCompany_properly(self):
-        pass
+        company = Company.objects.all()[0]
+        userdetails = User.objects.all()[0].get_profile()
+        userdetails.update_favs(company.id, False)
+        self.assertEquals(userdetails.favCompany, company)
 
     def test_get_mug_returns_mug(self):
-        pass
+        user = User.objects.all()[0]
+        userdetails = user.get_profile()
+        userdetails.mug = "cheesecake.jpg"
+        self.assertEquals(userdetails.get_mug(), "cheesecake.jpg")
 
     def test_get_self_checkin_returns_user(self):
         pass
 
     def test_get_self_checkin_returns_None(self):
+        pass
+
+    def test_get_favorite_company_id_returns_favCompany(self):
+        pass
+
+    def test_get_favorite_company_id_returns_0string(self):
         pass
 
 class checkInTest(TestCase):
