@@ -38,6 +38,7 @@ class CompanyLocationTest(TestCase):
         baristadetails.usercheckedin = True
         baristadetails.first_name='jimmy'
         baristadetails.last_name='dean'
+        baristadetails.mug = 'abra.jpg'
         barista.save()
         baristadetails.save()
         checkin = checkIn()
@@ -45,14 +46,16 @@ class CompanyLocationTest(TestCase):
         checkin.location = companyLocation.objects.get(companyID=company)
         checkin.inTime = timezone.now()
         checkin.outTime = timezone.now()
+        checkin.checkedin = True
         checkin.save()
         barista2 = User(username='quayle', password='popcorn', email='leanqueen@bagel.com')
         barista2.save()
         barista2details = barista.get_profile()
         barista2details.userType = 'Barista'
         barista2details.usercheckedin = False
-        barista2details.first_name='quayle'
-        barista2details.last_name='the brave'
+        barista2details.first_name = 'quayle'
+        barista2details.last_name = 'the brave'
+        barista2details.mug = 'whileawayflowers.jpg'
         barista2.save()
         barista2details.save()
         checkin2 = checkIn()
@@ -60,6 +63,7 @@ class CompanyLocationTest(TestCase):
         checkin2.location = companyLocation.objects.get(companyID=company)
         checkin2.inTime = timezone.now()
         checkin2.outTime = timezone.now()
+        checkin.checkedin = False
         checkin2.save()
 
     def test_unicode(self):
@@ -162,6 +166,7 @@ class UserAndUserProfileTest(TestCase):
         baristadetails.usercheckedin = True
         baristadetails.first_name = 'jimmy'
         baristadetails.last_name = 'dean'
+        baristadetails.mug = 'abra.jpg'
         barista.save()
         baristadetails.save()
         checkin = checkIn()
@@ -169,6 +174,7 @@ class UserAndUserProfileTest(TestCase):
         checkin.location = companyLocation.objects.get(companyID=company)
         checkin.inTime = timezone.now()
         checkin.outTime = timezone.now()
+        checkin.checkedin = True
         checkin.save()
         userdetails.favBaristaObj = barista.get_profile()
         userdetails.save()
@@ -246,8 +252,9 @@ class checkInTest(TestCase):
         baristadetails = barista.get_profile()
         baristadetails.userType = 'Barista'
         baristadetails.usercheckedin = True
-        baristadetails.first_name='jimmy'
-        baristadetails.last_name='dean'
+        baristadetails.first_name = 'jimmy'
+        baristadetails.last_name = 'dean'
+        baristadetails.mug = 'abra.jpg'
         barista.save()
         baristadetails.save()
         checkin = checkIn()
@@ -255,16 +262,19 @@ class checkInTest(TestCase):
         checkin.location = companyLocation.objects.get(companyID=company)
         checkin.inTime = timezone.now()
         checkin.outTime = timezone.now()
+        checkin.checkedin = True
         checkin.save()
 
     def test_unicode(self):
         self.assertEquals(type(u'a'), type(checkIn.objects.all()[0].__unicode__()))
 
-    def test_show_barista_returns_string(self):
-        pass
+    def test_show_barista_returns_unicode(self):
+        checkin = checkIn.objects.all()[0]
+        self.assertEquals(type(u'a'), type(checkin.showBarista()))
 
     def test_get_barista_mug_returns_mug(self):
-        pass
+        checkin = checkIn.objects.get(location=companyLocation.objects.get(companyID=1))
+        self.assertEquals(checkin.get_barista_mug(), 'abra.jpg')
 
     def test_get_tzobject_returns_datetime_object(self):
         pass

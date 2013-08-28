@@ -181,7 +181,7 @@ class checkIn(models.Model):
     def showBarista(self):
         user = self.barista
         userdetails = self.barista.get_profile()
-        return user.first_name + " " + user.last_name
+        return unicode(user.first_name + " " + user.last_name)
 
     def get_barista_mug(self):
         baristadetails = self.barista.get_profile()
