@@ -119,6 +119,7 @@ class UserProfile(models.Model):
                 checkIn.objects.get(barista = self.favBaristaObj.user)
                 return checkIn.objects.get(barista = self.favBaristaObj.user)
             except (KeyError,checkIn.DoesNotExist):
+                # This needs to be a proper error, as this shows that an improper field was saved
                 return 'error'
 
     def update_favs(self, companyID, baristaID):
