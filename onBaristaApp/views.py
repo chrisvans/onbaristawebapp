@@ -66,8 +66,8 @@ def login_view(request):
             if user.is_active:
                 login(request, user)
                 request.session['user'] = user
-                # Initialize variables, only populate them if the logic conditions allow it.
                 userdetails = user.get_profile()
+                # Prioritize favorite company in index list of companies
                 return companyHome(request, userdetails.get_favorite_company_id())
 
             else:

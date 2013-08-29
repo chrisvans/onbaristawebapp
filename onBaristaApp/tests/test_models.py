@@ -1,9 +1,9 @@
 from django.utils import unittest
 from django.test import TestCase
-from onBaristaApp.models import User, checkIn, companyLocation, Company, UserProfile, UserProfileManager
 from django.utils import timezone
 from django.utils.timezone import utc, get_current_timezone, activate, localtime
 from django.test.client import Client
+from onBaristaApp.models import User, checkIn, companyLocation, Company, UserProfile, UserProfileManager
 import datetime
 
 def create_company_and_associated_location(companyName, companyContact, street, city, state, zipCode):
@@ -33,7 +33,6 @@ def create_user_and_details(username, password, email, first_name, last_name, mu
     userdetails.save()
 
 def create_checkin_and_association(barista, company, checkedin):
-    # Create checkin with associated user(barista) and company, with checkin state
     checkin = checkIn()
     checkin.barista = User.objects.get(username=barista.username)
     checkin.location = companyLocation.objects.get(companyID=company)
