@@ -298,7 +298,8 @@ class checkInTest(TestCase):
             state="Massachusetts", 
             zipCode="21432"
             )
-        company = Company.objects.all()[0]
+        self.company = Company.objects.get(companyName="Voltage")
+        self.company_location = companyLocation.objects.get(zipCode="21432")
         create_barista_and_details(
             username='jimmy', 
             password='popcorn', 
@@ -308,8 +309,10 @@ class checkInTest(TestCase):
             last_name='dean', 
             mug='abra.jpg'
             )
-        barista = User.objects.get(username='jimmy')
-        create_checkin_and_association(barista=barista, company=company, checkedin=True)
+        self.barista = User.objects.get(username='jimmy')
+        self.baristadetails = self.barista.get_profile()
+        create_checkin_and_association(barista=self.barista, company=self.company, checkedin=True)
+        self.checkin = checkIn.objects.get(barista=self.barista)
         create_user_and_details(
             username='chris', 
             password='bagel', 
@@ -317,9 +320,11 @@ class checkInTest(TestCase):
             first_name='chris', 
             last_name='van schyndel', 
             mug='U1.jpg', 
-            favCompany=company, 
-            favBaristaObj=barista.get_profile()
+            favCompany=self.company, 
+            favBaristaObj=self.baristadetails
             )
+        self.user = User.objects.get(username='chris')
+        self.userdetails = self.user.get_profile()
         create_barista_and_details(
             username='quayle', 
             password='popcorn', 
@@ -329,34 +334,31 @@ class checkInTest(TestCase):
             last_name='the brave', 
             mug='whileawayflowers.jpg'
             )
-        barista2 = User.objects.get(username='quayle')
-        create_checkin_and_association(barista=barista2, company=company, checkedin=False)
+        self.barista2 = User.objects.get(username='quayle')
+        self.barista2details = self.barista2.get_profile()
+        create_checkin_and_association(barista=self.barista2, company=self.company, checkedin=False)
+        self.checkin2 = checkIn.objects.get(barista=self.barista2)
 
     def test_unicode_checked_in_fork(self):
-        self.assertEquals(type(u'a'), type(checkIn.objects.filter(checkedin=True)[0].__unicode__()))
+        self.assertEquals(type(u'a'), type(self.checkin.__unicode__()))
 
     def test_unicode_checked_out_fork(self):
-        self.assertEquals(type(u'a'), type(checkIn.objects.filter(checkedin=False)[0].__unicode__()))
+        self.assertEquals(type(u'a'), type(self.checkin2.__unicode__()))
 
     def test_show_barista_returns_unicode(self):
-        checkin = checkIn.objects.all()[0]
-        self.assertEquals(type(u'a'), type(checkin.showBarista()))
+        self.assertEquals(type(u'a'), type(self.checkin.showBarista()))
 
-    def test_get_barista_mug_returns_mug(self):
-        checkin = checkIn.objects.get(barista=User.objects.get(username='jimmy')) 
-        self.assertEquals(checkin.get_barista_mug(), 'abra.jpg')
+    def test_get_barista_mug_returns_mug(self): 
+        self.assertEquals(self.checkin.get_barista_mug(), 'abra.jpg')
 
     def test_get_tzobject_returns_datetime_object_checkin_true_fork(self):
-        checkin = checkIn.objects.get(barista=User.objects.get(username='jimmy'))
-        self.assertEquals(type(checkin.get_tzobject()), type(timezone.now()))
+        self.assertEquals(type(self.checkin.get_tzobject()), type(timezone.now()))
 
     def test_get_tzobject_returns_datetime_object_checkin_false_fork(self):
-        checkin = checkIn.objects.get(barista=User.objects.get(username='quayle')) 
-        self.assertEquals(type(checkin.get_tzobject()), type(timezone.now()))
+        self.assertEquals(type(self.checkin2.get_tzobject()), type(timezone.now()))
 
-    def test_check_out_user_changes_checkedin_state(self):
-        checkin = checkIn.objects.get(barista=User.objects.get(username='jimmy'))      
-        checkin.check_out_user()
+    def test_check_out_user_changes_checkedin_state(self):    
+        self.checkin.check_out_user()
         self.assertEquals(checkIn.objects.get(barista=User.objects.get(username='jimmy')).checkedin, False)
 
 
