@@ -78,7 +78,8 @@ class CompanyLocationTest(TestCase):
             state="Massachusetts", 
             zipCode="21432"
             )
-        company = Company.objects.all()[0]
+        self.company = Company.objects.get(companyName="Voltage")
+        self.company_location = companyLocation.objects.get(zipCode="21432")
         create_barista_and_details(
             username='jimmy', 
             password='popcorn', 
@@ -88,8 +89,9 @@ class CompanyLocationTest(TestCase):
             last_name='dean', 
             mug='abra.jpg'
             )
-        barista = User.objects.get(username='jimmy')
-        create_checkin_and_association(barista=barista, company=company, checkedin=True)
+        self.barista = User.objects.get(username='jimmy')
+        self.baristadetails = self.barista.get_profile()
+        create_checkin_and_association(barista=self.barista, company=self.company, checkedin=True)
         create_barista_and_details(
             username='quayle', 
             password='popcorn', 
@@ -99,63 +101,53 @@ class CompanyLocationTest(TestCase):
             last_name='the brave', 
             mug='whileawayflowers.jpg'
             )
-        barista2 = User.objects.get(username='quayle')
-        create_checkin_and_association(barista=barista2, company=company, checkedin=False)
+        self.barista2 = User.objects.get(username='quayle')
+        self.barista2details = self.barista2.get_profile()
+        create_checkin_and_association(barista=self.barista2, company=self.company, checkedin=False)
 
     def test_unicode(self):
-        self.assertEquals(type(u'a'), type(companyLocation.objects.all()[0].__unicode__()))
+        self.assertEquals(type(u'a'), type(self.company_location.__unicode__()))
 
     def test_address_string_returns_unicode(self):
-        companylocation = companyLocation.objects.all()[0]
-        self.assertEquals(type(u'a'), type(companylocation.address_string()))
+        self.assertEquals(type(u'a'), type(self.company_location.address_string()))
 
     def test_get_checkins_returns_query(self):
-        companylocation = companyLocation.objects.all()[0]
-        self.assertEquals(type(Company.objects.all()), type(companylocation.get_checkins()))
+        self.assertEquals(type(Company.objects.all()), type(self.company_location.get_checkins()))
 
     def test_get_checkins_query_has_checkIn_object(self):
-        companylocation = companyLocation.objects.all()[0]
-        checkinsquery = companylocation.get_checkins()
+        checkinsquery = self.company_location.get_checkins()
         for checkin in checkinsquery:
             self.assertEquals(type(checkIn()), type(checkin))
 
     def test_get_checkin_out_returns_list(self):
-        companylocation = companyLocation.objects.all()[0]
-        barista_list = companylocation.get_checkin_out()
+        barista_list = self.company_location.get_checkin_out()
         self.assertEquals(type(barista_list), type([]))
 
     def test_get_checkin_out_list_has_baristas(self):
-        companylocation = companyLocation.objects.all()[0]
-        barista_list = companylocation.get_checkin_out()
+        barista_list = self.company_location.get_checkin_out()
         for barista in barista_list:
             baristadetails = barista.get_profile()
             self.assertEquals(baristadetails.userType, 'Barista')
 
     def test_get_checkin_out_barista_is_checked_out(self):
-        companylocation = companyLocation.objects.all()[0]
-        barista_list = companylocation.get_checkin_out()
+        barista_list = self.company_location.get_checkin_out()
         for barista in barista_list:
             baristadetails = barista.get_profile()
             self.assertEquals(False, baristadetails.usercheckedin)
 
     def test_get_checkin_in_returns_list(self):
-        companylocation = companyLocation.objects.all()[0]
-        barista_list = companylocation.get_checkin_in()
+        barista_list = self.company_location.get_checkin_in()
         self.assertEquals(type(barista_list), type([]))
 
     def test_get_checkin_in_list_has_baristas(self):
-        companylocation = companyLocation.objects.all()[0]
-        barista_list = companylocation.get_checkin_out()
+        barista_list = self.company_location.get_checkin_out()
         for barista in barista_list:
-            baristadetails = barista.get_profile()
-            self.assertEquals(baristadetails.userType, 'Barista')
+            self.assertEquals(self.baristadetails.userType, 'Barista')
 
     def test_get_checkin_in_barista_is_checked_in(self):
-        companylocation = companyLocation.objects.all()[0]
-        barista_list = companylocation.get_checkin_in()
+        barista_list = self.company_location.get_checkin_in()
         for barista in barista_list:
-            baristadetails = barista.get_profile()
-            self.assertEquals(True, baristadetails.usercheckedin)
+            self.assertEquals(True, self.baristadetails.usercheckedin)
 
 class UserProfileManagerTest(TestCase):
 
