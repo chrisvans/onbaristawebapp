@@ -16,6 +16,8 @@ PROJECT_DIR = Path(__file__).ancestor(3)
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
+TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
+
 ADMINS = (
     ('chris', 'chrisvanschyndel@gmail.com'),
 )
@@ -128,6 +130,7 @@ INSTALLED_APPS = (
     'discover_runner',
     'unipath',
     'selenium',
+    'django-nose',
 )
 
 # Adds in custom profile for Django's User class model
