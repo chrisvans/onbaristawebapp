@@ -2,7 +2,7 @@ from django.utils import unittest
 from django.test import TestCase
 from django.utils import timezone
 from django.utils.timezone import utc, get_current_timezone, activate, localtime
-from django.test.client import Client
+from django.test.client import Client, RequestFactory
 from onBaristaApp.models import User, checkIn, companyLocation, Company, UserProfile, UserProfileManager
 import datetime
 
@@ -12,6 +12,9 @@ def create_company_and_associated_location(companyName, companyContact, street, 
 
 def create_barista_and_details(username, password, email, usercheckedin, first_name, last_name, mug):
     barista = User(username=username, password=password, email=email)
+    # Not necessary for these tests, and significantly slows down test time
+    # barista.set_password(password)
+    # Proper hashed password is manually set for tests that need them
     barista.save()
     baristadetails = barista.get_profile()
     baristadetails.userType = 'Barista'
@@ -23,6 +26,9 @@ def create_barista_and_details(username, password, email, usercheckedin, first_n
 
 def create_user_and_details(username, password, email, first_name, last_name, mug, favCompany, favBaristaObj):
     user = User(username=username, password=password, email=email)
+    # Not necessary for these tests, and significantly slows down test time
+    # user.set_password(password)
+    # Proper hashed password is manually set for tests that need them
     user.save()
     userdetails = user.get_profile()
     userdetails.mug = mug
