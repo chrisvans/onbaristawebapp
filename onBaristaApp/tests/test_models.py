@@ -52,19 +52,20 @@ class CompanyTest(TestCase):
             state="Massachusetts", 
             zipCode="21432"
             )
+        self.company = Company.objects.get(companyName="Voltage")
+        self.company_location = companyLocation.objects.get(zipCode="21432")
 
     def test_unicode(self):
-        self.assertEquals(type(u'a'), type(Company.objects.all()[0].__unicode__()))
+        self.assertEquals(type(u'a'), type(self.company.__unicode__()))
       
     def test_get_locations_returns_query(self):
-        queryset = Company.objects.all()[0].get_locations()
+        queryset = self.company.get_locations()
         self.assertEquals(type(Company.objects.all()), type(queryset))
 
     def test_get_locations_query_has_companyLocation_object(self):
-        type_check = type(companyLocation.objects.all()[0])
-        queryset = Company.objects.all()[0].get_locations()
+        queryset = self.company.get_locations()
         for location in queryset:
-            self.assertEquals(type_check, type(location))
+            self.assertEquals(type(self.company_location), type(location))
 
 
 class CompanyLocationTest(TestCase):

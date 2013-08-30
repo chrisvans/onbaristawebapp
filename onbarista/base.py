@@ -130,7 +130,7 @@ INSTALLED_APPS = (
     'discover_runner',
     'unipath',
     'selenium',
-    'django-nose',
+    'django_nose',
 )
 
 # Adds in custom profile for Django's User class model
