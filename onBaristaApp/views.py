@@ -54,6 +54,14 @@ class ViewManager(object):
         manager_dict['navFlag'][view_name] = 'active'
         return manager_dict, user, userdetails
 
+    @classmethod
+    def is_barista(cls, user):
+        userdetails = user.get_profile()
+        if userdetails.userType == 'Barista':
+            pass
+        else:
+            raise PermissionDenied()
+
 def login_view(request):
     if request.method == 'POST':
         # Django's user authentication via user submission into form
@@ -102,6 +110,8 @@ def companyHome(request, companyID='0'):
 def checkInPost(request):
     # Barista view - Check In Button.
     user = ViewManager.login_handler(request)
+    # Verify that post is being sent by a user that is a barista
+    ViewManager.is_barista(user)
     location = companyLocation.objects.get(pk=request.POST['location'])
     # Create new check in object with the barista ( logged in user ) and associate it with the location.
     # Deletes the old checkIn object if there is one, and creates a new one, saving it.
@@ -113,6 +123,8 @@ def checkInPost(request):
 def checkOutPost(request):
     # Barista view - Check Out Button.
     user = ViewManager.login_handler(request)
+    # Verify that post is being sent by a user that is a barista
+    ViewManager.is_barista(user)
     location = companyLocation.objects.get(pk=request.POST['location'])
     # Change check in object to reflect checked out status.
     check_in = checkIn.objects.get(barista = user)
@@ -198,9 +210,6 @@ def admin_panel(request):
 
 def logout_view(request):
     logout(request)
-
-    if ('user' in request.session):
-        del request.session['user']
     return render(request, 'login.html')
 
 def register(request):

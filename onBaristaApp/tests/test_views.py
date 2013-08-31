@@ -1,6 +1,7 @@
 from django.utils import unittest
 from django.test import TestCase
 from django.http import QueryDict
+from django.core.exceptions import PermissionDenied
 from django.utils import timezone
 from django.utils.importlib import import_module
 from django.utils.timezone import utc, get_current_timezone, activate, localtime
@@ -32,6 +33,7 @@ def create_user_and_details(username, password, email, first_name, last_name, mu
     user = User(username=username, password=password, email=email)
     # Not necessary for all tests, and significantly slows down test time
     # Find a good way to only use set_password for relevant tests
+    # Or use a cheaper function
     user.set_password(password)
     user.save()
     userdetails = user.get_profile()
@@ -147,6 +149,8 @@ class BroadViewTest(TestCase):
 
     def test_that_login_view_post_with_correct_credentials_but_inactive_user_returns_200(self):
         # This is an unimplemented feature - emails validating users as is_active
+        # Currently all users are active by default, but the logic still exists for
+        # non active users in the login view
         request = self.factory.post('/', {'username':'chris', 'password':'bagel'})
         self.user.is_active = False
         self.user.save()
@@ -161,15 +165,30 @@ class BroadViewTest(TestCase):
         response = login_view(request)
         self.assertEquals(response.status_code, 200)
 
-    # def test_that_logout_url_returns_200(self):
-    #     request = self.factory.get('/logout/')
-    #     request.user = self.user
-    #     self.assertEquals(response.status_code, 200)
+    def test_that_logout_url_with_session_returns_200(self):
+        request = self.factory.get('/logout/')
+        request.session = self.session
+        request.session['user'] = self.user
+        request.user = self.user
+        response = logout_view(request)
+        self.assertEquals(response.status_code, 200)
+
+    def test_that_logout_url_without_session_returns_200(self):
+        request = self.factory.get('/logout/')
+        request.session = self.session
+        response = logout_view(request)
+        self.assertEquals(response.status_code, 200)
         
-    # def test_that_checkIn_url_returns_200(self):
-    #     request = self.factory.get('/checkIn/', {'location': 1})
-    #     request.user = self.user
-    #     self.assertEquals(response.status_code, 200)
+    def test_that_checkIn_button_url_with_logged_in_user_that_is_not_a_barista_returns_PermissionDenied(self):
+        request = self.factory.post('/checkIn/', {'location': 1})
+        request.session = self.session
+        request.session['user'] = self.user
+        request.user = self.user
+        try:
+            response = checkInPost(request)
+            self.assertEquals('Invalid UserType Consumer', 'Accessed CheckIn Button')
+        except (PermissionDenied):
+            self.assertEquals('PermissionDenied', 'PermissionDenied')
         
     # def test_that_checkOut_url_returns_200(self):
     #     request = self.factory.get('/checkOut/')
