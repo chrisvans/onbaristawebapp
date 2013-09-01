@@ -184,6 +184,7 @@ class BroadViewTest(TestCase):
         request.session = self.session
         request.session['user'] = self.user
         request.user = self.user
+        # Find a more appropriate use of TestCase for this test.
         try:
             response = checkInPost(request)
             self.assertEquals('Invalid UserType Consumer', 'Accessed CheckIn Button')
