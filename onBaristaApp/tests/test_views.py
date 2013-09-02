@@ -184,12 +184,11 @@ class BroadViewTest(TestCase):
         request.session = self.session
         request.session['user'] = self.user
         request.user = self.user
-        # Find a more appropriate use of TestCase for this test.
         try:
             response = checkInPost(request)
             self.assertEquals('Invalid UserType Consumer', 'Accessed CheckIn Button')
         except (PermissionDenied):
-            self.assertEquals('PermissionDenied', 'PermissionDenied')
+            self.assertEquals('Permission was denied', 'Permission was denied')
         
     # def test_that_checkOut_url_returns_200(self):
     #     request = self.factory.get('/checkOut/')
