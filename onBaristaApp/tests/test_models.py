@@ -12,9 +12,7 @@ def create_company_and_associated_location(companyName, companyContact, street, 
 
 def create_barista_and_details(username, password, email, usercheckedin, first_name, last_name, mug):
     barista = User(username=username, password=password, email=email)
-    # Not necessary for these tests, and significantly slows down test time
-    # barista.set_password(password)
-    # Proper hashed password is manually set for tests that need them
+    barista.set_password(password)
     barista.save()
     baristadetails = barista.get_profile()
     baristadetails.userType = 'Barista'
@@ -26,9 +24,7 @@ def create_barista_and_details(username, password, email, usercheckedin, first_n
 
 def create_user_and_details(username, password, email, first_name, last_name, mug, favCompany, favBaristaObj):
     user = User(username=username, password=password, email=email)
-    # Not necessary for these tests, and significantly slows down test time
-    # user.set_password(password)
-    # Proper hashed password is manually set for tests that need them
+    user.set_password(password)
     user.save()
     userdetails = user.get_profile()
     userdetails.mug = mug

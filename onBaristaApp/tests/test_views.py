@@ -1,12 +1,13 @@
-from django.utils import unittest
-from django.test import TestCase
-from django.http import QueryDict
+from django.conf import settings
 from django.core.exceptions import PermissionDenied
+from django.core.urlresolvers import reverse
+from django.http import QueryDict
+from django.test import TestCase
+from django.test.client import Client, RequestFactory
+from django.utils import unittest
 from django.utils import timezone
 from django.utils.importlib import import_module
 from django.utils.timezone import utc, get_current_timezone, activate, localtime
-from django.test.client import Client, RequestFactory
-from django.conf import settings
 from onBaristaApp.models import User, checkIn, companyLocation, Company, UserProfile, UserProfileManager
 from onBaristaApp.views import ViewManager, login_view, companyHome, checkInPost, checkOutPost, mark_as_barista, companyBaristas, favorites, update_favs, baristaList, companyList, view_profile, admin_panel, logout_view, register
 import datetime
@@ -17,9 +18,7 @@ def create_company_and_associated_location(companyName, companyContact, street, 
 
 def create_barista_and_details(username, password, email, usercheckedin, first_name, last_name, mug):
     barista = User(username=username, password=password, email=email)
-    # Not necessary for these tests, and significantly slows down test time
-    # barista.set_password(password)
-    # Proper hashed password is manually set for tests that need them
+    barista.set_password(password)
     barista.save()
     baristadetails = barista.get_profile()
     baristadetails.userType = 'Barista'
@@ -31,9 +30,6 @@ def create_barista_and_details(username, password, email, usercheckedin, first_n
 
 def create_user_and_details(username, password, email, first_name, last_name, mug, favCompany, favBaristaObj):
     user = User(username=username, password=password, email=email)
-    # Not necessary for all tests, and significantly slows down test time
-    # Find a good way to only use set_password for relevant tests
-    # Or use a cheaper function
     user.set_password(password)
     user.save()
     userdetails = user.get_profile()
@@ -64,19 +60,6 @@ def create_checkin_and_association(barista, company, checkedin):
     checkin.outTime = timezone.now()
     checkin.checkedin = checkedin
     checkin.save()
-
-# def create_generic_test_user_with_hashed_password():
-#     create_user_and_details_with_set_password(
-#         username='generic_chris', 
-#         password='bagel', 
-#         email='generic_chrisvanschyndel@gmail.com', 
-#         first_name='generic_chris', 
-#         last_name='generic_van schyndel', 
-#         mug='U1.jpg', 
-#         favCompany=Company.objects.get(companyName="Voltage"), 
-#         favBaristaObj=User.objects.get(username='jimmy').get_profile()
-#         )
-#     return User.objects.get(username='generic_chris')
 
 class BroadViewTest(TestCase):
 
@@ -189,6 +172,19 @@ class BroadViewTest(TestCase):
             self.assertEquals('Invalid UserType Consumer', 'Accessed CheckIn Button')
         except (PermissionDenied):
             self.assertEquals('Permission was denied', 'Permission was denied')
+
+    def test_that_checkIn_button_url_with_logged_in_user_that_is_a_barista_returns_302(self):
+        request = self.factory.post('/checkIn/', {'location': 1})
+        request.session = self.session
+        request.session['user'] = self.barista
+        request.user = self.barista
+        response = checkInPost(request)
+        self.assertEquals(response.status_code, 302)
+
+    def test_that_checkIn_button_with_proper_user_redirects_to_baristas_view_with_200(self):
+        self.client.login(username='jimmy', password='popcorn')
+        response = self.client.post('/checkIn/', {'location': 1})
+        self.assertRedirects(response, reverse('onBaristaApp:baristas', kwargs={'companyID':1}), status_code=302, target_status_code=200)
         
     # def test_that_checkOut_url_returns_200(self):
     #     request = self.factory.get('/checkOut/')
