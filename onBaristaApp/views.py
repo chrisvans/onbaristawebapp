@@ -6,8 +6,9 @@ from django.utils.timezone import utc, get_current_timezone
 from django.utils import timezone
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 from django.core.exceptions import PermissionDenied
-from .models import User, checkIn, companyLocation, Company, UserProfile, UserProfileManager
+from .models import checkIn, companyLocation, Company, UserProfile, UserProfileManager
 from .forms import MugForm
 import datetime
 
@@ -18,17 +19,12 @@ class ViewManager(object):
     def login_handler(cls, request, **kwargs):
         if request.user.is_authenticated():
             return request.user
-
         else:
-            send_to_login = reverse('onBaristaApp:login_view')
-            redirect(send_to_login)
+            raise PermissionDenied()
     
     @classmethod
     def view_manager(cls, request, view_name, companyID='0'):
         user = ViewManager.login_handler(request)
-
-        if user is None:
-            raise PermissionDenied()
 
         userdetails = user.get_profile()
         # Make sure that the user has the rights to use the admin page

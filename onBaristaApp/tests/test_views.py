@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.contrib.auth.models import User, AnonymousUser
 from django.core.exceptions import PermissionDenied
 from django.core.urlresolvers import reverse
 from django.http import QueryDict
@@ -8,7 +9,7 @@ from django.utils import unittest
 from django.utils import timezone
 from django.utils.importlib import import_module
 from django.utils.timezone import utc, get_current_timezone, activate, localtime
-from onBaristaApp.models import User, checkIn, companyLocation, Company, UserProfile, UserProfileManager
+from onBaristaApp.models import checkIn, companyLocation, Company, UserProfile, UserProfileManager
 from onBaristaApp.views import ViewManager, login_view, companyHome, checkInPost, checkOutPost, mark_as_barista, companyBaristas, favorites, update_favs, baristaList, companyList, view_profile, admin_panel, logout_view, register
 import datetime
 
@@ -61,6 +62,7 @@ class BroadViewTest(TestCase):
         self.client = Client()
         self.client.cookies[settings.SESSION_COOKIE_NAME] = store.session_key
         self.factory = RequestFactory()
+        self.anon_user = AnonymousUser()
         create_company_and_associated_location(
             companyName="Voltage", 
             companyContact="Lucy", 
@@ -100,6 +102,7 @@ class BroadViewTest(TestCase):
     def test_that_login_view_get_with_no_user_returns_200(self):
         request = self.factory.get('/')
         request.session = self.session
+        request.user = self.anon_user
         response = login_view(request)
         self.assertEquals(response.status_code, 200)
 
@@ -136,7 +139,7 @@ class BroadViewTest(TestCase):
         response = login_view(request)
         self.assertEquals(response.status_code, 200)
 
-    def test_that_logout_url_with_session_returns_200(self):
+    def test_that_logout_url_with_session_user_returns_200(self):
         request = self.factory.get('/logout/')
         request.session = self.session
         request.session['user'] = self.user
@@ -144,7 +147,7 @@ class BroadViewTest(TestCase):
         response = logout_view(request)
         self.assertEquals(response.status_code, 200)
 
-    def test_that_logout_url_without_session_returns_200(self):
+    def test_that_logout_url_without_session_user_returns_200(self):
         request = self.factory.get('/logout/')
         request.session = self.session
         response = logout_view(request)
@@ -174,7 +177,7 @@ class BroadViewTest(TestCase):
         response = self.client.post('/checkIn/', {'location': 1})
         self.assertRedirects(response, reverse('onBaristaApp:baristas', kwargs={'companyID':1}), status_code=302, target_status_code=200)
 
-    def test_that_checkOut_button_url_with_logged_in_user_that_is_not_a_barista_returns_PermissionDenied(self):
+    def test_that_checkOut_button_url_with_logged_in_user_that_is_not_a_barista_returns_403(self):
         request = self.factory.post('/checkOut/', {'location': 1})
         request.session = self.session
         request.session['user'] = self.user
@@ -198,10 +201,35 @@ class BroadViewTest(TestCase):
         response = self.client.post('/checkOut/', {'location': 1})
         self.assertRedirects(response, reverse('onBaristaApp:baristas', kwargs={'companyID':1}), status_code=302, target_status_code=200)
         
-    # def test_that_baristas_url_returns_200(self):
-    #     request = self.factory.get('/baristas/')
-    #     request.user = self.user
-    #     self.assertEquals(response.status_code, 200)
+    def test_that_baristas_url_with_user_and_no_user_returns_200(self):
+        response = self.client.get('/baristas/')
+        self.assertEquals(response.status_code, 200)
+        self.client.login(username='chris', password='bagel')
+        response = self.client.get('/baristas/')
+        self.assertEquals(response.status_code, 200)
+
+    def test_that_baristas_url_with_companyID_with_user_returns_200(self):
+        request = self.factory.get('/baristas/1')
+        request.session = self.session
+        request.session['user'] = self.user
+        request.user = self.user
+        response = companyBaristas(request)
+        self.assertEquals(response.status_code, 200)
+
+    def test_that_baristas_url_with_companyID_with_no_user_returns_403(self):
+        request = self.factory.get('/baristas/1')
+        request.session = self.session
+        request.session['user'] = self.anon_user
+        request.user = self.anon_user
+        try:
+            response = companyBaristas(request)
+            self.assertEquals('Anonymous User', 'Accessed baristas/1 url')
+        except (PermissionDenied):
+            self.assertEquals('Permission was denied', 'Permission was denied')
+
+    def test_that_improper_url_returns_404(self):
+        response = self.client.get('/bagels_and_hot_dogs')
+        self.assertEquals(response.status_code, 404)
         
     # def test_that_baristasCheck_url_returns_200(self):
     #     request = self.factory.get('/baristasCheck/')
