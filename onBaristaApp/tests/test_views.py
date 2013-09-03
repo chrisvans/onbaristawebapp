@@ -40,18 +40,6 @@ def create_user_and_details(username, password, email, first_name, last_name, mu
     userdetails.favBaristaObj = favBaristaObj
     userdetails.save()
 
-def create_user_and_details_with_set_password(username, password, email, first_name, last_name, mug, favCompany, favBaristaObj):
-    user = User(username=username, password=password, email=email)
-    user.set_password(password)
-    user.save()
-    userdetails = user.get_profile()
-    userdetails.mug = mug
-    userdetails.first_name = first_name
-    userdetails.last_name = last_name
-    userdetails.favCompany = favCompany
-    userdetails.favBaristaObj = favBaristaObj
-    userdetails.save()
-
 def create_checkin_and_association(barista, company, checkedin):
     checkin = checkIn()
     checkin.barista = User.objects.get(username=barista.username)
@@ -185,11 +173,30 @@ class BroadViewTest(TestCase):
         self.client.login(username='jimmy', password='popcorn')
         response = self.client.post('/checkIn/', {'location': 1})
         self.assertRedirects(response, reverse('onBaristaApp:baristas', kwargs={'companyID':1}), status_code=302, target_status_code=200)
-        
-    # def test_that_checkOut_url_returns_200(self):
-    #     request = self.factory.get('/checkOut/')
-    #     request.user = self.user
-    #     self.assertEquals(response.status_code, 200)
+
+    def test_that_checkOut_button_url_with_logged_in_user_that_is_not_a_barista_returns_PermissionDenied(self):
+        request = self.factory.post('/checkOut/', {'location': 1})
+        request.session = self.session
+        request.session['user'] = self.user
+        request.user = self.user
+        try:
+            response = checkOutPost(request)
+            self.assertEquals('Invalid UserType Consumer', 'Accessed CheckIn Button')
+        except (PermissionDenied):
+            self.assertEquals('Permission was denied', 'Permission was denied')
+
+    def test_that_checkOut_button_url_with_logged_in_user_that_is_a_barista_returns_302(self):
+        request = self.factory.post('/checkOut/', {'location': 1})
+        request.session = self.session
+        request.session['user'] = self.barista
+        request.user = self.barista
+        response = checkOutPost(request)
+        self.assertEquals(response.status_code, 302)
+
+    def test_that_checkOut_button_with_proper_user_redirects_to_baristas_view_with_200(self):
+        self.client.login(username='jimmy', password='popcorn')
+        response = self.client.post('/checkOut/', {'location': 1})
+        self.assertRedirects(response, reverse('onBaristaApp:baristas', kwargs={'companyID':1}), status_code=302, target_status_code=200)
         
     # def test_that_baristas_url_returns_200(self):
     #     request = self.factory.get('/baristas/')
