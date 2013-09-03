@@ -257,77 +257,119 @@ class BroadViewTest(TestCase):
         except (PermissionDenied):
             self.assertEquals('Permission was denied', 'Permission was denied')
 
+    def test_that_favorites_url_with_user_returns_200(self):
+        request = self.factory.get('/favorites/')
+        request.session = self.session
+        request.session['user'] = self.user
+        request.user = self.user
+        response = favorites(request)
+        self.assertEquals(response.status_code, 200)
+
+    def test_that_favorites_url_with_anon_user_returns_403(self):
+        request = self.factory.get('/favorites/')
+        request.session = self.session
+        request.session['user'] = self.anon_user
+        request.user = self.anon_user
+        try:
+            response = favorites(request)
+            self.assertEquals('Anonymous User', 'Accessed mark_as_barista url')
+        except (PermissionDenied):
+            self.assertEquals('Permission was denied', 'Permission was denied')
+
+    def test_that_update_favs_url_with_user_returns_200_and_updates_favs_properly(self):
+        request = self.factory.post('/updateFavs/', {'companyID': 1, 'baristaID': self.barista.id})
+        request.session = self.session
+        request.session['user'] = self.barista
+        request.user = self.barista
+        response = update_favs(request)
+        self.assertEquals(response.status_code, 200)
+        userdetails = request.session['user'].get_profile()
+        self.assertEquals(userdetails.favBaristaObj, self.baristadetails)
+        self.assertEquals(userdetails.favCompany.id, 1)
+
+    def test_that_update_favs_url_with_anon_user_returns_403(self):
+        request = self.factory.post('/updateFavs/', {'companyID': 1, 'baristaID': self.barista.id})
+        request.session = self.session
+        request.session['user'] = self.anon_user
+        request.user = self.anon_user
+        try:
+            response = update_favs(request)
+            self.assertEquals('Anonymous User', 'Accessed mark_as_barista url')
+        except (PermissionDenied):
+            self.assertEquals('Permission was denied', 'Permission was denied')
+
+    def test_that_baristaList_url_with_user_returns_200(self):
+        request = self.factory.post('/baristaList/', {'searchString': 'j'})
+        request.session = self.session
+        request.session['user'] = self.user
+        request.user = self.user
+        response = baristaList(request)
+        self.assertEquals(response.status_code, 200)
+
+    def test_that_baristaList_url_with_anon_user_returns_403(self):
+        request = self.factory.post('/baristaList/', {'searchString': 'j'})
+        request.session = self.session
+        request.session['user'] = self.anon_user
+        request.user = self.anon_user
+        try:
+            response = baristaList(request)
+            self.assertEquals('Anonymous User', 'Accessed mark_as_barista url')
+        except (PermissionDenied):
+            self.assertEquals('Permission was denied', 'Permission was denied')
+
+    def test_that_companyList_url_with_user_returns_200(self):
+        request = self.factory.post('/companyList/', {'searchString': 'v'})
+        request.session = self.session
+        request.session['user'] = self.user
+        request.user = self.user
+        response = companyList(request)
+        self.assertEquals(response.status_code, 200)
+
+    def test_that_companyList_url_with_anon_user_returns_403(self):
+        request = self.factory.post('/companyList/', {'searchString': 'v'})
+        request.session = self.session
+        request.session['user'] = self.anon_user
+        request.user = self.anon_user
+        try:
+            response = companyList(request)
+            self.assertEquals('Anonymous User', 'Accessed mark_as_barista url')
+        except (PermissionDenied):
+            self.assertEquals('Permission was denied', 'Permission was denied')
+
+    def test_that_view_profile_url_with_user_returns_200(self):
+        request = self.factory.get('/Profile/')
+        request.session = self.session
+        request.session['user'] = self.user
+        request.user = self.user
+        response = view_profile(request)
+        self.assertEquals(response.status_code, 200)
+
+# Incomplete Test
+    # def test_that_view_profile_url_with_user_invalid_post_returns_default_image_and_returns_200(self):
+        # request = self.factory.post('/Profile/', {})
+        # request.session = self.session
+        # request.session['user'] = self.user
+        # request.user = self.user
+        # response = view_profile(request)
+        # self.assertEquals(response.status_code, 200)
+
+    def test_that_view_profile_url_with_anon_user_returns_403(self):
+        request = self.factory.get('/Profile/')
+        request.session = self.session
+        request.session['user'] = self.anon_user
+        request.user = self.anon_user
+        try:
+            response = view_profile(request)
+            self.assertEquals('Anonymous User', 'Accessed mark_as_barista url')
+        except (PermissionDenied):
+            self.assertEquals('Permission was denied', 'Permission was denied')
+
     def test_that_improper_url_returns_404(self):
         response = self.client.get('/bagels_and_hot_dogs')
         self.assertEquals(response.status_code, 404)
         
-    # def test_that_baristasCheck_url_returns_200(self):
-    #     request = self.factory.get('/baristasCheck/')
-    #     request.user = self.user
-    #     self.assertEquals(response.status_code, 200)
-        
-    # def test_that_favorites_url_returns_200(self):
-    #     request = self.factory.get('/favorites/')
-    #     request.user = self.user
-    #     self.assertEquals(response.status_code, 200)
-        
-    # def test_that_updateFavs_url_returns_200(self):
-    #     request = self.factory.get('/updateFavs/')
-    #     request.user = self.user
-    #     self.assertEquals(response.status_code, 200)
-        
-    # def test_that_baristaList_url_returns_200(self):
-    #     request = self.factory.get('/baristaList/')
-    #     request.user = self.user
-    #     self.assertEquals(response.status_code, 200)
-        
-    # def test_that_companyList_url_returns_200(self):
-    #     request = self.factory.get('/companyList/')
-    #     request.user = self.user
-    #     self.assertEquals(response.status_code, 200)
-        
+# Incomplete Test
     # def test_that_register_url_returns_200(self):
     #     request = self.factory.get('/register/')
     #     request.user = self.user
     #     self.assertEquals(response.status_code, 200)
-        
-    # def test_that_home_url_returns_200(self):
-    #     request = self.factory.get('/home/')
-    #     request.user = self.user
-    #     self.assertEquals(response.status_code, 200)
-        
-    # def test_that_home_1_url_returns_200(self):
-    #     request = self.factory.get('/home/1/')
-    #     request.user = self.user
-    #     self.assertEquals(response.status_code, 200)
-        
-    # def test_that_Profile_url_returns_200(self):
-    #     request = self.factory.get('/Profile/')
-    #     request.user = self.user
-    #     self.assertEquals(response.status_code, 200)
-
-    # def test_that_AdminPanel_url_returns_200(self):
-    #     request = self.factory.get('/AdminPanel/')
-    #     request.user = self.user
-    #     self.assertEquals(response.status_code, 200)
-
-        
-
-# def get_all_urls():
-#     return ['/',
-#             '/logout/',
-#             '/checkIn',
-#             '/checkOut/',
-#             '/baristas/',
-#             '/baristasCheck/',
-#             '/favorites/',
-#             '/updateFavs/',
-#             '/baristaList/',
-#             '/companyList/',
-#             '/register/',
-#             # This view requires a company ID and will need to have a valid company, set to 1 here.
-#             '/home/1/',
-#             '/home/',
-#             '/Profile/',
-#             '/AdminPanel/'
-#             ]
