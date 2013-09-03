@@ -227,6 +227,36 @@ class BroadViewTest(TestCase):
         except (PermissionDenied):
             self.assertEquals('Permission was denied', 'Permission was denied')
 
+    def test_that_baristasCheck_url_with_user_with_userType_Consumer_returns_200_and_changes_UserType_to_Barista(self):
+        request = self.factory.get('/baritasCheck/')
+        request.session = self.session
+        request.session['user'] = self.user
+        request.user = self.user
+        response = mark_as_barista(request)
+        self.assertEquals(response.status_code, 200)
+        self.assertEquals(request.session['user'].get_profile().userType, 'Barista')
+
+    def test_that_baristasCheck_with_user_with_userType_Barista_returns_200(self):
+        # This will occur if a user who just used the mark_as_barista button
+        # resubmits the same page request
+        request = self.factory.get('/baritasCheck/')
+        request.session = self.session
+        request.session['user'] = self.barista
+        request.user = self.barista
+        response = mark_as_barista(request)
+        self.assertEquals(response.status_code, 200)
+
+    def test_that_baristasCheck_with_anon_user_returns_403(self):
+        request = self.factory.get('/baritasCheck/')
+        request.session = self.session
+        request.session['user'] = self.anon_user
+        request.user = self.anon_user
+        try:
+            response = mark_as_barista(request)
+            self.assertEquals('Anonymous User', 'Accessed mark_as_barista url')
+        except (PermissionDenied):
+            self.assertEquals('Permission was denied', 'Permission was denied')
+
     def test_that_improper_url_returns_404(self):
         response = self.client.get('/bagels_and_hot_dogs')
         self.assertEquals(response.status_code, 404)
