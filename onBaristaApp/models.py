@@ -174,7 +174,7 @@ class checkIn(models.Model):
 
     def __unicode__(self):
         if self.checkedin:
-            checkinDesc = self.showBarista() + " checked in on " 
+            checkinDesc = self.showBarista() + " checked in on "
         else:
             checkinDesc = self.showBarista() + " checked out on "
         return unicode(checkinDesc)
