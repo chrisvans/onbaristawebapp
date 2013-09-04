@@ -75,7 +75,7 @@ $('.dropdown-menu a').live('click',function(e) {
             <div style='float:right'>
               <ul class="nav nav-pills" style='display:inline'>
 
-                <li id="profpic"><img src='/static/Media/{{user.get_mug}}' style='width:45px; display:inline' class="img-rounded"></li>
+                <li id="profpic"><img src='/static/Media/{{user.get_temporary_mug}}' style='width:45px; display:inline' class="img-rounded"></li>
 
                 <li class="dropdown" style='display:inline'>
                   <a class="dropdown-toggle" data-toggle="dropdown" href="#">
@@ -110,7 +110,7 @@ $('.dropdown-menu a').live('click',function(e) {
 
         {% if user.favBaristaObj %}
 
-        <img src='/static/Media/{{user.favBaristaObj.get_mug}}' style='width:35px; display:inline' class="img-rounded"> &nbsp;&nbsp;&nbsp;{{user.favBaristaObj.full_name}} 
+        <img src='/static/Media/{{user.favBaristaObj.get_temporary_mug}}' style='width:35px; display:inline' class="img-rounded"> &nbsp;&nbsp;&nbsp;{{user.favBaristaObj.full_name}} 
         {% if isCheckedIn %}
         is checked in at <a href="{% url 'onBaristaApp:companyHome' checkIn.location.companyID.pk %}">{{checkIn.location.companyID}}</a>
         {% else %}
