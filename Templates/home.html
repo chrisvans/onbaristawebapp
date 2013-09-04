@@ -8,7 +8,7 @@
 
 {% for company in companies %}
 <div id="tryme">
-	<div class="hero-unit" id="homediv">
+	<div class="hero-unit" id="homediv" style="background:url(/static/images/ethan.jpg);">
       {% for location in company.get_locations %}
         <span><strong>{{ location }}</strong></span><br>
         {% if location.get_checkins %}
@@ -23,7 +23,7 @@
 			    {% endif %}
 
 			  {% endlocaltime %}
-
+       
           {% endfor %}
         {% else %}
           <ul>There are no Baristas checked in at this location</ul>

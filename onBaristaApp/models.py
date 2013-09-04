@@ -10,6 +10,7 @@ import datetime
 class Company(models.Model):
     companyName = models.CharField(max_length=200)
     companyContact = models.CharField(max_length=200, blank=True)
+    background_image = models.CharField(max_length=200, blank=True)
 
     def __unicode__(self):
         return unicode(self.companyName)
@@ -34,7 +35,6 @@ class companyLocation(models.Model):
                             choices = state_choices,
                             default='MA', blank=True)
     zipCode = models.CharField(max_length= 5, blank=True)
-    background_image = models.CharField(max_length=200, blank=True)
 
     def __unicode__(self):
         return unicode(self.address_string())
