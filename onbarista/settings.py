@@ -12,7 +12,7 @@ def get_env_variable(env_variable):
         raise ImproperlyConfigured(error_msg)
 
 PROJECT_DIR = Path(__file__).ancestor(3)
-PROJECT_PATH = os.path.dirname(os.path.abspath(__file__))
+# PROJECT_PATH = os.path.dirname(os.path.abspath(__file__))
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
@@ -66,8 +66,8 @@ USE_TZ = True
 
 # Absolute filesystem path to the directory that will hold user-uploaded files.
 # Example: "/home/media/media.lawrence.com/media/"
-# MEDIA_BASE_DIR = os.path.dirname(os.path.abspath('__file__'))
-# MEDIA_ROOT = MEDIA_BASE_DIR + '/onBaristaApp/static/Media/'
+MEDIA_BASE_DIR = os.path.dirname(os.path.abspath('__file__'))
+MEDIA_ROOT = MEDIA_BASE_DIR + '/onBaristaApp/static/Media/'
 
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash.

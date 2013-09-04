@@ -33,7 +33,8 @@ class companyLocation(models.Model):
     state = models.CharField(max_length=2,
                             choices = state_choices,
                             default='MA', blank=True)
-    zipCode= models.CharField(max_length= 5, blank=True)
+    zipCode = models.CharField(max_length= 5, blank=True)
+    background_image = models.CharField(max_length=200, blank=True)
 
     def __unicode__(self):
         return unicode(self.address_string())
