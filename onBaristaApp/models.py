@@ -93,6 +93,7 @@ class UserProfile(models.Model):
     objects = UserProfileManager()
     user = models.OneToOneField(User)
     mug = models.FileField(upload_to='Mugs')
+    temporary_mug = models.CharField(max_length=100, default=None, null=True, blank=True)
     isCompanyAdmin = models.BooleanField(default=False)
     full_name = models.CharField(max_length=50, default='', null=True, blank=True)
     user_type_choices = (
@@ -144,6 +145,11 @@ class UserProfile(models.Model):
         if not self.mug:
             return 'Mugs/defaultcup.jpg'
         return str(self.mug)
+
+    def get_temporary_mug(self):
+        if not self.temporary_mug:
+            return 'Mugs/defaultcup.jpg'
+        return unicode(self.temporary_mug)
 
     def get_self_checkIn(self):
         if self.usercheckedin:
