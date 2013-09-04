@@ -15,9 +15,10 @@
 {% if user.userType == 'Barista' %}
 
 	{% for company in companies %}
-      <div class="hero-unit">
+      <div class="hero-unit" style="background:url(/static/images/{{company.background_image}});background-size:cover;background-position:center;">
 
       	{% for location in company.get_locations %}
+        <div class="hero-unit">
 		<span><strong> {{ location }} </strong></span><br>
 		&nbsp;
 
@@ -36,7 +37,7 @@
 		  </form>
 
 		{% endif %}
-
+        </div>
         {% endfor %}
 	  </div>
 

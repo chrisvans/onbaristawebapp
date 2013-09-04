@@ -125,9 +125,7 @@ def checkOutPost(request):
     # Change check in object to reflect checked out status.
     check_in = checkIn.objects.get(barista = user)
     check_in.check_out_user()
-    user.save()
-    request.session['user'] = User.objects.get(username = user.username)
-
+    UserProfile.objects.check_out_user(user, request)
     return HttpResponseRedirect(reverse('onBaristaApp:baristas', kwargs={'companyID':location.companyID.pk}))
 
 def mark_as_barista(request):

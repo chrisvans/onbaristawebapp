@@ -8,13 +8,13 @@
 
 {% for company in companies %}
 <div id="tryme">
-	<div class="hero-unit" id="homediv" style="background:url(/static/images/ethan.jpg);">
+	<div class="hero-unit" id="homediv" style="background:url(/static/images/{{company.background_image}});background-size:cover;background-position:center;">
       {% for location in company.get_locations %}
+        <div class="hero-unit">
         <span><strong>{{ location }}</strong></span><br>
         {% if location.get_checkins %}
 
           {% for check_in_object in location.get_checkins %}
-
 			  {% localtime on %}
 			    {% if check_in_object.get_barista_mug %}
 				  <ul><img src='/static/Media/{{ check_in_object.get_barista_mug }}' style='width:50px;' class="img-polaroid"> &nbsp;{{ check_in_object }}{{ check_in_object.get_tzobject }}</ul>
@@ -23,11 +23,11 @@
 			    {% endif %}
 
 			  {% endlocaltime %}
-       
           {% endfor %}
         {% else %}
           <ul>There are no Baristas checked in at this location</ul>
         {% endif %}
+      </div>
 	  {% endfor %}
 	</div>
 </div>

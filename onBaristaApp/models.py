@@ -81,6 +81,14 @@ class UserProfileManager(models.Manager):
         userdetails.save()
         request.session['user'] = User.objects.get(username = user.username)
 
+    def check_out_user(self, user, request):
+        # Set user's usercheckedin flag to False, and then refresh the current session user.
+        userdetails = self.get(user = user) # user.get_profile()
+        userdetails.usercheckedin = False
+        user.save()
+        userdetails.save()
+        request.session['user'] = User.objects.get(username = user.username)
+
 class UserProfile(models.Model):
     objects = UserProfileManager()
     user = models.OneToOneField(User)
@@ -201,9 +209,6 @@ class checkIn(models.Model):
     def check_out_user(self):
         self.outTime = timezone.now()
         self.checkedin = False
-        userdetails = self.barista.get_profile()
-        userdetails.usercheckedin = False
-        userdetails.save()
         self.save()
 
 
