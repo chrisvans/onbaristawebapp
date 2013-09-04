@@ -85,7 +85,7 @@ LOGIN_URL = '/login/'
 
 # Additional locations of static files
 STATICFILES_DIRS = (
-    os.path.join(PROJECT_PATH, 'static'),
+    # os.path.join(PROJECT_PATH, 'static'),
 )
 
 # List of finder classes that know how to find static files in
