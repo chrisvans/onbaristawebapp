@@ -12,7 +12,7 @@ def get_env_variable(env_variable):
         raise ImproperlyConfigured(error_msg)
 
 PROJECT_DIR = Path(__file__).ancestor(3)
-
+PROJECT_PATH = os.path.dirname(os.path.abspath(__file__))
 DEBUG = False
 TEMPLATE_DEBUG = DEBUG
 
@@ -84,7 +84,7 @@ LOGIN_URL = '/login/'
 
 # Additional locations of static files
 STATICFILES_DIRS = (
-
+    os.path.join(PROJECT_PATH, 'static'),
 )
 
 # List of finder classes that know how to find static files in
@@ -158,6 +158,12 @@ INSTALLED_APPS = (
     'gunicorn',
     'django_gevent_deploy',
     'gevent',
+    'psycopg2',
+    'dj_database_url',
+    'dj_static',
+    'boto',
+
+
 )
 
 # Adds in custom profile for Django's User class model
