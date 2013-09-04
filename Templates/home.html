@@ -16,8 +16,8 @@
 
           {% for check_in_object in location.get_checkins %}
 			  {% localtime on %}
-			    {% if check_in_object.get_barista_mug %}
-				  <ul><img src='/static/Media/{{ check_in_object.get_barista_mug }}' style='width:50px;' class="img-polaroid"> &nbsp;{{ check_in_object }}{{ check_in_object.get_tzobject }}</ul>
+			    {% if check_in_object.get_barista_temporary_mug %}
+				  <ul><img src='/static/Media/{{ check_in_object.get_barista_temporary_mug }}' style='width:50px;' class="img-polaroid"> &nbsp;{{ check_in_object }}{{ check_in_object.get_tzobject }}</ul>
 			    {% else %}
 			      <ul><span>{{ check_in_object }}</span><span>{{ check_in_object.get_tzobject }}</span></ul>
 			    {% endif %}

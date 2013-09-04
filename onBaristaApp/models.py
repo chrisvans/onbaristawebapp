@@ -203,6 +203,10 @@ class checkIn(models.Model):
         baristadetails = self.barista.get_profile()
         return baristadetails.get_mug()
 
+    def get_barista_temporary_mug(self):
+        baristadetails = self.barista.get_profile()
+        return baristadetails.get_temporary_mug()
+
     def get_tzobject(self):
         if self.checkedin:
             timezone_corrected_time = localtime(self.inTime)
