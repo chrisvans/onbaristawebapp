@@ -13,7 +13,7 @@ def get_env_variable(env_variable):
 
 PROJECT_DIR = Path(__file__).ancestor(3)
 
-DEBUG = False
+DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
 TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'

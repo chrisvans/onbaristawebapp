@@ -1,1 +1,1 @@
-web: gunicorn onbaristawebapp.wsgi
+web: python manage.py run_gunicorn -b 0.0.0.0:\8000 -w 9 -k gevent --max-requests 250 --preload

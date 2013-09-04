@@ -13,8 +13,14 @@ def get_env_variable(env_variable):
 
 PROJECT_DIR = Path(__file__).ancestor(3)
 
-DEBUG = True
+DEBUG = False
 TEMPLATE_DEBUG = DEBUG
+
+# Honor the 'X-Forwarded-Proto' header for request.is_secure()
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+# Allow all host headers
+ALLOWED_HOSTS = ['*']
 
 ADMINS = (
     ('chris', 'chrisvanschyndel@gmail.com'),
@@ -65,7 +71,7 @@ MEDIA_ROOT = MEDIA_BASE_DIR + '/onBaristaApp/static/Media/'
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash.
 # Examples: "http://media.lawrence.com/media/", "http://example.com/media/"
-MEDIA_URL = '/Media/'
+# MEDIA_URL = '/Media/'
 
 # Absolute path to the directory static files should be collected to.
 STATIC_ROOT = ''
@@ -90,6 +96,16 @@ STATICFILES_FINDERS = (
 )
 
 SECRET_KEY = get_env_variable('DJANGO_SECRET_KEY')
+
+AWS_ACCESS_KEY_ID = get_env_variable('AWS_ACCESS_KEY_ID')
+AWS_SECRET_ACCESS_KEY = get_env_variable('AWS_SECRET_ACCESS_KEY')
+AWS_STORAGE_BUCKET_NAME = get_env_variable('S3_BUCKET_DJANGO')
+
+STATICFILES_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
+
+AWS_URL = 'http://' + AWS_STORAGE_BUCKET_NAME + '.s3.amazonaws.com/'
+MEDIA_URL = AWS_URL
 
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
@@ -139,6 +155,9 @@ INSTALLED_APPS = (
     'django_extensions',
     'discover_runner',
     'unipath',
+    'gunicorn',
+    'django_gevent_deploy',
+    'gevent',
 )
 
 # Adds in custom profile for Django's User class model
