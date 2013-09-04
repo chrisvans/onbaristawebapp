@@ -275,8 +275,8 @@ class UserAndUserProfileTest(TestCase):
         self.assertEquals(self.userdetails.get_mug(), 'cheesecake.jpg')
 
     def test_get_mug_returns_default_image_when_it_doesnt_exist(self):
-        self.userdetails.mug = 'U1.jpg'
-        self.assertEquals(self.userdetails.get_mug(), None)
+        self.userdetails.mug = None
+        self.assertEquals(self.userdetails.get_mug(), 'Mugs/defaultcup.jpg')
 
     def test_get_self_checkin_success_returns_user(self):
         self.assertEquals(self.baristadetails.get_self_checkIn(), checkIn.objects.get(barista=self.barista))

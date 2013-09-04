@@ -132,9 +132,9 @@ class UserProfile(models.Model):
         self.save()
 
     def get_mug(self):
-        if self.mug == 'U1.jpg':
-            return None
-        return self.mug
+        if not self.mug:
+            return 'Mugs/defaultcup.jpg'
+        return str(self.mug)
 
     def get_self_checkIn(self):
         if self.usercheckedin:
