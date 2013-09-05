@@ -1,6 +1,5 @@
 from django.http import HttpResponse, Http404, HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404, redirect
-from django.conf import settings
 from django.core.exceptions import PermissionDenied
 from django.core.urlresolvers import reverse
 from django.contrib.auth import authenticate, login, logout
@@ -100,7 +99,9 @@ def login_view(request):
                 login(request, user)
                 request.session['user'] = user
                 userdetails = user.get_profile()
-                request.session['django_timezone'] = pytz.timezone(userdetails.timezone)
+                user_timezone = pytz.timezone(userdetails.timezone)
+                request.session['django_timezone'] = user_timezone
+                timezone.activate(user_timezone)
                 # Prioritize favorite company in index list of companies
                 return companyHome(request, userdetails.get_favorite_company_id())
 
