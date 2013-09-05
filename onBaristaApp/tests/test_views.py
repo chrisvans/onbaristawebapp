@@ -98,6 +98,19 @@ class BroadViewTest(TestCase):
         self.userdetails = self.user.get_profile()
         create_checkin_and_association(barista=self.barista, company=self.company, checkedin=True)
         self.checkin = checkIn.objects.filter(is_active=True).get(barista=self.barista)
+        create_barista_and_details(
+            username='quayle', 
+            password='theozman', 
+            email='quayle@cleric.com', 
+            usercheckedin=False, 
+            first_name='quayle', 
+            last_name='thecleric', 
+            mug='alakazam.jpg'
+            )
+        self.barista2 = User.objects.get(username='quayle')
+        self.barista2details = self.barista.get_profile()
+        self.barista2details.employer_id = 1
+        self.barista2details.save()
 
     def test_that_login_view_get_with_no_user_returns_200(self):
         request = self.factory.get('/')
@@ -367,6 +380,25 @@ class BroadViewTest(TestCase):
     def test_that_improper_url_returns_404(self):
         response = self.client.get('/bagels_and_hot_dogs')
         self.assertEquals(response.status_code, 404)
+
+    def test_that_improper_user_accessing_admin_returns_403(self):
+        request = self.factory.get('/AdminPanel/')
+        request.session = self.session
+        request.session['user'] = self.user
+        request.user = self.user
+        try:
+            response = admin_panel(request)
+            self.assertEquals('Non-Admin User', 'Accessed Admin Panel')
+        except (PermissionDenied):
+            self.assertEquals('Permission was denied', 'Permission was denied')
+
+    def test_that_barista_user_viewing_baristas_shows_correct_feed_order_and_returns_200(self):
+        request = self.factory.get('/baristas/1')
+        request.session = self.session
+        request.session['user'] = self.barista2
+        request.user = self.barista2
+        response = companyBaristas(request)
+        self.assertEquals(response.status_code, 200)
         
 # Incomplete Test
     # def test_that_register_url_returns_200(self):
