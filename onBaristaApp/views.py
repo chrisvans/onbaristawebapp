@@ -31,7 +31,12 @@ class ViewManager(object):
         if not userdetails.isCompanyAdmin and view_name == 'Admin':
             raise PermissionDenied()
 
-        if userdetails.favCompany:
+        if companyID != '0':
+            # This list conversion from queryset may be too expensive, find a more effecient way to do this.
+            # This fork brings the favorite barista's current checkin company to the top of the feed.
+            companies = list(Company.objects.all())
+            companies.insert(0, companies.pop(companies.index(Company.objects.get(id=companyID))))
+        elif userdetails.favCompany:
             # This list conversion from queryset may be too expensive, find a more effecient way to do this.
             # This fork brings the favorite company to the top of the feed.
             companies = list(Company.objects.all())
@@ -102,7 +107,7 @@ def companyHome(request, companyID='0'):
     # Homepage view.
     # The company ID being passed here is the user's favorite company,
     # populate this to the top of the feed.
-    manager_dict, user, userdetails = ViewManager.view_manager(request, 'Home')
+    manager_dict, user, userdetails = ViewManager.view_manager(request, 'Home', companyID)
 
     local_dict = {
                 }
