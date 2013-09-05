@@ -106,6 +106,7 @@ class UserProfile(models.Model):
     favBaristaObj = models.ForeignKey('self', null=True, blank=True)
     usercheckedin = models.BooleanField(default=False)
     employer_id = models.PositiveIntegerField(default=0)
+    timezone = models.CharField(max_length=50, default='America/New_York')
 
     def __unicode__(self):
         return unicode(self.userType + ": " + self.user.first_name + " " + self.user.last_name)
