@@ -31,21 +31,33 @@ class ViewManager(object):
         if not userdetails.isCompanyAdmin and view_name == 'Admin':
             raise PermissionDenied()
 
-        if userdetails.usercheckedin and view_name == 'Baristas':
+        # This determines how the company feed data is represented in each view.
+        if view_name == 'Baristas' and userdetails.usercheckedin:
             # If the current user is checked in, and viewing the barista check in page,
             # only show the company that they can check out from.
             companies = Company.objects.filter(id=checkIn.objects.get(barista=user).location.companyID.pk)
-        elif companyID != '0':
+
+        elif view_name == 'Baristas' and userdetails.employer_id != 0:
+            # Brings the most recent checkin company to the top of the feed.
+            # employer_id is set when a barista checks in at a company.
             # This list conversion from queryset may be too expensive, find a more effecient way to do this.
-            # This fork brings the favorite barista's current checkin company to the top of the feed.
+            companies = list(Company.objects.all())
+            companies.insert(0, companies.pop(companies.index(Company.objects.get(id=userdetails.employer_id))))
+        
+        elif companyID != '0':
+            # Brings the favorite barista's current checkin company to the top of the feed.
+            # Company is only not '0' when the favorite barista navbar link is clicked.
             companies = list(Company.objects.all())
             companies.insert(0, companies.pop(companies.index(Company.objects.get(id=companyID))))
+        
         elif userdetails.favCompany:
-            # This list conversion from queryset may be too expensive, find a more effecient way to do this.
-            # This fork brings the favorite company to the top of the feed.
+            # Brings the favorite company to the top of the feed.
             companies = list(Company.objects.all())
             companies.insert(0, companies.pop(companies.index(userdetails.favCompany)))
+        
         else:
+            # Display all companies.  This will need to change to be more dynamic when there are 
+            # more than 20 companies.  Implement a search bar at this point.
             companies = Company.objects.all()
 
         # Create the default parameters that most views use
@@ -128,7 +140,8 @@ def checkInPost(request):
     # Deletes the old checkIn object if there is one, and creates a new one, saving it.
     checkIn.create(user, location)
     # Edit and save user details to reflect the checked-in status.
-    UserProfile.objects.check_in_user(user, request)
+    companyID = location.companyID.pk
+    UserProfile.objects.check_in_user(user, request, companyID)
     return HttpResponseRedirect(reverse('onBaristaApp:baristas', kwargs={'companyID':location.companyID.pk}))
 
 def checkOutPost(request):

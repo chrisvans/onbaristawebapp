@@ -72,10 +72,11 @@ class companyLocation(models.Model):
 # last_login, and date_joined - as well as check_password(raw_password) and set_password(raw_password)
 
 class UserProfileManager(models.Manager):
-    def check_in_user(self, user, request):
+    def check_in_user(self, user, request, companyID):
         # Set user's usercheckedin flag to True, and then refresh the current session user.
         userdetails = self.get(user = user) # user.get_profile()
         userdetails.usercheckedin = True
+        userdetails.employer_id = companyID
         user.save()
         userdetails.save()
         request.session['user'] = User.objects.get(username = user.username)
@@ -103,6 +104,7 @@ class UserProfile(models.Model):
     favCompany = models.ForeignKey(Company, null=True, blank=True)
     favBaristaObj = models.ForeignKey('self', null=True, blank=True)
     usercheckedin = models.BooleanField(default=False)
+    employer_id = models.PositiveIntegerField(default=0)
 
     def __unicode__(self):
         return unicode(self.userType + ": " + self.user.first_name + " " + self.user.last_name)

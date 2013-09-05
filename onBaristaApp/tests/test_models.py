@@ -167,14 +167,24 @@ class UserProfileManagerTest(TestCase):
             )
         self.client = Client()
         self.user = User.objects.get(username='chris')
+        create_company_and_associated_location(
+            companyName="Voltage", 
+            companyContact="Lucy", 
+            street="275 3rd street", 
+            city="Cambridge", 
+            state="Massachusetts", 
+            zipCode="21432"
+            )
+        self.company = Company.objects.get(companyName="Voltage")
+        self.company_location = companyLocation.objects.get(zipCode="21432")
 
     def test_check_in_user_checks_in_user(self):
-        UserProfile.objects.check_in_user(self.user, self.client)
+        UserProfile.objects.check_in_user(self.user, self.client, self.company_location.companyID.pk)
         userdetails = self.user.get_profile()
         self.assertEquals(userdetails.usercheckedin, True)
 
     def test_check_in_user_saves_user_checkinflag(self):
-        UserProfile.objects.check_in_user(self.user, self.client)
+        UserProfile.objects.check_in_user(self.user, self.client, self.company_location.companyID.pk)
         userdetails = self.user.get_profile()
         self.assertEquals(userdetails.usercheckedin, User.objects.get(username=self.user.username).get_profile().usercheckedin)
 
