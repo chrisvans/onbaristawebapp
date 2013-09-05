@@ -99,6 +99,7 @@ def login_view(request):
                 login(request, user)
                 request.session['user'] = user
                 userdetails = user.get_profile()
+                request.session['django_timezone'] = userdetails.timezone
                 # Prioritize favorite company in index list of companies
                 return companyHome(request, userdetails.get_favorite_company_id())
 
@@ -273,7 +274,11 @@ def set_timezone(request):
     user = ViewManager.login_handler(request)
 
     if request.method == 'POST':
-        request.session['django_timezone'] = pytz.timezone(request.POST['timezone'])
+        new_timezone = pytz.timezone(request.POST['timezone'])
+        request.session['django_timezone'] = new_timezone
+        userdetails = user.get_profile()
+        userdetails.timezone = new_timezone
+        userdetails.save()
         return redirect('/Profile/')
 
     else:
