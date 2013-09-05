@@ -121,6 +121,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
+    'onBaristaApp.timezone_middleware.TimezoneMiddleware',
     # Uncomment the next line for simple clickjacking protection:
     # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
@@ -163,8 +164,7 @@ INSTALLED_APPS = (
     'dj_database_url',
     'dj_static',
     'boto',
-
-
+    'pytz',
 )
 
 # Adds in custom profile for Django's User class model

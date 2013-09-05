@@ -131,6 +131,7 @@ INSTALLED_APPS = (
     'unipath',
     'selenium',
     'django_nose',
+    'pytz',
 )
 
 # Adds in custom profile for Django's User class model

@@ -1,16 +1,17 @@
 from django.http import HttpResponse, Http404, HttpResponseRedirect
-from django.template import Context, loader
 from django.shortcuts import render, get_object_or_404, redirect
+from django.core.exceptions import PermissionDenied
 from django.core.urlresolvers import reverse
-from django.utils.timezone import utc, get_current_timezone
-from django.utils import timezone
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from django.core.exceptions import PermissionDenied
+from django.template import Context, loader
+from django.utils.timezone import utc, get_current_timezone
+from django.utils import timezone
 from .models import checkIn, companyLocation, Company, UserProfile, UserProfileManager
 from .forms import MugForm
 import datetime
+import pytz
 
 # Stick into a view helper module
 class ViewManager(object):
@@ -223,6 +224,8 @@ def view_profile(request):
         form = MugForm()
     manager_dict['form'] = form
     manager_dict['user'] = userdetails
+    manager_dict['timezones'] = pytz.common_timezones
+        # return render(request, 'profile.html', {'timezones': pytz.common_timezones})
     request.session['user'] = user
     return render(request, 'profile.html', manager_dict)
 
@@ -264,3 +267,14 @@ def register(request):
 
     else:
         return render(request, 'register.html')
+
+
+def set_timezone(request):
+    user = ViewManager.login_handler(request)
+
+    if request.method == 'POST':
+        request.session['django_timezone'] = pytz.timezone(request.POST['timezone'])
+        return redirect('/Profile/')
+
+    else:
+        return render(request, 'login.html')
