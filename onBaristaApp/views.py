@@ -35,7 +35,7 @@ class ViewManager(object):
         if view_name == 'Baristas' and userdetails.usercheckedin:
             # If the current user is checked in, and viewing the barista check in page,
             # only show the company that they can check out from.
-            companies = Company.objects.filter(id=checkIn.objects.get(barista=user).location.companyID.pk)
+            companies = Company.objects.filter(id=checkIn.objects.filter(is_active=True).get(barista=user).location.companyID.pk)
 
         elif view_name == 'Baristas' and userdetails.employer_id != 0:
             # Brings the most recent checkin company to the top of the feed.
@@ -151,7 +151,7 @@ def checkOutPost(request):
     ViewManager.is_barista(user)
     location = companyLocation.objects.get(pk=request.POST['location'])
     # Change check in object to reflect checked out status.
-    check_in = checkIn.objects.get(barista = user)
+    check_in = checkIn.objects.filter(is_active=True).get(barista = user)
     check_in.check_out_user()
     UserProfile.objects.check_out_user(user, request)
     return HttpResponseRedirect(reverse('onBaristaApp:baristas', kwargs={'companyID':location.companyID.pk}))

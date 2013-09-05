@@ -97,7 +97,7 @@ class BroadViewTest(TestCase):
         self.user = User.objects.get(username='chris')
         self.userdetails = self.user.get_profile()
         create_checkin_and_association(barista=self.barista, company=self.company, checkedin=True)
-        self.checkin = checkIn.objects.get(barista=self.barista)
+        self.checkin = checkIn.objects.filter(is_active=True).get(barista=self.barista)
 
     def test_that_login_view_get_with_no_user_returns_200(self):
         request = self.factory.get('/')

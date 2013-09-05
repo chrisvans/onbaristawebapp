@@ -224,7 +224,7 @@ class UserAndUserProfileTest(TestCase):
         self.user = User.objects.get(username='chris')
         self.userdetails = self.user.get_profile()
         create_checkin_and_association(barista=self.barista, company=self.company, checkedin=True)
-        self.checkin = checkIn.objects.get(barista=self.barista)
+        self.checkin = checkIn.objects.filter(is_active=True).get(barista=self.barista)
         create_barista_and_details(
             username='quayle', 
             password='popcorn', 
@@ -237,7 +237,7 @@ class UserAndUserProfileTest(TestCase):
         self.barista2 = User.objects.get(username='quayle')
         self.barista2details = self.barista2.get_profile()
         create_checkin_and_association(barista=self.barista2, company=self.company, checkedin=False)
-        self.checkin2 = checkIn.objects.get(barista=self.barista2)
+        self.checkin2 = checkIn.objects.filter(is_active=True).get(barista=self.barista2)
         create_user_and_details(
             username='aprice', 
             password='bagel', 
@@ -289,7 +289,7 @@ class UserAndUserProfileTest(TestCase):
         self.assertEquals(self.userdetails.get_mug(), 'Mugs/defaultcup.jpg')
 
     def test_get_self_checkin_success_returns_user(self):
-        self.assertEquals(self.baristadetails.get_self_checkIn(), checkIn.objects.get(barista=self.barista))
+        self.assertEquals(self.baristadetails.get_self_checkIn(), checkIn.objects.filter(is_active=True).get(barista=self.barista))
 
     def test_get_self_checkin_fail_returns_None(self):
         self.assertEquals(self.userdetails.get_self_checkIn(), None)
@@ -325,7 +325,7 @@ class checkInTest(TestCase):
         self.barista = User.objects.get(username='jimmy')
         self.baristadetails = self.barista.get_profile()
         create_checkin_and_association(barista=self.barista, company=self.company, checkedin=True)
-        self.checkin = checkIn.objects.get(barista=self.barista)
+        self.checkin = checkIn.objects.filter(is_active=True).get(barista=self.barista)
         create_user_and_details(
             username='chris', 
             password='bagel', 
@@ -350,7 +350,7 @@ class checkInTest(TestCase):
         self.barista2 = User.objects.get(username='quayle')
         self.barista2details = self.barista2.get_profile()
         create_checkin_and_association(barista=self.barista2, company=self.company, checkedin=False)
-        self.checkin2 = checkIn.objects.get(barista=self.barista2)
+        self.checkin2 = checkIn.objects.filter(is_active=True).get(barista=self.barista2)
 
     def test_unicode_checked_in_fork(self):
         self.assertEquals(type(u'a'), type(self.checkin.__unicode__()))
@@ -372,7 +372,7 @@ class checkInTest(TestCase):
 
     def test_check_out_user_changes_checkedin_state(self):    
         self.checkin.check_out_user()
-        self.assertEquals(checkIn.objects.get(barista=User.objects.get(username='jimmy')).checkedin, False)
+        self.assertEquals(checkIn.objects.filter(is_active=True).get(barista=User.objects.get(username='jimmy')).checkedin, False)
 
 
 

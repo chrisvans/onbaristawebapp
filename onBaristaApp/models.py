@@ -43,11 +43,11 @@ class companyLocation(models.Model):
         return unicode(address)
 
     def get_checkins(self):
-        return checkIn.objects.filter(location = self)
+        return checkIn.objects.filter(is_active=True).filter(location = self)
 
     def get_checkin_out(self):
         # Method returns all checked out baristas at this location
-        location_checkins = checkIn.objects.filter(location = self)
+        location_checkins = checkIn.objects.filter(is_active=True).filter(location = self)
         barista_list = []
         for checkin in location_checkins:
             if not checkin.checkedin:
@@ -57,7 +57,7 @@ class companyLocation(models.Model):
 
     def get_checkin_in(self):
         # Method returns all checked in baristas at this location
-        location_checkins = checkIn.objects.filter(location = self)
+        location_checkins = checkIn.objects.filter(is_active=True).filter(location = self)
         barista_list = []
         for checkin in location_checkins:
             if checkin.checkedin:
@@ -116,7 +116,7 @@ class UserProfile(models.Model):
         # Returns true if this user's favorite barista is checked in.
         if self.favBaristaObj:
             try:
-                checkInObj = checkIn.objects.get(barista = self.favBaristaObj.user)
+                checkInObj = checkIn.objects.filter(is_active=True).get(barista = self.favBaristaObj.user)
             except (KeyError,checkIn.DoesNotExist):
                 return False
             if checkInObj and checkInObj.checkedin:
@@ -127,8 +127,8 @@ class UserProfile(models.Model):
         # Returns the favorite barista's user object if it exists, otherwise returns an empty string.
         if self.favBaristaObj:
             try:
-                checkIn.objects.get(barista = self.favBaristaObj.user)
-                return checkIn.objects.get(barista = self.favBaristaObj.user)
+                checkIn.objects.filter(is_active=True).get(barista = self.favBaristaObj.user)
+                return checkIn.objects.filter(is_active=True).get(barista = self.favBaristaObj.user)
             except (KeyError,checkIn.DoesNotExist):
                 # This needs to be a proper error, as this shows that an improper field was saved
                 return 'error'
@@ -154,7 +154,7 @@ class UserProfile(models.Model):
 
     def get_self_checkIn(self):
         if self.usercheckedin:
-            return checkIn.objects.get(barista=self.user)
+            return checkIn.objects.filter(is_active=True).get(barista=self.user)
         else:
             return None
 
@@ -228,7 +228,7 @@ class checkIn(models.Model):
     @classmethod
     def create(cls, barista, location):
         try:
-            old_checkin_object = checkIn.objects.get(barista = barista)
+            old_checkin_object = checkIn.objects.filter(is_active=True).get(barista = barista)
             # If there is already a checkin object, delete it to reduce errors.
             # Also takes care of a checked out object.
             # Delete the checked out entry.
