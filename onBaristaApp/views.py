@@ -51,10 +51,17 @@ class ViewManager(object):
             companies = list(Company.objects.all())
             companies.insert(0, companies.pop(companies.index(Company.objects.get(id=companyID))))
         
-        elif userdetails.favCompany:
-            # Brings the favorite company to the top of the feed.
+        elif userdetails.favCompany or userdetails.favBaristaObj:
             companies = list(Company.objects.all())
-            companies.insert(0, companies.pop(companies.index(userdetails.favCompany)))
+
+            # Brings the user's favorite company and if currently checked in, the user's favorite
+            # barista to the top of the feed, with the favorite barista getting priority.
+
+            if userdetails.favCompany:
+                companies.insert(0, companies.pop(companies.index(userdetails.favCompany)))
+
+            if userdetails.isFavBarCheckedIn():
+                companies.insert(0, companies.pop(companies.index(userdetails.get_favBarCheckIn().location.companyID)))
         
         else:
             # Display all companies.  This will need to change to be more dynamic when there are 
