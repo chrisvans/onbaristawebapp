@@ -47,7 +47,7 @@ $('.dropdown-menu a').live('click',function(e) {
                 <li class="{{navFlag.Home}}">
 
                   {% if user.favCompany %}
-                  <a href="{% url 'onBaristaApp:companyHome' user.favCompany.pk %}">Home</a>
+                  <a href="{% url 'onBaristaApp:companyHome' '0' %}">Home</a>
                   {% else %}
                   <a href="{% url 'onBaristaApp:companyHome' '0' %}">Home</a>
                   {% endif %}
@@ -55,9 +55,9 @@ $('.dropdown-menu a').live('click',function(e) {
                 </li>
                 <li class="{{navFlag.Baristas}}">
                   {% if user.favCompany %}
-                  <a href="{% url 'onBaristaApp:baristas' user.favCompany.pk %}">Baristas</a>
+                  <a href="{% url 'onBaristaApp:baristas' '0' %}">Baristas</a>
                   {% else %}
-                  <a href="{% url 'onBaristaApp:baristas' '0' %}">Baristas</a></li>
+                  <a href="{% url 'onBaristaApp:baristas' '0' %}">Baristas</a>
                   {% endif %}
 
                 </li>
