@@ -45,21 +45,10 @@ $('.dropdown-menu a').live('click',function(e) {
             <div class="nav-collapse collapse">
               <ul class="nav">
                 <li class="{{navFlag.Home}}">
-
-                  {% if user.favCompany %}
                   <a href="{% url 'onBaristaApp:companyHome' '0' %}">Home</a>
-                  {% else %}
-                  <a href="{% url 'onBaristaApp:companyHome' '0' %}">Home</a>
-                  {% endif %}
-
                 </li>
                 <li class="{{navFlag.Baristas}}">
-                  {% if user.favCompany %}
                   <a href="{% url 'onBaristaApp:baristas' '0' %}">Baristas</a>
-                  {% else %}
-                  <a href="{% url 'onBaristaApp:baristas' '0' %}">Baristas</a>
-                  {% endif %}
-
                 </li>
 
                 {% if user.isCompanyAdmin %}
