@@ -31,7 +31,13 @@ class ViewManager(object):
         if not userdetails.isCompanyAdmin and view_name == 'Admin':
             raise PermissionDenied()
 
-        companies = Company.objects.all()
+        if userdetails.favCompany:
+            # This list conversion from queryset may be expensive, find a more effecient way to do this.
+            # This fork brings the favorite company to the top of the feed.
+            companies = list(Company.objects.all())
+            companies.insert(0, companies.pop(companies.index(userdetails.favCompany)))
+        else:
+            companies = Company.objects.all()
 
         # Create the default parameters that most views use
         manager_dict = {

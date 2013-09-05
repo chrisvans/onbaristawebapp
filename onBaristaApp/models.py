@@ -18,7 +18,6 @@ class Company(models.Model):
     def get_locations(self):
         return companyLocation.objects.filter(companyID = self)
 
-
 class companyLocation(models.Model):
     checkins = {}
     companyID = models.ForeignKey(Company)

@@ -15,7 +15,7 @@
 {% if user.userType == 'Barista' %}
 
 	{% for company in companies %}
-      <div class="hero-unit" style="background:url(/static/images/{{company.background_image}});background-size:cover;background-position:center;">
+      <div class="hero-unit" id="companydiv" style="background: url(/static/images/{{company.background_image}}); background-size:cover; background-position:center; border:1px solid black;">
 
       	{% for location in company.get_locations %}
         <div class="hero-unit">
