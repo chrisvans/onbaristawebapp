@@ -31,7 +31,11 @@ class ViewManager(object):
         if not userdetails.isCompanyAdmin and view_name == 'Admin':
             raise PermissionDenied()
 
-        if companyID != '0':
+        if userdetails.usercheckedin and view_name == 'Baristas':
+            # If the current user is checked in, and viewing the barista check in page,
+            # only show the company that they can check out from.
+            companies = Company.objects.filter(id=checkIn.objects.get(barista=user).location.companyID.pk)
+        elif companyID != '0':
             # This list conversion from queryset may be too expensive, find a more effecient way to do this.
             # This fork brings the favorite barista's current checkin company to the top of the feed.
             companies = list(Company.objects.all())
