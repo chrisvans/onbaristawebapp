@@ -187,6 +187,7 @@ class checkIn(models.Model):
     inTime = models.DateTimeField(null=True)
     outTime = models.DateTimeField(null=True)
     checkedin = models.BooleanField(default=True)
+    is_active = models.BooleanField(default=True)
 
     def __unicode__(self):
         if self.checkedin:
