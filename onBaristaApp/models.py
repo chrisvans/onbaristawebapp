@@ -76,6 +76,7 @@ class UserProfileManager(models.Manager):
         # Set user's usercheckedin flag to True, and then refresh the current session user.
         userdetails = self.get(user = user) # user.get_profile()
         userdetails.usercheckedin = True
+        # Set employee_id to reflect that this is the company that a barista is working for.
         userdetails.employer_id = companyID
         user.save()
         userdetails.save()
@@ -229,10 +230,11 @@ class checkIn(models.Model):
     def create(cls, barista, location):
         try:
             old_checkin_object = checkIn.objects.filter(is_active=True).get(barista = barista)
-            # If there is already a checkin object, delete it to reduce errors.
             # Also takes care of a checked out object.
-            # Delete the checked out entry.
-            old_checkin_object.delete()
+            # Set the old entry to inactive so it doesn't show up in normal queries.
+            # Store the object for TimeClock purposes.
+            old_checkin_object.is_active = False
+            old_checkin_object.save()
         except (KeyError,checkIn.DoesNotExist):
             1+1
         check_in = cls(barista=barista, location=location, inTime=timezone.now())
