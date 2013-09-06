@@ -32,6 +32,7 @@ class ViewManager(object):
         if not userdetails.isCompanyAdmin and view_name == 'Admin':
             raise PermissionDenied()
 
+        # Change this logic to be a CompanyManager queryset handler
         # This determines how the company feed data is represented in each view.
         if view_name == 'Baristas' and userdetails.usercheckedin:
             # If the current user is checked in, and viewing the barista check in page,
