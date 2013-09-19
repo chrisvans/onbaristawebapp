@@ -14,7 +14,7 @@
     overflow:auto;
 }
 
-.home {
+/*.home {
   background-image: url("/static/images/onbarista.jpg");
   background-size: cover;
   background-repeat: no-repeat;
@@ -22,7 +22,7 @@
   background-attachment:fixed;
   background-color:white;
     overflow:auto;
-}
+}*/
 
 .baristas {
   background-image: url("/static/images/ethan.jpg");
@@ -206,6 +206,18 @@ float: right;
   box-shadow: none;
 }
 
+ #tryme {
+ /* background: url(/static/images/{{company.background_image}});
+  background-size:cover;
+  background-position:center;*/
+  padding: 10 0;
+}
+
+.barista-bkrd {
+  padding: 0;
+  margin: 0 auto;
+}
+
 a.brand {
   padding-top: 10px;
 }
@@ -218,6 +230,9 @@ div .navbar-inner {
   background-image: none;
   background-repeat: no-repeat;
   color: white;
+}
+span, .hero-unit ul {
+  margin: 0 auto;
 }
 
 #basediv {
@@ -236,11 +251,8 @@ div .navbar-inner {
 
 div .hero-unit, div.alert.alert-info {
   padding-bottom: 31px;
-  width: 55%;
-  margin-left: 25%;
-/*  margin-right: 0;
-margin-bottom: 0;*/
-background-color: rgba(255,255,255,0.9);
+  margin: 0 auto;
+background-color: rgba(255,255,255,0.7);
 -webkit-border-radius: 5px;
 -moz-border-radius: 5px;
 border-radius: 5px;
@@ -335,12 +347,6 @@ div .navbar-inner #test {
     float:none;
   }
 
-  div .hero-unit, div.alert.alert-info {
-    padding-bottom: 31px;
-    width: 70%;
-    margin-left: 15%;
-  }
-
   #test {
     /*    height: auto;*/
     clear: both;
@@ -374,12 +380,6 @@ position: fixed;
     margin-top: -3em;
 }
 
-  div .hero-unit, div.alert.alert-info {
-    padding-bottom: 31px;
-    width: 70%;
-    margin-left: 5%;
-  }
-
   #test {
     width: 100%;
   }
@@ -394,11 +394,7 @@ position: fixed;
     float:none;
   }
 
-  div .hero-unit, div.alert.alert-info {
-    padding: 10px;
-    width: 85%;
-    margin: 5%;
-  }
+
 
   .hero-unit form, {
     padding: 0;

@@ -159,7 +159,7 @@ INSTALLED_APPS = (
     'unipath',
     'gunicorn',
     'django_gevent_deploy',
-    'gevent',
+#    'gevent',
     'psycopg2',
     'dj_database_url',
     'dj_static',

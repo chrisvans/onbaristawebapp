@@ -10,9 +10,9 @@
 {% for company in companies %}
 
 <div id="tryme">
-	<div class="hero-unit" style="background: url(/static/images/{{company.background_image}}); background-size:cover; background-position:center; border:1px solid black;">
+	<div class="barista-bkrg" style="background: url(/static/images/{{company.background_image}}); background-size:cover; background-position:center; border:1px solid black;">
       {% for location in company.get_locations %}
-        <div class="hero-unit">
+        <div class="hero-unit" id="barista-bkrd">
         <span><strong>{{ location }}</strong></span><br>
         {% if location.get_checkins %}
 
